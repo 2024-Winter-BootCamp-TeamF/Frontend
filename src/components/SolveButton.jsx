@@ -1,28 +1,15 @@
 import React from "react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'MangoDdobak-B';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
-    font-style: normal;
-  }
-
-  body {
-    font-family: 'MangoDdobak-B', sans-serif;
-  }
-`;
-
-const Button = ({ children, onClick, variant = "filled" }) => (
+const SolveButton = ({ children, onClick, variant = "filled" }) => (
   <>
-    <GlobalStyle />
     <StyledButton onClick={onClick} variant={variant}>
       {children}
     </StyledButton>
   </>
 );
 
-export default Button;
+export default SolveButton;
 
 const StyledButton = styled.button`
   width: 555px;
@@ -39,14 +26,14 @@ const StyledButton = styled.button`
   ${({ variant }) =>
     variant === "filled" &&
     css`
-      background-color: #5887F4; /* 기본 배경색 */
+      background-color: #5887f4; /* 기본 배경색 */
       color: white; /* 기본 글씨색 */
       border: none;
 
       &:hover {
         background-color: white; /* 호버 시 배경색 */
-        color: #5887F4; /* 호버 시 글씨색 */
-        border: 2px solid #5887F4; /* 호버 시 테두리 */
+        color: #5887f4; /* 호버 시 글씨색 */
+        border: 2px solid #5887f4; /* 호버 시 테두리 */
       }
     `}
 
@@ -54,8 +41,8 @@ const StyledButton = styled.button`
     variant === "outlined" &&
     css`
       background-color: transparent;
-      color: #5887F4;
-      border: 2px solid #5887F4;
+      color: #5887f4;
+      border: 2px solid #5887f4;
 
       &:hover {
         background-color: #eef4ff;

@@ -1,28 +1,15 @@
 import React from "react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'MangoDdobak-B';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
-    font-style: normal;
-  }
-
-  body {
-    font-family: 'MangoDdobak-B', sans-serif;
-  }
-`;
-
-const Button = ({ children, onClick, variant = "filled" }) => (
+const SampleButton = ({ children, onClick, variant = "filled" }) => (
   <>
-    <GlobalStyle />
     <StyledButton onClick={onClick} variant={variant}>
       {children}
     </StyledButton>
   </>
 );
 
-export default Button;
+export default SampleButton;
 
 const StyledButton = styled.button`
   width: 265px;
