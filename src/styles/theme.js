@@ -24,6 +24,23 @@ const theme = {
       font-style: normal;
     }
   `,
+  images: {
+    logo: "/images/logo.svg",
+    character: "/images/character.png",
+    main_background: "/images/main_background.png",
+    sub_background: "/images/sub_background.png",
+    footer: "/images/footer.png",
+    add: "/images/add.png",
+    delete: "/images/delete.png",
+    correct: "/images/correct.png",
+    summary: "/images/summary.png",
+    practice: "/images/practice.png",
+    note: "/images/note.png",
+    mypage: "/images/mypage.png",
+    mypage_summary: "/images/mypage_summary.png",
+    mypage_practice: "/images/mypage_practice.png",
+    mypage_note: "/images/mypage_note.png",
+  },
 };
 
 export default theme;
