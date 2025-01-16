@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import correctIcon from "../../images/correct.png";
-import confusedIcon from "../../images/confused.png";
 
 const ProblemList = ({ problems }) => {
   return (
