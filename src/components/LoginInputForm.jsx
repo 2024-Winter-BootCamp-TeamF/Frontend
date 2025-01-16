@@ -90,23 +90,24 @@ const SubmitButtonWrapper = styled.div`
 const SubmitButton = styled.button`
   width: 50%;
   font-size: 10px;
-  color: ${({ disabled }) => (disabled ? "#000" : "#fff")};
-  background-color: ${({ disabled }) => (disabled ? "#ccc" : "#004DFF")};
-  border: 1px solid ${({ disabled }) => (disabled ? "#ccc" : "#004DFF")};
+  color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
+  background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
+  border: 1px solid ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
   border-radius: 5px;
   padding: 8px 0;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   transition: background-color 0.3s, color 0.3s, border 0.3s;
 
   &:hover {
-    background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fff")};
-    color: ${({ disabled }) => (disabled ? "#000" : "#004DFF")};
-    border: ${({ disabled }) => (disabled ? "none" : "1px solid #004DFF")};
+    background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#fff")};
+    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#004DFF")};
+    border: ${({ disabled }) =>
+      disabled ? "1px solid #F0F0F0" : "1px solid #004DFF"};
   }
 
   &:active {
     background-color: ${({ disabled }) =>
-      disabled ? "#ccc" : "#0039cc"}; /* 클릭 시 짙은 파란색 */
+      disabled ? "#ccc" : "#004DFF"}; /* 클릭 시 짙은 파란색 */
     color: ${({ disabled }) => (disabled ? "#000" : "#fff")};
   }
 `;
