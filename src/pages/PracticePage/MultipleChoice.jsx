@@ -67,7 +67,7 @@ const MultipleChoiceContainer = styled.div`
         : props.isDoubleClicked
         ? COLORS.SECONDARY
         : COLORS.PRIMARY};
-  padding: 30px;
+  padding: 0px;
   box-sizing: border-box;
   border-radius: 10px;
   transition: border-color 0.3s ease;
@@ -110,7 +110,7 @@ const MultipleChoiceContainer = styled.div`
   }
 
   input[type="radio"]:disabled {
-    background-color: e2dfdf;
+    background-color: lightgray;
     box-shadow: none;
     opacity: 0.7;
     cursor: not-allowed;

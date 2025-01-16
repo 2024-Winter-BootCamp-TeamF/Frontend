@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import correctIcon from "../../images/correct.png";
@@ -14,23 +14,19 @@ const SIZES = {
 };
 
 const ProblemList = ({ problems }) => {
-  const [selectedId, setSelectedId] = useState(null);
-
   return (
     <Container>
       <ProblemListContainer>
         <Title>문제 목록</Title>
         <ProblemUl>
           {problems.map((problem) => (
-            <ProblemLi
-              key={problem.id}
-              isSelected={selectedId === problem.id}
-              onClick={() => setSelectedId(problem.id)}
-            >
+            <ProblemLi key={problem.id}>
               <ProblemTitle>{problem.title}</ProblemTitle>
-              {problem.isCorrect && (
-                <Icon src={correctIcon} alt="정답" aria-label="정답 표시" />
-              )}
+              <Icon
+                src={correctIcon}
+                alt="풀이 완료"
+                aria-label="풀이 완료 표시"
+              />
             </ProblemLi>
           ))}
         </ProblemUl>
@@ -74,6 +70,7 @@ const Title = styled.h2`
   font-size: ${SIZES.TITLE};
   text-align: center;
   margin-top: 45px;
+
   margin-bottom: 45px;
 `;
 
@@ -102,34 +99,23 @@ const ProblemUl = styled.ul`
 const ProblemLi = styled.li`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: ${SIZES.TITLE};
-  margin-bottom: 25px;
+  justify-content: flex-start;
   padding: 10px;
+  margin-bottom: 25px;
+  margin-left: 15px;
   border-radius: 4px;
-  transition: background-color 0.2s ease;
-
-  ${({ isSelected }) =>
-    isSelected &&
-    `
-    background-color: ${COLORS.PRIMARY}20;
-  `}
-
-  &:hover {
-    background-color: ${COLORS.PRIMARY}10;
-  }
 `;
 
 const ProblemTitle = styled.span`
-  flex: 1;
-  margin-right: 10px;
+  font-size: ${SIZES.TITLE};
+  text-align: left;
+  width: 100%;
 `;
 
 const Icon = styled.img`
   width: ${SIZES.ICON};
   height: ${SIZES.ICON};
-  vertical-align: middle;
-  margin-left: 20px;
+  margin-right: 70px;
 `;
 
 export default ProblemList;
