@@ -1,26 +1,32 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-const SolveButton = ({ children, onClick, variant = "filled" }) => (
-  <>
-    <StyledButton onClick={onClick} variant={variant}>
-      {children}
-    </StyledButton>
-  </>
-);
+const SolveButton = ({ children, onClick, variant = "filled" }) => {
+  const parts = children.split("\n");
+  return (
+    <>
+      <StyledButton onClick={onClick} variant={variant}>
+        {parts.map((part, index) => (
+          <span key={index} className={index > 0 ? "bold" : ""}>
+            {part}
+            {index < parts.length - 1 && <br />}
+          </span>
+        ))}
+      </StyledButton>
+    </>
+  );
+};
 
 export default SolveButton;
 
 const StyledButton = styled.button`
   width: 555px;
   height: 85px;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 24px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  font-family: "MangoDdobak-B", sans-serif;
 
   /* 기본 스타일 */
   ${({ variant }) =>
@@ -55,5 +61,9 @@ const StyledButton = styled.button`
 
   &:focus {
     outline: none;
+  }
+
+  span.bold {
+    font-weight: 700;
   }
 `;
