@@ -1,28 +1,24 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 
-const LoginInputForm = ({ currentType }) => {
+const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
   // 상태 관리
-  const [formData, setFormData] = useState({
-    name: "",
-    id: "",
-    password: "",
-    confirmPassword: "",
-  });
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   // 유효성 검사 예시 (비밀번호 일치 여부)
   const isSignUpValid =
     currentType === "SignUp" &&
-    formData.password &&
-    formData.password === formData.confirmPassword;
+    inputValues.password &&
+    inputValues.password === inputValues.confirmPassword;
 
   const isSignInValid =
-    currentType === "SignIn" && formData.id && formData.password;
+    currentType === "SignIn" && inputValues.name && inputValues.password;
 
   return (
     <InputFormWrapper>
@@ -30,23 +26,23 @@ const LoginInputForm = ({ currentType }) => {
         type="text"
         name="name"
         placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
+        value={inputValues.name}
+        onChange={handleInputChange}
       />
       <Input
         type="password"
         name="password"
         placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
+        value={inputValues.password}
+        onChange={handleInputChange}
       />
       {currentType === "SignUp" && (
         <Input
           type="password"
           name="confirmPassword"
           placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
+          value={inputValues.confirmPassword}
+          onChange={handleInputChange}
         />
       )}
       <SubmitButtonWrapper>
@@ -96,16 +92,22 @@ const SubmitButton = styled.button`
   font-size: 10px;
   color: ${({ disabled }) => (disabled ? "#000" : "#fff")};
   background-color: ${({ disabled }) => (disabled ? "#ccc" : "#004DFF")};
-  border: 1px solid #004dff;
+  border: 1px solid ${({ disabled }) => (disabled ? "#ccc" : "#004DFF")};
   border-radius: 5px;
-  padding: 8px 0 8px 0;
+  padding: 8px 0;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s, border 0.3s;
 
   &:hover {
     background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fff")};
     color: ${({ disabled }) => (disabled ? "#000" : "#004DFF")};
     border: ${({ disabled }) => (disabled ? "none" : "1px solid #004DFF")};
+  }
+
+  &:active {
+    background-color: ${({ disabled }) =>
+      disabled ? "#ccc" : "#0039cc"}; /* 클릭 시 짙은 파란색 */
+    color: ${({ disabled }) => (disabled ? "#000" : "#fff")};
   }
 `;
 

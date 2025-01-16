@@ -7,18 +7,39 @@ import LoginInputForm from "./LoginInputForm.jsx";
 
 const LoginBox = () => {
   const [currentType, setCurrentType] = useState("SignIn");
+  const [inputValues, setInputValues] = useState({
+    username: "",
+    password: "",
+    name: "",
+    confirmPassword: "",
+  });
+
+  // currentType 변경 시 입력 값 초기화
+  const handleTypeChange = (newType) => {
+    setCurrentType(newType);
+    setInputValues({
+      username: "",
+      password: "",
+      name: "",
+      confirmPassword: "",
+    });
+  };
 
   return (
     <LoginBoxWrapper>
       <ContentsWrapper>
         <LoginToggle
           currentType={currentType}
-          setCurrentType={setCurrentType}
+          setCurrentType={handleTypeChange}
         />
         <IconSection>
           <img src={user} alt="user" />
         </IconSection>
-        <LoginInputForm currentType={currentType} />
+        <LoginInputForm
+          currentType={currentType}
+          inputValues={inputValues}
+          setInputValues={setInputValues}
+        />
       </ContentsWrapper>
       <BottomImageSection>
         <img src={footer} alt="footer" />
