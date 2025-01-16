@@ -22,10 +22,8 @@ const SamplePage = () => {
           {/* PDF 뷰어 영역 */}
           <img src="/path-to-pdf-preview.png" alt="PDF Preview" />
         </PDFViewer>
-
-        <ArrowWrapper>
-          <Arrow>→</Arrow>
-        </ArrowWrapper>
+        
+        <Divider />
         
         <SummaryBox>
           <Title>요약본 출력</Title>
@@ -90,13 +88,11 @@ const ProfileIcon = styled.div`
 
 const MainContent = styled.main`
   display: flex;
-  justify-content: space-between;
-  // pdf preview, 요약본 출력 박스 크기 조절
+  justify-content: center;
+  align-items: center;
   width: 90%;
   max-width: 1200px;
-  
   margin: 15px;
-  gap: 30px;
 `;
 
 const PDFViewer = styled.div`
@@ -105,12 +101,12 @@ const PDFViewer = styled.div`
   border-radius: 8px;
   padding: 20px;
   background: #f5f5f5;
-  min-height: 30px;
+  min-height: 350px;
 `;
 
 const SummaryBox = styled.div`
   flex: 1;
-  border: 2px solid #86ABFF;
+  border: 2px solid #9EBBFF;
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -147,17 +143,11 @@ const FooterImg = styled.img`
   height: auto;
 `;
 
-const ArrowWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 20px;
-`;
-
-const Arrow = styled.span`
-  font-size: 75px;
-  color: #5c85ff;
-  font-weight: bold;
+const Divider = styled.div`
+  width: 2px;
+  height: 350px;  // 높이는 필요에 따라 조절
+  background-color: #86ABFF;  // 회색 계열의 색상
+  margin: 0 30px;  // 좌우 여백
 `;
 
 export default SamplePage;
