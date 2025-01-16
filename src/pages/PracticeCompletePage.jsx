@@ -43,7 +43,6 @@ const PracticeCompletePage = () => {
           />
           <SolveButton
             children={`교수님 저는 아직 마음의 준비가 필요합니다....\n마이페이지에 저장하기`}
-            variant="outlined"
             onClick={() => {
               /* 마이페이지로 이동 */
             }}
