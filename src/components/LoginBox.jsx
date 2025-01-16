@@ -1,16 +1,25 @@
+import { useState } from "react";
 import styled from "styled-components";
 import user from "../images/user.png";
 import footer from "../images/footer.png";
+import LoginToggle from "./LoginToggle.jsx";
 
 const LoginBox = () => {
+  const [currentType, setCurrentType] = useState("SignIn");
+
   return (
     <LoginBoxWrapper>
-      <TypeSection />
-      <IconSection>
-        <img src={user} alt="user" />
-      </IconSection>
-      <InputForm />
-      <ButtonSection />
+      <ContentsWrapper>
+        <LoginToggle
+          currentType={currentType}
+          setCurrentType={setCurrentType}
+        />
+        <IconSection>
+          <img src={user} alt="user" />
+        </IconSection>
+        <InputForm currentType={currentType} />
+        <ButtonSection />
+      </ContentsWrapper>
       <BottomImageSection>
         <img src={footer} alt="footer" />
       </BottomImageSection>
@@ -20,7 +29,7 @@ const LoginBox = () => {
 
 const LoginBoxWrapper = styled.div`
   width: 450px;
-  min-height: 500px;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,6 +39,10 @@ const LoginBoxWrapper = styled.div`
   overflow: hidden; /* 박스 밖으로 콘텐츠가 삐져나오지 않게 처리 */
   position: relative;
 `;
+
+const ContentsWrapper = styled.div`
+    padding: 40px;
+`
 
 const IconSection = styled.div`
   img {
