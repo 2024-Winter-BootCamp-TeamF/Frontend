@@ -9,7 +9,7 @@ const ExButton = ({
 }) => (
   <>
     <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
-      {children}부가 설명 다운로드
+      {children}
     </StyledButton>
   </>
 );
