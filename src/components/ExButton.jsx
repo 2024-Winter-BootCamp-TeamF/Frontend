@@ -9,7 +9,7 @@ const ExButton = ({
   isActive = false,
 }) => (
   <>
-    <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel} isActive={isActive}>
+    <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
       {children}
     </StyledButton>
   </>
