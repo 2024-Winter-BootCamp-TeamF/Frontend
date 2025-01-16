@@ -63,6 +63,7 @@ const ProblemListContainer = styled.div`
     display: flex;
     align-items: center; /* 아이콘과 제목 세로 정렬 */
     font-size: 24px;
+    margin-bottom: 25px;
   }
 `;
 

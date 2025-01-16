@@ -1,10 +1,18 @@
-// components/ShortAnswer.js
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const ShortAnswer = ({ problem }) => {
+  const [isDoubleClicked, setIsDoubleClicked] = useState(false);
+
+  const handleDoubleClick = () => {
+    setIsDoubleClicked(!isDoubleClicked); // 더블클릭 시 상태 토글
+  };
+
   return (
-    <ShortAnswerContainer>
+    <ShortAnswerContainer
+      onDoubleClick={handleDoubleClick} // 더블클릭 시 상태 변경
+      isDoubleClicked={isDoubleClicked} // 상태 전달
+    >
       <h3>{problem.title}</h3>
       <p>{problem.content}</p>
       <input type="text" placeholder="답을 입력하세요" />
@@ -16,11 +24,12 @@ const ShortAnswerContainer = styled.div`
   width: 980px;
   height: 213px;
   background-color: #ffffff;
-  border: 3px solid #5887f4;
-
+  border: 3px solid
+    ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")}; // 더블클릭 시 색상 변경
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
+  transition: border-color 0.3s ease; // 색상 변경을 부드럽게 하기 위한 트랜지션
 
   h3 {
     text-align: left;
