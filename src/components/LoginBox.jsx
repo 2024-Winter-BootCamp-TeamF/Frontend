@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
-import user from "../images/user.png";
+import user from "../images/login_user.png";
 import footer from "../images/footer.png";
 import LoginToggle from "./LoginToggle.jsx";
+import LoginInputForm from "./LoginInputForm.jsx";
 
 const LoginBox = () => {
   const [currentType, setCurrentType] = useState("SignIn");
@@ -17,7 +18,7 @@ const LoginBox = () => {
         <IconSection>
           <img src={user} alt="user" />
         </IconSection>
-        <InputForm currentType={currentType} />
+        <LoginInputForm currentType={currentType} />
         <ButtonSection />
       </ContentsWrapper>
       <BottomImageSection>
@@ -28,7 +29,7 @@ const LoginBox = () => {
 };
 
 const LoginBoxWrapper = styled.div`
-  width: 450px;
+  min-width: 200px;
   min-height: 100px;
   display: flex;
   flex-direction: column;
@@ -41,27 +42,30 @@ const LoginBoxWrapper = styled.div`
 `;
 
 const ContentsWrapper = styled.div`
-    padding: 40px;
-`
+  padding: 20px;
+`;
 
 const IconSection = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 10px;
   img {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
   }
 `;
 const InputForm = styled.div``;
 const ButtonSection = styled.div``;
 
-const TypeSection = styled.div``;
-
 const BottomImageSection = styled.div`
+display: flex;
+justify-content: center;
   position: absolute; /* 로그인 박스 안에서 위치를 자유롭게 조정 가능 */
   bottom: 0; /* 로그인 박스의 하단에 이미지 고정 */
   width: 100%;
-  height: auto; /* 이미지 비율 유지 */
+  height: 50px;
   z-index: -1; /* 이미지가 가장 아래쪽으로 배치되도록 설정 */
-
   img {
     width: 1560px; /* 박스의 너비에 맞게 이미지 설정 */ /* 박스 안에 꽉 차도록 이미지 설정 */
     height: auto; /* 비율 유지 */

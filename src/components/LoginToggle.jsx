@@ -21,8 +21,8 @@ const LoginToggle = ({ currentType, setCurrentType }) => {
 
 const ToggleSectionWrapper = styled.div`
   display: flex;
+  justify-content: center;
   width: 100%;
-  margin-bottom: 20px;
   gap: 30px;
 `;
 
@@ -31,9 +31,10 @@ const TypeButton = styled.button`
   border: none;
   color: ${({ isActive }) => (isActive ? "#000" : "#D3D3D3")};
   border-bottom: ${({ isActive }) => (isActive ? "2px solid #004dff" : "none")};
+  font-weight: ${({ isActive }) => (isActive ? "700" : "500")};
   padding-bottom: 2px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   transition: all 0.3s;
 `;
 
