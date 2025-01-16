@@ -28,7 +28,7 @@ export const problems = [
   },
   {
     id: 5,
-    title: "Q.3",
+    title: "Q.5",
     content: "문제 5의 내용이 여기에 들어갑니다.",
     type: "multiple_choice", // 객관식
     options: ["선택 1", "선택 2", "선택 3", "선택 4", "선택 5"],

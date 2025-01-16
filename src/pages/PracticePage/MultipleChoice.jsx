@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const MultipleChoice = ({ problem }) => {
-  const [selectedOption, setSelectedOption] = useState(null); // 선택된 옵션을 추적
-
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
 
   const handleContainerDoubleClick = () => {
@@ -12,13 +10,6 @@ const MultipleChoice = ({ problem }) => {
 
   const handleRadioDoubleClick = () => {
     setIsDoubleClicked(!isDoubleClicked); // 라디오 버튼 더블클릭 시 상태 토글
-  };
-
-  const handleRadioChange = (e) => {
-    const newSelectedOption = e.target.id;
-    setSelectedOption((prev) =>
-      prev === newSelectedOption ? null : newSelectedOption
-    ); // 이미 선택된 버튼을 다시 클릭하면 상태 리셋
   };
 
   return (
@@ -63,8 +54,7 @@ const MultipleChoiceContainer = styled.div`
 
   li {
     margin: 10px 0;
-    font-size: 16px;
-    color: #333;
+    font-size: 18px;
     display: flex;
     align-items: center;
   }

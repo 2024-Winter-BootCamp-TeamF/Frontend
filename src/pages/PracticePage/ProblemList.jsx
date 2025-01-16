@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import correctIcon from "../../images/correct.png";
+import confusedIcon from "../../images/confused.png";
 
 const ProblemList = ({ problems }) => {
   return (
@@ -8,15 +10,25 @@ const ProblemList = ({ problems }) => {
         <h2>문제 목록</h2>
         <ul>
           {problems.map((problem) => (
-            <li key={problem.id}>{problem.title}</li>
+            <li key={problem.id}>
+              {problem.title}
+              <Icon src={correctIcon} alt="correct icon" />
+            </li>
           ))}
         </ul>
       </ProblemListContainer>
 
-      <ContentArea>{/* 문제 컨텐츠 추가 */}</ContentArea>
+      <ContentArea></ContentArea>
     </Container>
   );
 };
+
+const Icon = styled.img`
+  width: 20px;
+  height: 20px;
+  vertical-align: middle; /* 아이콘 세로 정렬 */
+  margin-left: 20px;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -25,41 +37,38 @@ const Container = styled.div`
 
 const ProblemListContainer = styled.div`
   position: fixed;
-  top: 150px; // 상단에서 150px 아래로 설정
-  left: 65px; // 왼쪽에서 65px 떨어지게 설정
+  top: 200px;
+  left: 100px;
   width: 263px;
   height: 700px;
   background-color: #ffffff;
   border: 3px solid #5887f4;
   padding: 29px 89px;
   box-sizing: border-box;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 
   h2 {
     font-size: 24px;
-    color: #333;
-    text-align: center;
+    text-align: left; /* 중앙 정렬을 왼쪽 정렬로 변경 */
     white-space: nowrap;
+    margin-bottom: 44px;
   }
 
   ul {
-    padding: 0;
     list-style-type: none;
     overflow-y: auto;
-    height: 100%;
+    overflow-x: hidden; /* 가로 스크롤 없애기 */
   }
 
   li {
-    margin: 10px 0;
-    font-size: 16px;
-    color: #333;
+    display: flex;
+    align-items: center; /* 아이콘과 제목 세로 정렬 */
+    font-size: 24px;
   }
 `;
 
 const ContentArea = styled.div`
-  margin-left: 330px; /* 문제 목록 너비만큼 여백 추가 */
-  flex-grow: 1;
+  margin-left: 100px; /* 문제 목록과 문제들 사이 간격*/
   padding: 20px;
 `;
 
