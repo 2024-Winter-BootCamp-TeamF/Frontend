@@ -7,7 +7,7 @@ import addIcon from "../images/add.png";
 import summaryIcon from "../images/mypage_summary.png";
 import ExButton from "../components/ExButton";
 
-const UserPage = () => {
+const UserPageSample = () => {
   return (
     <Container>
       <Header>
@@ -74,7 +74,7 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default UserPageSample;
 
 const Container = styled.div`
   min-height: 100vh;

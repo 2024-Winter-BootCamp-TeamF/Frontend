@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
-import UserPage from "./pages/UserPage";
+import UploadPage from "./pages/UploadPage";
 import "./App.css";
 
 
@@ -14,9 +14,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
-
-          <Route path="/user" element={<UserPage />} />
-
+          <Route path="/" element={<UploadPage />} />
         </Routes>
       </ThemeProvider>
     </Router>
