@@ -18,14 +18,16 @@ const Header = () => {
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   width: 100%;
-  position: absolute; 
+  position: absolute;
   box-sizing: border-box;
   padding-top: 10px;
   padding-bottom: 25px;
   top: 0;
+  z-index: 1000;
+  background-color: #ffffff;
 `;
 
 const LogoWrapper = styled.div`
