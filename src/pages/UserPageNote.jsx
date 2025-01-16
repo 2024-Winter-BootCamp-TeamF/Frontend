@@ -19,9 +19,11 @@ const UserPageNote = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-        <ExButton variant="outlined" isActive={true}>요약본</ExButton>
+        <ExButton variant="outlined">요약본</ExButton>
         <ExButton variant="outlined">연습 문제</ExButton>
-        <ExButton variant="filled">오답 노트</ExButton>
+        <ExButton variant="filled" isActive={true}>
+          오답 노트
+        </ExButton>
       </Nav>
       <Content>
         <Card>
@@ -146,7 +148,7 @@ const AddIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  
+
   img {
     width: 40px;
     height: 40px;
@@ -160,7 +162,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  
+
   img {
     width: 50px;
     height: 50px;
