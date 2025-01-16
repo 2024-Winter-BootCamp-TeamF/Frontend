@@ -19,16 +19,16 @@ const UserPageEx = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-        <ExButton variant="filled" isActive={true}>요약본</ExButton>
-        <ExButton variant="outlined">연습 문제</ExButton>
-        <ExButton variant="outlined">오답 노트</ExButton>
+        <ExButton variant="outlined" isActive={true}>요약본</ExButton>
+        <ExButton variant="filled" isActive={true}>연습 문제</ExButton>
+        <ExButton variant="outlined" >오답 노트</ExButton>
       </Nav>
       <Content>
         <Card>
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
-          <CardText>요약본 만들기</CardText>
+          <CardText>연습문제 만들기</CardText>
         </Card>
         <Card>
           <IconWrapper>

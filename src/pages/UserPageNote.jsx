@@ -19,7 +19,7 @@ const UserPageNote = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-      <ExButton variant="outlined" isActive={true}>요약본</ExButton>
+        <ExButton variant="outlined" isActive={true}>요약본</ExButton>
         <ExButton variant="outlined">연습 문제</ExButton>
         <ExButton variant="filled">오답 노트</ExButton>
       </Nav>

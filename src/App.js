@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
-import UserPageEx from "./pages/UserPageNote.jsx";
+import UserPageEx from "./pages/UserPageEx";
 
 function App() {
   return (
