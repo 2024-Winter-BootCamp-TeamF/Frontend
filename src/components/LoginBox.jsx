@@ -19,7 +19,6 @@ const LoginBox = () => {
           <img src={user} alt="user" />
         </IconSection>
         <LoginInputForm currentType={currentType} />
-        <ButtonSection />
       </ContentsWrapper>
       <BottomImageSection>
         <img src={footer} alt="footer" />
@@ -37,30 +36,28 @@ const LoginBoxWrapper = styled.div`
   align-items: center;
   border: 1px solid #000;
   border-radius: 15px;
-  overflow: hidden; /* 박스 밖으로 콘텐츠가 삐져나오지 않게 처리 */
+  overflow: hidden;
   position: relative;
 `;
 
 const ContentsWrapper = styled.div`
-  padding: 20px;
+  padding: 20px 15px 15px 15px;
 `;
 
 const IconSection = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
   img {
     width: 30px;
     height: 30px;
   }
 `;
-const InputForm = styled.div``;
-const ButtonSection = styled.div``;
 
 const BottomImageSection = styled.div`
-display: flex;
-justify-content: center;
+  display: flex;
+  justify-content: center;
   position: absolute; /* 로그인 박스 안에서 위치를 자유롭게 조정 가능 */
   bottom: 0; /* 로그인 박스의 하단에 이미지 고정 */
   width: 100%;
@@ -71,4 +68,5 @@ justify-content: center;
     height: auto; /* 비율 유지 */
   }
 `;
+
 export default LoginBox;
