@@ -13,10 +13,8 @@ const Footer = () => {
 };
 
 const FooterWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
+  position: absolute;
+  bottom: 0;
 `;
 
 const FooterImg = styled.div`

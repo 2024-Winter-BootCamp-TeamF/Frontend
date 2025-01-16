@@ -14,9 +14,13 @@ const CompletePage = () => {
 };
 
 const CompletePageWrapper = styled.div`
+width: 100%;
+min-height: 100vh; /* 화면 높이를 100%로 설정 */
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 화면 높이를 100%로 설정 */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 `;
 
 export default CompletePage;

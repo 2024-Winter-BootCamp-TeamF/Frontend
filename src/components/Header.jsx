@@ -21,10 +21,11 @@ const HeaderWrapper = styled.div`
   justify-content: center; 
   align-items: center;
   width: 100%;
-  position: relative; 
+  position: absolute; 
   box-sizing: border-box;
   padding-top: 10px;
   padding-bottom: 25px;
+  top: 0;
 `;
 
 const LogoWrapper = styled.div`

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SolveButton from "../components/SolveButton";
 import character from "../images/character.png";
+import sub_background from "../images/sub_background.png";
 
 const CompleteInfo = () => {
   return (
@@ -35,6 +36,10 @@ const CompleteInfoWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-size: contain;
+  background-image: url(${sub_background});
+  background-position: center; /* 배경 이미지 위치 */
+  height: 100%;
 `;
 const CharacterSection = styled.div`
   img {
