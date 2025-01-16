@@ -15,13 +15,10 @@ const MainPage = () => {
   );
 };
 
-const MainContentSection = styled.div``;
-
 const MainPageWrapper = styled.div`
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  height: 200vh; // 페이지 전체 높이
 `;
 
 export default MainPage;

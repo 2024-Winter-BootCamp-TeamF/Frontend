@@ -1,75 +1,109 @@
 import styled from "styled-components";
+import summaryIcon from "../images/summary.png";
+import practiceIcon from "../images/practice.png";
+import noteIcon from "../images/note.png";
+import homeIcon from "../images/mypage.png";
 
 const Introduce = () => {
+  const menuItems = [
+    {
+      title: "강의 자료 요약",
+      icon: summaryIcon,
+    },
+    {
+      title: "연습 문제 생성",
+      icon: practiceIcon,
+    },
+    {
+      title: "오답 노트 제공",
+      icon: noteIcon,
+    },
+    {
+      title: "마이페이지",
+      icon: homeIcon,
+    },
+  ];
+
   return (
     <IntroduceWrapper>
-      <IntroduceContent>
-        <SectionTitle>AI 학습 도우미 소개</SectionTitle>
-        <FeatureGrid>
-          <FeatureCard>
-            <FeatureIcon>📚</FeatureIcon>
-            <FeatureTitle>맞춤형 학습</FeatureTitle>
-            <FeatureDesc>
-              개인별 학습 수준과 목표에 맞는 맞춤형 학습을 제공합니다.
-            </FeatureDesc>
-          </FeatureCard>
-          <FeatureCard>
-            <FeatureIcon>💡</FeatureIcon>
-            <FeatureTitle>실시간 피드백</FeatureTitle>
-            <FeatureDesc>
-              학습 과정에서 즉각적인 피드백을 제공하여 이해도를 높입니다.
-            </FeatureDesc>
-          </FeatureCard>
-          {/* 필요한 만큼 FeatureCard 추가 */}
-        </FeatureGrid>
-      </IntroduceContent>
+      <MenuSection>
+        {menuItems.map((item, index) => (
+          <MenuItem key={index}>
+            <MenuTitle>{item.title}</MenuTitle>
+            <IconWrapper>
+              <img src={item.icon} alt={item.title} />
+            </IconWrapper>
+          </MenuItem>
+        ))}
+      </MenuSection>
+      <ContentSection>
+        <PlaceholderText>(이미지 생기면 추가 예정)</PlaceholderText>
+      </ContentSection>
     </IntroduceWrapper>
   );
 };
 
-const IntroduceWrapper = styled.section`
-  padding: 80px 0;
-  background-color: #ffffff;
-`;
-
-const IntroduceContent = styled.div`
-  max-width: 1200px;
+const IntroduceWrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: space-between;
   margin: 0 auto;
-  padding: 0 20px;
 `;
 
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: 36px;
-  margin-bottom: 40px;
+const MenuSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
 `;
 
-const FeatureGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+const MenuItem = styled.div`
+  background-color: #84a7ff;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #6b93ff;
+  }
 `;
 
-const FeatureCard = styled.div`
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+const MenuTitle = styled.span`
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
 `;
 
-const FeatureIcon = styled.div`
-  font-size: 40px;
-  margin-bottom: 20px;
+const IconWrapper = styled.div`
+  width: 24px;
+  height: 24px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `;
 
-const FeatureTitle = styled.h3`
-  font-size: 24px;
-  margin-bottom: 15px;
+const ContentSection = styled.div`
+  flex: 1;
+  border: 2px solid #84a7ff;
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-const FeatureDesc = styled.p`
-  color: #666;
-  line-height: 1.6;
+const PlaceholderText = styled.div`
+  color: #999;
+  font-size: 16px;
 `;
 
 export default Introduce;
