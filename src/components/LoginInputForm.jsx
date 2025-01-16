@@ -49,7 +49,7 @@ const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
         <SubmitButton
           disabled={!(currentType === "SignUp" ? isSignUpValid : isSignInValid)}
         >
-          {currentType === "SignIn" ? "LOGIN" : "SIGN UP"}
+          {currentType === "SignIn" ? "SIGN IN" : "SIGN UP"}
         </SubmitButton>
       </SubmitButtonWrapper>
     </InputFormWrapper>
