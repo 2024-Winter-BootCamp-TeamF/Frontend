@@ -1,0 +1,128 @@
+import React from "react";
+import styled from "styled-components";
+import Button from "../../components/SolveButton";
+import DownloadButton from "../../components/DownloadButton";
+import { conceptData } from "./data/conceptData";
+
+const ConceptExplanation = () => {
+  return (
+    <Container>
+      <RightSection>
+        <ConceptsWrapper>
+          {conceptData.map((concept, index) => (
+            <ConceptContainer key={concept.id} isFirst={index === 0}>
+              <ContentWrapper>
+                <QuestionNumber>{concept.question}</QuestionNumber>
+                {concept.type === "multiple" ? (
+                  <OptionsContainer>
+                    {concept.options.map((option, idx) => (
+                      <OptionItem
+                        key={idx}
+                        isCorrect={idx === concept.correctAnswer}
+                      >
+                        {idx + 1}. {option}
+                      </OptionItem>
+                    ))}
+                  </OptionsContainer>
+                ) : (
+                  <SubjectiveAnswer>
+                    정답: {concept.correctAnswer}
+                  </SubjectiveAnswer>
+                )}
+                <ExplanationText>{concept.explanation}</ExplanationText>
+              </ContentWrapper>
+              <DownloadButtonWrapper>
+                <DownloadButton variant="filled" />
+              </DownloadButtonWrapper>
+            </ConceptContainer>
+          ))}
+        </ConceptsWrapper>
+      </RightSection>
+      <SolveButtonWrapper>
+        <Button variant="filled">
+          한숨 쉴 시간에 한 문제라도 더 풀자 <br />
+          추가 연습 문제 생성하기
+        </Button>
+      </SolveButtonWrapper>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SolveButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+`;
+
+const RightSection = styled.div`
+  flex: 1;
+  padding: 0;
+`;
+
+const ConceptsWrapper = styled.div`
+  margin-right: 80px;
+`;
+
+const ConceptContainer = styled.div`
+  width: 100%;
+  height: 442px;
+  background-color: #ffffff;
+  border: 3px solid #5887f4;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin-left: 30px;
+  margin-right: 60px;
+  margin-top: ${(props) => (props.isFirst ? "70px" : "50px")};
+  position: relative;
+`;
+
+const ContentWrapper = styled.div`
+  margin: 40px 0 0 35px;
+  text-align: left;
+`;
+
+const QuestionNumber = styled.div`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const OptionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+`;
+
+const OptionItem = styled.div`
+  font-size: 18px;
+  color: ${(props) => (props.isCorrect ? "#000" : "#333")};
+  font-weight: ${(props) => (props.isCorrect ? "700" : "400")};
+`;
+
+const ExplanationText = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+`;
+
+const SubjectiveAnswer = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 30px;
+`;
+
+const DownloadButtonWrapper = styled.div`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+`;
+
+export default ConceptExplanation;

@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const MultipleChoice = ({ problem }) => {
+const MultipleChoice = ({ problem, readOnly }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
 
   const handleContainerDoubleClick = () => {
-    setIsDoubleClicked(!isDoubleClicked); // 컨테이너 더블클릭 시 상태 토글
+    if (readOnly) return;
+    setIsDoubleClicked(!isDoubleClicked);
   };
 
   const handleRadioDoubleClick = () => {
-    setIsDoubleClicked(!isDoubleClicked); // 라디오 버튼 더블클릭 시 상태 토글
+    if (readOnly) return;
+    setIsDoubleClicked(!isDoubleClicked);
   };
 
   return (
     <MultipleChoiceContainer
-      onDoubleClick={handleContainerDoubleClick} // 컨테이너 더블클릭
-      isDoubleClicked={isDoubleClicked} // 상태 전달
+      onDoubleClick={handleContainerDoubleClick}
+      isDoubleClicked={isDoubleClicked}
+      readOnly={readOnly}
     >
       <Title>{problem.title}</Title>
       <Content>{problem.content}</Content>
@@ -26,7 +29,9 @@ const MultipleChoice = ({ problem }) => {
               type="radio"
               name={problem.id}
               id={`${problem.id}-option${index}`}
-              onDoubleClick={handleRadioDoubleClick} // 라디오 버튼 더블클릭
+              onDoubleClick={handleRadioDoubleClick}
+              checked={readOnly ? index === problem.selectedAnswer : undefined}
+              disabled={readOnly}
             />
             <label htmlFor={`${problem.id}-option${index}`}>{option}</label>
           </li>
@@ -41,7 +46,12 @@ const MultipleChoiceContainer = styled.div`
   height: 432px;
   background-color: #ffffff;
   border: 3px solid
-    ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")};
+    ${(props) =>
+      props.readOnly
+        ? "#5887f4"
+        : props.isDoubleClicked
+        ? "#F24822"
+        : "#5887f4"};
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
@@ -96,7 +106,7 @@ const Title = styled.h3`
   color: #121111;
   font-size: 24px;
   margin: 30px 0 0 30px;
-  text-align: left; // 왼쪽 정렬 추가
+  text-align: left;
 `;
 
 const Content = styled.p`
