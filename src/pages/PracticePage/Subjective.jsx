@@ -14,12 +14,22 @@ const ShortAnswer = ({ problem }) => {
 
 const ShortAnswerContainer = styled.div`
   width: 980px;
-  height: 432px;
+  height: 213px;
   background-color: #ffffff;
-  border: 2px solid #5887f4;
+  border: 3px solid #5887f4;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
+
+  h3 {
+    margin-top: 20px;
+    font-size: 24px;
+  }
+
+  p {
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
 
   input {
     width: 100%;

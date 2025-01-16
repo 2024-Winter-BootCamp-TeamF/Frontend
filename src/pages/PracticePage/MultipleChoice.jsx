@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const MultipleChoice = ({ problem }) => {
+  const [isDoubleClicked, setIsDoubleClicked] = useState(false);
+
+  const handleContainerDoubleClick = () => {
+    setIsDoubleClicked(!isDoubleClicked); // 컨테이너 더블클릭 시 상태 토글
+  };
+
+  const handleRadioDoubleClick = () => {
+    setIsDoubleClicked(!isDoubleClicked); // 라디오 버튼 더블클릭 시 상태 토글
+  };
+
   return (
-    <MultipleChoiceContainer>
-      <Title>{problem.title}</Title> {/* 스타일 추가 */}
-      <Content>{problem.content}</Content> {/* 스타일 추가 */}
+    <MultipleChoiceContainer
+      onDoubleClick={handleContainerDoubleClick} // 컨테이너 더블클릭
+      isDoubleClicked={isDoubleClicked} // 상태 전달
+    >
+      <Title>{problem.title}</Title>
+      <Content>{problem.content}</Content>
       <ul>
         {problem.options.map((option, index) => (
           <li key={index}>
@@ -13,6 +26,7 @@ const MultipleChoice = ({ problem }) => {
               type="radio"
               name={problem.id}
               id={`${problem.id}-option${index}`}
+              onDoubleClick={handleRadioDoubleClick} // 라디오 버튼 더블클릭
             />
             <label htmlFor={`${problem.id}-option${index}`}>{option}</label>
           </li>
@@ -26,10 +40,12 @@ const MultipleChoiceContainer = styled.div`
   width: 980px;
   height: 432px;
   background-color: #ffffff;
-  border: 2px solid #5887f4;
+  border: 3px solid
+    ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")};
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
+  transition: border-color 0.3s ease;
 
   ul {
     list-style-type: none;
@@ -45,21 +61,47 @@ const MultipleChoiceContainer = styled.div`
   }
 
   input[type="radio"] {
-    margin-right: 10px;
+    margin-right: 15px;
+    appearance: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border: 3px solid #e2dfdf;
+    transition: border 0.3s ease-in-out;
+  }
+
+  input[type="radio"]:checked {
+    border: 0.5em solid
+      ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")};
+  }
+
+  input[type="radio"]:focus-visible {
+    outline-offset: max(2px, 0.1em);
+  }
+
+  input[type="radio"]:hover {
+    box-shadow: 0 0 0 max(3px, 0.2em) #e2dfdf;
+    cursor: pointer;
+  }
+
+  input[type="radio"]:disabled {
+    background-color: lightgray;
+    box-shadow: none;
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `;
 
 const Title = styled.h3`
+  color: #121111;
   font-size: 24px;
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 10px;
+  margin: 20px 0 0 20px;
 `;
 
 const Content = styled.p`
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 20px;
+  font-size: 24px;
+  margin: 0;
+  padding: 0 0 30px 20px;
 `;
 
 export default MultipleChoice;

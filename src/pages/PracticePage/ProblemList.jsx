@@ -18,7 +18,7 @@ const ProblemListContainer = styled.div`
   width: 263px;
   height: 700px;
   background-color: #ffffff;
-  border: 2px solid #5887f4;
+  border: 3px solid #5887f4;
   padding: 29px 89px;
   box-sizing: border-box;
   border-radius: 8px;
