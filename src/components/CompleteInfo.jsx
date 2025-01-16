@@ -40,10 +40,11 @@ const CompleteInfoWrapper = styled.div`
   background-image: url(${sub_background});
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
+  width: 100%;
 `;
 const CharacterSection = styled.div`
   img {
-    width: 300px;
+    width: 280px;
     height: auto;
   }
 `;
