@@ -20,6 +20,8 @@ const FooterWrapper = styled.div`
 `;
 
 const FooterImg = styled.div`
+  display: flex;
+  justify-content: center;
   img {
     width: 100%;
     height: auto;
