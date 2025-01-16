@@ -1,17 +1,20 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
-import "./App.css";
+import UserPageEx from "./pages/UserPageEx";
 
 function App() {
   return (
-    <div className="App">
+    <Router>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <div></div>
+        <Routes>
+          <Route path="/" element={<UserPageEx />} />
+        </Routes>
       </ThemeProvider>
-    </div>
+    </Router>
   );
 }
 
