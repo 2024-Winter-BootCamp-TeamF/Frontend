@@ -10,6 +10,12 @@ const LoginPage = () => {
   );
 };
 
-const LoginPageWrapper = styled.div``;
+const LoginPageWrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default LoginPage;
