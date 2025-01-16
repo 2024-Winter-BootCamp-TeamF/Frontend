@@ -17,24 +17,30 @@ const ShortAnswerContainer = styled.div`
   height: 213px;
   background-color: #ffffff;
   border: 3px solid #5887f4;
+
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
 
   h3 {
+    text-align: left;
     margin-top: 20px;
+    margin-left: 30px;
     font-size: 24px;
   }
 
   p {
+    text-align: left;
     margin-bottom: 20px;
+    margin-left: 30px;
     font-size: 24px;
   }
 
   input {
-    width: 100%;
+    width: 850px;
     height: 40px;
     padding: 10px;
+    text-align: left;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
