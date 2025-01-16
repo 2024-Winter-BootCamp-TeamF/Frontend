@@ -23,10 +23,12 @@ const StyledButton = styled.button`
   width: 555px;
   height: 85px;
   font-size: 24px;
+  line-height: 30px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  font-family: "HakgyoansimAllimjangTTF-R";
 
   /* 기본 스타일 */
   ${({ variant }) =>

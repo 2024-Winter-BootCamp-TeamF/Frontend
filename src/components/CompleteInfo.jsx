@@ -9,7 +9,14 @@ const CompleteInfo = () => {
         <img src={character} alt="character" />
       </CharacterSection>
       <CommentSection>
-        추가 연습 문제 생성 완료! 이제 풀어보러 가볼까요?
+        {`추가 연습 문제 생성 완료!\n이제 풀어보러 가볼까요?`
+          .split("\n")
+          .map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
       </CommentSection>
       <ButtonSection>
         <SolveButton
