@@ -6,6 +6,7 @@ const ExButton = ({
   onClick,
   variant = "filled",
   ariaLabel = "",
+  isActive = false,
 }) => (
   <>
     <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
@@ -26,21 +27,20 @@ const StyledButton = styled.button`
   transition: all 0.3s ease;
   box-sizing: border-box;
 
-  ${({ variant }) =>
+  ${({ variant, isActive }) =>
     variant === "filled" &&
     css`
-      background-color: #5c85ff;
-      color: white;
-      border: none;
+      background-color: ${isActive ? '#5c85ff' : 'white'};
+      color: ${isActive ? 'white' : '#5c85ff'};
+      border: 2px solid #5c85ff;
 
       &:hover {
-        background-color: white; /* 배경을 하얀색으로 변경 */
-        color: #5c85ff; /* 글자 색을 파란색으로 변경 */
-        border: 2px solid #5c85ff; /* 테두리를 파란색으로 변경 */
+        background-color: #5c85ff;
+        color: white;
       }
     `}
 
-  ${({ variant }) =>
+  ${({ variant, isActive }) =>
     variant === "outlined" &&
     css`
       background-color: transparent;
@@ -48,9 +48,8 @@ const StyledButton = styled.button`
       border: 2px solid #5c85ff;
 
       &:hover {
-        background-color: white; /* 배경을 하얀색으로 변경 */
-        color: #5c85ff; /* 글자 색을 파란색으로 유지 */
-        border: 2px solid #5c85ff; /* 테두리는 파란색 그대로 유지 */
+        background-color: #5c85ff;
+        color: white;
       }
     `}
 
