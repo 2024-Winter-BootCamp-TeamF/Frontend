@@ -15,6 +15,7 @@ const Footer = () => {
 const FooterWrapper = styled.div`
   position: absolute;
   bottom: 0;
+  z-index: -1;
 `;
 
 const FooterImg = styled.div`
