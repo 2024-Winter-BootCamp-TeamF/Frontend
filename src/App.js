@@ -7,13 +7,16 @@ import UserPage from "./pages/UserPage";
 import "./App.css";
 
 
+
 function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
+
           <Route path="/user" element={<UserPage />} />
+
         </Routes>
       </ThemeProvider>
     </Router>
