@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
+
+// 색상 상수
+const COLORS = {
+  PRIMARY: "#5887f4",
+  SECONDARY: "#F24822",
+  BORDER: "#E2DFDF",
+};
 
 const MultipleChoice = ({ problem, readOnly }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
 
-  const handleContainerDoubleClick = () => {
-    if (readOnly) return;
-    setIsDoubleClicked(!isDoubleClicked);
-  };
-
-  const handleRadioDoubleClick = () => {
+  const handleDoubleClick = () => {
     if (readOnly) return;
     setIsDoubleClicked(!isDoubleClicked);
   };
 
   return (
     <MultipleChoiceContainer
-      onDoubleClick={handleContainerDoubleClick}
+      onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
     >
@@ -29,7 +32,7 @@ const MultipleChoice = ({ problem, readOnly }) => {
               type="radio"
               name={problem.id}
               id={`${problem.id}-option${index}`}
-              onDoubleClick={handleRadioDoubleClick}
+              onDoubleClick={handleDoubleClick}
               checked={readOnly ? index === problem.selectedAnswer : undefined}
               disabled={readOnly}
             />
@@ -41,6 +44,18 @@ const MultipleChoice = ({ problem, readOnly }) => {
   );
 };
 
+// Props 타입 정의
+MultipleChoice.propTypes = {
+  problem: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    options: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedAnswer: PropTypes.number,
+  }).isRequired,
+  readOnly: PropTypes.bool.isRequired,
+};
+
 const MultipleChoiceContainer = styled.div`
   width: 980px;
   height: 432px;
@@ -48,13 +63,13 @@ const MultipleChoiceContainer = styled.div`
   border: 3px solid
     ${(props) =>
       props.readOnly
-        ? "#5887f4"
+        ? COLORS.PRIMARY
         : props.isDoubleClicked
-        ? "#F24822"
-        : "#5887f4"};
-  padding: 20px;
+        ? COLORS.SECONDARY
+        : COLORS.PRIMARY};
+  padding: 30px;
   box-sizing: border-box;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: border-color 0.3s ease;
 
   ul {
@@ -76,13 +91,13 @@ const MultipleChoiceContainer = styled.div`
     border-radius: 50%;
     width: 28px;
     height: 28px;
-    border: 3px solid #e2dfdf;
+    border: 3px solid ${COLORS.BORDER};
     transition: border 0.3s ease-in-out;
   }
 
   input[type="radio"]:checked {
     border: 0.5em solid
-      ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")};
+      ${(props) => (props.isDoubleClicked ? COLORS.SECONDARY : COLORS.PRIMARY)};
   }
 
   input[type="radio"]:focus-visible {
@@ -95,7 +110,7 @@ const MultipleChoiceContainer = styled.div`
   }
 
   input[type="radio"]:disabled {
-    background-color: lightgray;
+    background-color: e2dfdf;
     box-shadow: none;
     opacity: 0.7;
     cursor: not-allowed;
@@ -103,7 +118,6 @@ const MultipleChoiceContainer = styled.div`
 `;
 
 const Title = styled.h3`
-  color: #121111;
   font-size: 24px;
   margin: 30px 0 0 30px;
   text-align: left;

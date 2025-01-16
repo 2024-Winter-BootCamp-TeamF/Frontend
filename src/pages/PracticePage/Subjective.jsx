@@ -1,59 +1,103 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
-const ShortAnswer = ({ problem }) => {
+// 색상 상수
+const COLORS = {
+  PRIMARY: "#5887f4",
+  SECONDARY: "#F24822",
+  BORDER: "#E0E0E0",
+  BACKGROUND: "#ffffff",
+};
+
+// 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
+const Subjective = ({ problem, readOnly }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
+  const [answer, setAnswer] = useState("");
 
   const handleDoubleClick = () => {
-    setIsDoubleClicked(!isDoubleClicked); // 더블클릭 시 상태 토글
+    if (readOnly) return;
+    setIsDoubleClicked(!isDoubleClicked);
+  };
+
+  const handleAnswerChange = (e) => {
+    if (readOnly) return;
+    setAnswer(e.target.value);
   };
 
   return (
-    <ShortAnswerContainer
-      onDoubleClick={handleDoubleClick} // 더블클릭 시 상태 변경
-      isDoubleClicked={isDoubleClicked} // 상태 전달
+    <SubjectiveContainer
+      onDoubleClick={handleDoubleClick}
+      isDoubleClicked={isDoubleClicked}
+      readOnly={readOnly}
     >
-      <h3>{problem.title}</h3>
-      <p>{problem.content}</p>
-      <input type="text" placeholder="답을 입력하세요" />
-    </ShortAnswerContainer>
+      <Title>{problem.title}</Title>
+      <Content>{problem.content}</Content>
+      <Input
+        type="text"
+        placeholder="답을 입력하세요"
+        value={readOnly ? problem.selectedAnswer : answer}
+        onChange={handleAnswerChange}
+        disabled={readOnly}
+      />
+    </SubjectiveContainer>
   );
 };
 
-const ShortAnswerContainer = styled.div`
+Subjective.propTypes = {
+  problem: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    selectedAnswer: PropTypes.string,
+  }).isRequired,
+  readOnly: PropTypes.bool.isRequired,
+};
+
+const SubjectiveContainer = styled.div`
   width: 980px;
   height: 213px;
-  background-color: #ffffff;
+  background-color: ${COLORS.BACKGROUND};
   border: 3px solid
-    ${(props) => (props.isDoubleClicked ? "#F24822" : "#5887f4")}; // 더블클릭 시 색상 변경
+    ${(props) =>
+      props.readOnly
+        ? COLORS.PRIMARY
+        : props.isDoubleClicked
+        ? COLORS.SECONDARY
+        : COLORS.PRIMARY};
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
-  transition: border-color 0.3s ease; // 색상 변경을 부드럽게 하기 위한 트랜지션
+  transition: border-color 0.3s ease;
+`;
 
-  h3 {
-    text-align: left;
-    margin-top: 20px;
-    margin-left: 30px;
-    font-size: 24px;
-  }
+const Title = styled.h3`
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 30px;
+  font-size: 24px;
+`;
 
-  p {
-    text-align: left;
-    margin-bottom: 20px;
-    margin-left: 30px;
-    font-size: 24px;
-  }
+const Content = styled.p`
+  text-align: left;
+  margin-bottom: 20px;
+  margin-left: 30px;
+  font-size: 24px;
+`;
 
-  input {
-    width: 850px;
-    height: 40px;
-    padding: 10px;
-    text-align: left;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+const Input = styled.input`
+  width: 850px;
+  height: 40px;
+  padding: 10px;
+  text-align: left;
+  font-size: 16px;
+  border: 1px solid ${COLORS.BORDER};
+  border-radius: 4px;
+  margin-top: 10px;
+
+  &:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
   }
 `;
 
-export default ShortAnswer;
+export default Subjective;

@@ -1,15 +1,33 @@
 import React from "react";
-import MultipleChoice from "./MultipleChoice";
-import ShortAnswer from "./Subjective";
-import ProblemList from "./ProblemList";
+import PropTypes from "prop-types";
 import styled from "styled-components";
+import MultipleChoice from "./MultipleChoice";
+import Subjective from "./Subjective";
+import ProblemList from "./ProblemList";
 import Header from "../../components/Header";
 import Button from "../../components/SolveButton";
-import Footer from "../../components/Footer"; // Footer 컴포넌트 추가
+import Footer from "../../components/Footer";
 
-const ProblemContent = ({ problems, onButtonClick }) => {
+// 문제 타입 상수 정의
+const PROBLEM_TYPES = {
+  MULTIPLE_CHOICE: "multiple_choice",
+  SHORT_ANSWER: "short_answer",
+};
+
+const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
+  const renderProblem = (problem) => {
+    switch (problem.type) {
+      case PROBLEM_TYPES.MULTIPLE_CHOICE:
+        return <MultipleChoice problem={problem} readOnly={readOnly} />;
+      case PROBLEM_TYPES.SHORT_ANSWER:
+        return <Subjective problem={problem} readOnly={readOnly} />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <>
+    <PageWrapper>
       <Header />
       <Container>
         <ProblemList problems={problems} />
@@ -17,12 +35,7 @@ const ProblemContent = ({ problems, onButtonClick }) => {
           <ProblemDetail>
             {problems.map((problem) => (
               <ProblemItem key={problem.id}>
-                {problem.type === "multiple_choice" && (
-                  <MultipleChoice problem={problem} />
-                )}
-                {problem.type === "short_answer" && (
-                  <ShortAnswer problem={problem} />
-                )}
+                {renderProblem(problem)}
               </ProblemItem>
             ))}
           </ProblemDetail>
@@ -36,36 +49,62 @@ const ProblemContent = ({ problems, onButtonClick }) => {
         </ContentWrapper>
       </Container>
       <Footer />
-    </>
+    </PageWrapper>
   );
 };
+
+ProblemContent.propTypes = {
+  problems: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      type: PropTypes.oneOf(Object.values(PROBLEM_TYPES)).isRequired,
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  onButtonClick: PropTypes.func.isRequired,
+  readOnly: PropTypes.bool,
+};
+
+ProblemContent.defaultProps = {
+  readOnly: false,
+};
+
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
 
 const Container = styled.div`
   display: flex;
   margin-top: 100px;
+  flex: 1;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-left: 20px;
+  padding-left: 50px;
   margin-top: 100px;
-  align-items: center; /* 가운데 정렬 */
+  align-items: center;
 `;
 
 const ProblemDetail = styled.div`
   display: flex;
   flex-direction: column;
-  gap: px; /* 문제 간 간격 */
+  width: 100%;
 `;
 
 const ProblemItem = styled.div`
   margin-bottom: 50px;
+  display: flex;
+  justify-content: center;
 `;
 
 const ButtonWrapper = styled.div`
-  margin-top: 50px;
+  margin: 50px 0;
 `;
 
 export default ProblemContent;
