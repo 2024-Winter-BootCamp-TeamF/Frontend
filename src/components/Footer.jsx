@@ -13,13 +13,14 @@ const Footer = () => {
 };
 
 const FooterWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  z-index: -1;
 `;
 
 const FooterImg = styled.div`
+  display: flex;
+  justify-content: center;
   img {
     width: 100%;
     height: auto;
