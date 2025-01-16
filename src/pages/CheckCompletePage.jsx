@@ -5,7 +5,7 @@ import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
 
-const AdditionalCompletePage = () => {
+const CheckCompletePage = () => {
   return (
     <CompletePageWrapper>
       <Header />
@@ -14,7 +14,7 @@ const AdditionalCompletePage = () => {
           <img src={character} alt="character" />
         </CharacterSection>
         <CommentSection>
-          {`추가 연습 문제 생성 완료!\n이제 풀어보러 가볼까요?`
+          {`채점이 완료되었습니다!\n결과를 확인해보세요!`
             .split("\n")
             .map((line, index) => (
               <span key={index}>
@@ -24,12 +24,7 @@ const AdditionalCompletePage = () => {
             ))}
         </CommentSection>
         <ButtonSection>
-          <SolveButton
-            children={`지금이라면 다 맞을 수 있어\n추가 연습 문제 풀어보기`}
-          />
-          <SolveButton
-            children={`공부를 조금 더... 해볼까...?\n마이페이지에 저장하기`}
-          />
+          <SolveButton children={`과연 나의 학습 결과는?!\n결과 확인하기`} />
         </ButtonSection>
       </CompleteInfoWrapper>
       <Footer />
@@ -78,4 +73,4 @@ const ButtonSection = styled.div`
   gap: 100px;
 `;
 
-export default AdditionalCompletePage;
+export default CheckCompletePage;
