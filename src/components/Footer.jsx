@@ -13,13 +13,15 @@ const Footer = () => {
 };
 
 const FooterWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
+  position: absolute; /* 뷰포인트 내 고정을 막기 위한 설정 */
+  width: 100%;
+  z-index: -1; /* 헤더보다 낮은 z-index 설정 */
+  bottom: 0;
 `;
 
 const FooterImg = styled.div`
+  display: flex;
+  justify-content: center;
   img {
     width: 100%;
     height: auto;

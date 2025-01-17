@@ -1,28 +1,21 @@
 import React from "react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'MangoDdobak-B';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
-    font-style: normal;
-  }
-
-  body {
-    font-family: 'MangoDdobak-B', sans-serif;
-  }
-`;
-
-const Button = ({ children, onClick, variant = "filled", ariaLabel = "" }) => (
+const ExButton = ({
+  children,
+  onClick,
+  variant = "filled",
+  ariaLabel = "",
+  isActive = false,
+}) => (
   <>
-    <GlobalStyle />
     <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
-      {children}부가 설명 다운로드
+      {children}
     </StyledButton>
   </>
 );
 
-export default Button;
+export default ExButton;
 
 const StyledButton = styled.button`
   width: 230px;
@@ -33,23 +26,21 @@ const StyledButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  font-family: "MangoDdobak-B", sans-serif;
 
-  ${({ variant }) =>
+  ${({ variant, isActive }) =>
     variant === "filled" &&
     css`
-      background-color: #5c85ff;
-      color: white;
-      border: none;
+      background-color: ${isActive ? '#5c85ff' : 'white'};
+      color: ${isActive ? 'white' : '#5c85ff'};
+      border: 2px solid #5c85ff;
 
       &:hover {
-        background-color: white; /* 배경을 하얀색으로 변경 */
-        color: #5c85ff; /* 글자 색을 파란색으로 변경 */
-        border: 2px solid #5c85ff; /* 테두리를 파란색으로 변경 */
+        background-color: #5c85ff;
+        color: white;
       }
     `}
 
-  ${({ variant }) =>
+  ${({ variant, isActive }) =>
     variant === "outlined" &&
     css`
       background-color: transparent;
@@ -57,9 +48,8 @@ const StyledButton = styled.button`
       border: 2px solid #5c85ff;
 
       &:hover {
-        background-color: white; /* 배경을 하얀색으로 변경 */
-        color: #5c85ff; /* 글자 색을 파란색으로 유지 */
-        border: 2px solid #5c85ff; /* 테두리는 파란색 그대로 유지 */
+        background-color: #5c85ff;
+        color: white;
       }
     `}
 

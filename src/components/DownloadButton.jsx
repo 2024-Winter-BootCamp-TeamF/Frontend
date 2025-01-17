@@ -1,28 +1,20 @@
 import React from "react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'MangoDdobak-B';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
-    font-style: normal;
-  }
-
-  body {
-    font-family: 'MangoDdobak-B', sans-serif;
-  }
-`;
-
-const Button = ({ children, onClick, variant = "filled", ariaLabel = "" }) => (
+const DownloadButton = ({
+  children,
+  onClick,
+  variant = "filled",
+  ariaLabel = "",
+}) => (
   <>
-    <GlobalStyle />
     <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
       {children}부가 설명 다운로드
     </StyledButton>
   </>
 );
 
-export default Button;
+export default DownloadButton;
 
 const StyledButton = styled.button`
   width: 170px;
@@ -33,7 +25,6 @@ const StyledButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  font-family: "MangoDdobak-B", sans-serif;
 
   ${({ variant }) =>
     variant === "filled" &&
