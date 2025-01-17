@@ -63,6 +63,7 @@ ProblemList.propTypes = {
 const Container = styled.div`
   display: flex;
   margin-top: 150px;
+  min-width: 263px;
 `;
 
 const ProblemListContainer = styled.div`
@@ -70,13 +71,24 @@ const ProblemListContainer = styled.div`
   top: 200px;
   left: 100px;
   width: 263px;
-  height: 700px;
+  height: auto; // 문제 수에 따라 자동 조정
   background-color: ${COLORS.BACKGROUND};
   border: 3px solid ${COLORS.PRIMARY};
-  padding: 29px 30px; // 패딩 조정
+  padding: 29px 30px;
   box-sizing: border-box;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 300px;
+  z-index: 1000;
+
+  @media screen and (max-width: 1200px) {
+    left: 50px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    position: static;
+    margin: 0 auto;
+  }
 `;
 
 const Title = styled.h2`
@@ -91,22 +103,6 @@ const ProblemUl = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  // 스크롤바 스타일링
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${COLORS.PRIMARY}80;
-    border-radius: 4px;
-  }
 `;
 
 const ProblemLi = styled.li`
