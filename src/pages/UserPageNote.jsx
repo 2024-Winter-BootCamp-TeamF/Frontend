@@ -3,11 +3,14 @@ import styled from "styled-components";
 import FooterImage from "../images/footer.png";
 import userIcon from "../images/user.png";
 import logo from "../images/logo.svg";
-import addIcon from "../images/add.png";
+// import addIcon from "../images/add.png";
 import NoteIcon from "../images/mypage_note.png";
 import ExButton from "../components/ExButton";
+import { useNavigate } from "react-router-dom";
 
 const UserPageNote = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Header>
@@ -19,19 +22,32 @@ const UserPageNote = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-        <ExButton variant="outlined">요약본</ExButton>
-        <ExButton variant="outlined">연습 문제</ExButton>
-        <ExButton variant="filled" isActive={true}>
+        <ExButton 
+          variant="outlined"
+          onClick={() => navigate("/summary")}
+        >
+          요약본
+        </ExButton>
+        <ExButton 
+          variant="outlined"
+          onClick={() => navigate("/practice")}
+        >
+          연습 문제
+        </ExButton>
+        <ExButton 
+          variant="filled" 
+          isActive={true}
+        >
           오답 노트
         </ExButton>
       </Nav>
       <Content>
-        <Card>
+        {/* <Card>
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
           <CardText>오답노트 만들기</CardText>
-        </Card>
+        </Card> */}
         <Card>
           <IconWrapper>
             <img src={NoteIcon} alt="요약본" />
@@ -143,19 +159,19 @@ const Card = styled.div`
   }
 `;
 
-const AddIconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
+// const AddIconWrapper = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   margin-bottom: 10px;
 
-  img {
-    width: 40px;
-    height: 40px;
-    margin-top: 30px;
-    margin-bottom: 15px;
-  }
-`;
+//   img {
+//     width: 40px;
+//     height: 40px;
+//     margin-top: 30px;
+//     margin-bottom: 15px;
+//   }
+// `;
 
 const IconWrapper = styled.div`
   display: flex;

@@ -6,8 +6,11 @@ import logo from "../images/logo.svg";
 import addIcon from "../images/add.png";
 import ExIcon from "../images/mypage_practice.png";
 import ExButton from "../components/ExButton";
+import { useNavigate } from "react-router-dom";
 
 const UserPageEx = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Header>
@@ -19,12 +22,12 @@ const UserPageEx = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-        <ExButton variant="outlined" >요약본</ExButton>
+        <ExButton variant="outlined" onClick={() => navigate("/summary")}>요약본</ExButton>
         <ExButton variant="filled" isActive={true}>연습 문제</ExButton>
-        <ExButton variant="outlined" >오답 노트</ExButton>
+        <ExButton variant="outlined" onClick={() => navigate("/note")}>오답 노트</ExButton>
       </Nav>
       <Content>
-        <Card>
+        <Card onClick={() => navigate("/upload")}>
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
@@ -137,7 +140,8 @@ const Card = styled.div`
   transition: transform 0.2s ease;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
   }
 `;
 
