@@ -3,6 +3,7 @@ import summaryIcon from "../images/summary.png";
 import practiceIcon from "../images/practice.png";
 import noteIcon from "../images/note.png";
 import homeIcon from "../images/mypage.png";
+import circlesIcon from "../images/circles.png";
 import { useState } from "react";
 
 const Introduce = () => {
@@ -12,7 +13,7 @@ const Introduce = () => {
     {
       title: "강의 자료 요약",
       icon: summaryIcon,
-      bgColor: "#84A7FF",
+      bgColor: "#5887F4",
       content: `너무 많아서,
 정리되어 었지 않아서,
 읽기 힘들었던 강의 자료를
@@ -45,7 +46,8 @@ AI 오답노트를 생성해보세요!
 마이페이지에 저장 가능!
 마이페이지에서 간편하게
 확인하고 복습해보세요!
-`,}
+`,
+    },
   ];
 
   return (
@@ -77,6 +79,10 @@ AI 오답노트를 생성해보세요!
               ? `${menuItems[selectedIndex].title} 관련 이미지`
               : "(이미지 생기면 추가 예정)"}
           </PlaceholderText>
+          <DotButton>
+            <img src={circlesIcon} alt="로그인/회원가입" />
+            <ButtonText className="button-text">로그인/회원가입</ButtonText>
+          </DotButton>
         </ContentSection>
       </ScrollSection>
     </IntroduceWrapper>
@@ -168,11 +174,12 @@ const IconWrapper = styled.div`
 const ContentSection = styled.div`
   background-color: #fff;
   flex: 1;
-  border: 5px solid #84a7ff;
+  border: 5px solid #5887f4;
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const PlaceholderText = styled.div`
@@ -186,6 +193,47 @@ const ItemContent = styled.div`
   line-height: 1.5;
   opacity: 0.9;
   white-space: pre-line;
+`;
+
+const DotButton = styled.button`
+  position: absolute;
+  bottom: -7%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 5px solid #5887f4;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  width: 125px;
+  transition: width 0.5s ease;
+
+  &:hover {
+    width: 270px;
+    .button-text {
+      opacity: 1;
+      transform: translateX(-10px);
+    }
+  }
+
+  img {
+    width: 75px;
+    height: auto;
+  }
+`;
+
+const ButtonText = styled.span`
+  position: absolute;
+  left: 45%;
+  white-space: nowrap;
+  opacity: 0;
+  color: #5887f4;
+  font-size: 20px;
+  font-family: "HakgyoansimAllimjangTTF-R";
+  transform: translateX(-20px);
+  transition: all 0.5s ease;
 `;
 
 export default Introduce;
