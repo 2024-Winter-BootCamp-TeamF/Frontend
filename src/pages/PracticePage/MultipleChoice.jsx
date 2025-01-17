@@ -9,12 +9,26 @@ const COLORS = {
   BORDER: "#E2DFDF",
 };
 
-const MultipleChoice = ({ problem, readOnly }) => {
+const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const handleDoubleClick = () => {
     if (readOnly) return;
     setIsDoubleClicked(!isDoubleClicked);
+  };
+
+  const handleOptionSelect = (index) => {
+    if (readOnly) return;
+
+    // 같은 옵션을 다시 클릭한 경우 선택 해제
+    if (selectedOption === index) {
+      setSelectedOption(null);
+      onProblemSolved(problem.id, false); // 선택 해제 시 false 전달
+    } else {
+      setSelectedOption(index);
+      onProblemSolved(problem.id, true); // 새로운 선택 시 true 전달
+    }
   };
 
   return (
@@ -32,8 +46,8 @@ const MultipleChoice = ({ problem, readOnly }) => {
               type="radio"
               name={problem.id}
               id={`${problem.id}-option${index}`}
-              onDoubleClick={handleDoubleClick}
-              checked={readOnly ? index === problem.selectedAnswer : undefined}
+              onChange={() => handleOptionSelect(index)}
+              checked={selectedOption === index}
               disabled={readOnly}
             />
             <label htmlFor={`${problem.id}-option${index}`}>{option}</label>
@@ -54,6 +68,7 @@ MultipleChoice.propTypes = {
     selectedAnswer: PropTypes.number,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
+  onProblemSolved: PropTypes.func.isRequired,
 };
 
 const MultipleChoiceContainer = styled.div`

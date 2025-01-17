@@ -11,7 +11,7 @@ const COLORS = {
 };
 
 // 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
-const Subjective = ({ problem, readOnly }) => {
+const Subjective = ({ problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [answer, setAnswer] = useState("");
 
@@ -22,7 +22,11 @@ const Subjective = ({ problem, readOnly }) => {
 
   const handleAnswerChange = (e) => {
     if (readOnly) return;
-    setAnswer(e.target.value);
+    const newAnswer = e.target.value;
+    setAnswer(newAnswer);
+
+    // 입력값이 있으면 true, 없으면 false를 전달
+    onProblemSolved(problem.id, newAnswer.trim().length > 0);
   };
 
   return (
@@ -51,6 +55,7 @@ Subjective.propTypes = {
     selectedAnswer: PropTypes.string,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
+  onProblemSolved: PropTypes.func.isRequired,
 };
 
 const SubjectiveContainer = styled.div`

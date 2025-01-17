@@ -26,6 +26,7 @@ const ProblemList = ({ problems }) => {
                 src={correctIcon}
                 alt="풀이 완료"
                 aria-label="풀이 완료 표시"
+                isVisible={problem.isSolved}
               />
             </ProblemLi>
           ))}
@@ -49,7 +50,6 @@ ProblemList.propTypes = {
 const Container = styled.div`
   display: flex;
   margin-top: 150px;
-  margin-bottom: 300px; // 하단 여백 추가
 `;
 
 const ProblemListContainer = styled.div`
@@ -102,8 +102,9 @@ const ProblemLi = styled.li`
   justify-content: flex-start;
   padding: 10px;
   margin-bottom: 25px;
-  margin-left: 15px;
+  margin-left: 55px;
   border-radius: 4px;
+  position: relative;
 `;
 
 const ProblemTitle = styled.span`
@@ -115,7 +116,12 @@ const ProblemTitle = styled.span`
 const Icon = styled.img`
   width: ${SIZES.ICON};
   height: ${SIZES.ICON};
-  margin-right: 70px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  visibility: ${(props) => (props.isVisible ? "visible" : "hidden")};
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease;
 `;
 
 export default ProblemList;
