@@ -23,7 +23,7 @@ const LoginInputForm = ({
     if (currentType === "SignUp") {
       // 입력값 확인
       if (
-        !inputValues.name ||
+        !inputValues.id ||
         !inputValues.password ||
         !inputValues.confirmPassword
       ) {
@@ -39,14 +39,14 @@ const LoginInputForm = ({
 
       // 기존 사용자 확인
       const users = JSON.parse(localStorage.getItem("users") || "[]");
-      if (users.some((user) => user.name === inputValues.name)) {
-        alert("이미 존재하는 이름입니다.");
+      if (users.some((user) => user.id === inputValues.id)) {
+        alert("이미 존재하는 아이디입니다.");
         return;
       }
 
       // 새 사용자 저장
       users.push({
-        name: inputValues.name,
+        id: inputValues.id,
         password: inputValues.password,
       });
       localStorage.setItem("users", JSON.stringify(users));
@@ -54,15 +54,15 @@ const LoginInputForm = ({
 
       // 입력값 초기화 후 로그인 화면으로 전환
       setInputValues({
-        name: "",
+        id: "",
         password: "",
         confirmPassword: "",
       });
       setCurrentType("SignIn");
     } else {
       // 로그인 입력값 확인
-      if (!inputValues.name || !inputValues.password) {
-        alert("이름과 비밀번호를 모두 입력해주세요.");
+      if (!inputValues.id || !inputValues.password) {
+        alert("아이디와 비밀번호를 모두 입력해주세요.");
         return;
       }
 
@@ -70,16 +70,14 @@ const LoginInputForm = ({
       const users = JSON.parse(localStorage.getItem("users") || "[]");
       const user = users.find(
         (user) =>
-          user.name === inputValues.name &&
-          user.password === inputValues.password
+          user.id === inputValues.id && user.password === inputValues.password
       );
 
       if (user) {
         localStorage.setItem("currentUser", JSON.stringify(user));
-        alert("로그인 성공!");
         navigate("/userpage");
       } else {
-        alert("이름 또는 비밀번호가 일치하지 않습니다.");
+        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
       }
     }
   };
@@ -89,12 +87,12 @@ const LoginInputForm = ({
       <form onSubmit={handleSubmit}>
         <InputWrapper>
           <InputGroup>
-            <Label>이름</Label>
+            <Label>아이디</Label>
             <Input
               type="text"
-              name="name"
-              placeholder="Name"
-              value={inputValues.name}
+              name="id"
+              placeholder="Id"
+              value={inputValues.id}
               onChange={handleInputChange}
             />
           </InputGroup>
