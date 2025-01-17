@@ -47,8 +47,6 @@ const LoginBox = () => {
   );
 };
 
-
-
 const CharacterSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -68,7 +66,7 @@ const CharacterWrapper = styled.div`
   align-items: center;
 
   img {
-    width: 190px;
+    width: 170px;
     position: relative;
     bottom: -20px;
     left: 5px;
