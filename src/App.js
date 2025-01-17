@@ -7,6 +7,9 @@ import UploadPage from "./pages/UploadPage";
 
 import "./App.css";
 import { problems } from "./pages/PracticePage/data";
+import LoginPage from "./pages/LoginPage";  
+import UserPage from "./pages/UserPageSample";
+import MainPage from "./pages/MainPage"
 
 
 
@@ -17,6 +20,9 @@ function App() {
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<UploadPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/mypage" element={<UserPage />} />
+          <Route path="/mainpage" element={<MainPage />} />
         </Routes>
       </ThemeProvider>
     </Router>
