@@ -45,6 +45,10 @@ const WrongProblemList = ({ problems }) => {
 
 const ProblemListContainer = styled.div`
   margin-left: 60px;
+
+  @media screen and (max-width: 1200px) {
+    margin-left: 20px;
+  }
 `;
 
 const ReadOnlyWrapper = styled.div`
@@ -55,7 +59,12 @@ const ReadOnlyWrapper = styled.div`
 
   > div {
     width: 100%;
-    height: 442px !important;
+    min-height: 442px;
+    height: auto !important;
+  }
+
+  @media screen and (max-width: 1200px) {
+    margin-right: 20px;
   }
 `;
 
@@ -63,16 +72,25 @@ const SubjectiveWrapper = styled.div`
   margin-bottom: 50px;
   margin-right: 30px;
   margin-top: ${(props) => (props.isFirst ? "70px" : "0")};
+
+  @media screen and (max-width: 1200px) {
+    margin-right: 20px;
+  }
 `;
 
 const ReadOnlySubjective = styled.div`
   width: 100%;
-  height: 442px;
+  min-height: 442px;
+  height: auto;
   background-color: #ffffff;
   border: 3px solid #5887f4;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
+
+  @media screen and (max-width: 1200px) {
+    padding: 15px;
+  }
 `;
 
 const Title = styled.h3`

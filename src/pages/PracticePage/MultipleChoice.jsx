@@ -105,7 +105,7 @@ const MultipleChoiceContainer = styled.div`
   }
 
   input[type="radio"] {
-    margin-left: 30px;
+    margin-left: 40px;
     margin-right: 15px;
     appearance: none;
     border-radius: 50%;
@@ -139,14 +139,14 @@ const MultipleChoiceContainer = styled.div`
 
 const Title = styled.h3`
   font-size: 24px;
-  margin: 30px 0 0 30px;
+  margin: 40px 0 0 40px;
   text-align: left;
 `;
 
 const Content = styled.p`
   font-size: 24px;
   margin: 0;
-  padding: 0 0 30px 30px;
+  padding: 0 0 30px 40px;
   text-align: left;
 `;
 

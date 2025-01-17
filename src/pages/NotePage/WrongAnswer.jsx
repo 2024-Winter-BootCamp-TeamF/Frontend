@@ -18,12 +18,20 @@ const Container = styled.div`
   gap: 0;
   padding: 2rem 0;
   flex: 1;
+
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
 `;
 
 const LeftSection = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+
+  @media screen and (max-width: 1024px) {
+    margin-bottom: 50px;
+  }
 `;
 
 function WrongAnswer() {

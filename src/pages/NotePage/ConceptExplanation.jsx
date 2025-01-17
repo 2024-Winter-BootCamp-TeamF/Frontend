@@ -62,15 +62,24 @@ const SolveButtonWrapper = styled.div`
 const RightSection = styled.div`
   flex: 1;
   padding: 0;
+
+  @media screen and (max-width: 1200px) {
+    margin: 0 20px;
+  }
 `;
 
 const ConceptsWrapper = styled.div`
   margin-right: 80px;
+
+  @media screen and (max-width: 1200px) {
+    margin-right: 20px;
+  }
 `;
 
 const ConceptContainer = styled.div`
   width: 100%;
-  height: 442px;
+  min-height: 442px;
+  height: auto;
   background-color: #ffffff;
   border: 3px solid #5887f4;
   padding: 20px;
@@ -80,11 +89,21 @@ const ConceptContainer = styled.div`
   margin-right: 60px;
   margin-top: ${(props) => (props.isFirst ? "70px" : "50px")};
   position: relative;
+
+  @media screen and (max-width: 1200px) {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 15px;
+  }
 `;
 
 const ContentWrapper = styled.div`
-  margin: 40px 0 0 35px;
+  margin: 40px 0 60px 35px;
   text-align: left;
+
+  @media screen and (max-width: 1200px) {
+    margin: 30px 0 60px 20px;
+  }
 `;
 
 const QuestionNumber = styled.div`

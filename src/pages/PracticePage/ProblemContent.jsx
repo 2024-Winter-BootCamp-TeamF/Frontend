@@ -163,7 +163,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-left: 200px;
+  padding-left: 80px;
   margin-top: 100px;
   align-items: center;
 `;
