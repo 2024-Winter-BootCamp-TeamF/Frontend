@@ -4,7 +4,9 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
 import UploadPage from "./pages/UploadPage";
+
 import "./App.css";
+import { problems } from "./pages/PracticePage/data";
 
 
 
