@@ -35,8 +35,9 @@ const WrongProblemList = ({ problems }) => {
       <ProblemListContainer>{problems.map(renderProblem)}</ProblemListContainer>
       <ButtonWrapper>
         <Button>
-          많이 틀렸어도 기죽지 말자! <br />
-          앞으로도 화이팅!
+          많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!
+          <br />
+          마이페이지로 이동하기
         </Button>
       </ButtonWrapper>
     </Container>
