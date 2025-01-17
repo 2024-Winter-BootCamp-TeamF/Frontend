@@ -99,7 +99,7 @@ const IntroduceWrapper = styled.div`
 
 const ScrollSection = styled.div`
   width: 100%;
-  height: 600px;
+  height: 650px;
   display: flex;
   justify-content: space-between;
   gap: 40px;
