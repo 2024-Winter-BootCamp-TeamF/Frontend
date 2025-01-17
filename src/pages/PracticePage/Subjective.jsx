@@ -111,6 +111,7 @@ const Input = styled.input`
   border: 1px solid ${COLORS.BORDER};
   border-radius: 4px;
   margin-top: 10px;
+  margin-left: 30px;
 
   &:disabled {
     background-color: #f5f5f5;

@@ -68,8 +68,8 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       return;
     }
 
-    // CompletePage로 이동
-    navigate("/complete");
+    // CheckCompletePage로 이동
+    navigate("/Checkcomplete");
   };
 
   // problems 배열에 isSolved 속성을 추가

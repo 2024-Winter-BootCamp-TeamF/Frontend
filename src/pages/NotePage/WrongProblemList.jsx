@@ -1,9 +1,16 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import MultipleChoice from "../PracticePage/MultipleChoice";
 import Button from "../../components/SolveButton";
 
 const WrongProblemList = ({ problems }) => {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate("/mypage/summary");
+  };
+
   const renderProblem = (problem) => {
     if (problem.type === "multiple_choice") {
       return (
@@ -34,7 +41,7 @@ const WrongProblemList = ({ problems }) => {
     <Container>
       <ProblemListContainer>{problems.map(renderProblem)}</ProblemListContainer>
       <ButtonWrapper>
-        <Button>
+        <Button onClick={handleButtonClick}>
           많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!
           <br />
           마이페이지로 이동하기
