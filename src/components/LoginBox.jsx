@@ -1,9 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
-import user from "../images/login_user.png";
-import footer from "../images/footer.png";
 import LoginToggle from "./LoginToggle.jsx";
 import LoginInputForm from "./LoginInputForm.jsx";
+import character from "../images/character.png";
 
 const LoginBox = () => {
   const [currentType, setCurrentType] = useState("SignIn");
@@ -28,66 +27,66 @@ const LoginBox = () => {
   return (
     <LoginBoxWrapper>
       <ContentsWrapper>
-        <LoginToggle
-          currentType={currentType}
-          setCurrentType={handleTypeChange}
-        />
-        <IconSection>
-          <img src={user} alt="user" />
-        </IconSection>
+        <CharacterSection>
+          <CharacterWrapper>
+            <img src={character} alt="character" />
+          </CharacterWrapper>
+          <LoginToggle
+            currentType={currentType}
+            setCurrentType={handleTypeChange}
+          />
+        </CharacterSection>
         <LoginInputForm
           currentType={currentType}
           inputValues={inputValues}
           setInputValues={setInputValues}
         />
       </ContentsWrapper>
-      <BottomImageSection>
-        <img src={footer} alt="footer" />
-      </BottomImageSection>
     </LoginBoxWrapper>
   );
 };
 
-const LoginBoxWrapper = styled.div`
-  min-width: 200px;
-  min-height: 100px;
+
+
+const CharacterSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid #000;
-  border-radius: 15px;
+  gap: 20px;
+`;
+
+const CharacterWrapper = styled.div`
+  width: 150px;
+  height: 170px;
+  border: 1px solid #5887f4;
+  border-radius: 10px;
   overflow: hidden;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 190px;
+    position: relative;
+    bottom: -20px;
+    left: 5px;
+  }
+`;
+
+const LoginBoxWrapper = styled.div`
+  min-width: 600px;
+  min-height: 300px;
+  height: auto;
+  background: white;
+  border: 2px solid #5887f4;
+  border-radius: 10px;
+  padding: 45px 45px 20px 45px;
 `;
 
 const ContentsWrapper = styled.div`
-  padding: 20px 15px 15px 15px;
-`;
-
-const IconSection = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  img {
-    width: 30px;
-    height: 30px;
-  }
-`;
-
-const BottomImageSection = styled.div`
-  display: flex;
-  justify-content: center;
-  position: absolute; /* 로그인 박스 안에서 위치를 자유롭게 조정 가능 */
-  bottom: 0; /* 로그인 박스의 하단에 이미지 고정 */
-  width: 100%;
-  height: 50px;
-  z-index: -1; /* 이미지가 가장 아래쪽으로 배치되도록 설정 */
-  img {
-    width: 1560px; /* 박스의 너비에 맞게 이미지 설정 */ /* 박스 안에 꽉 차도록 이미지 설정 */
-    height: auto; /* 비율 유지 */
-  }
+  gap: 45px;
 `;
 
 export default LoginBox;

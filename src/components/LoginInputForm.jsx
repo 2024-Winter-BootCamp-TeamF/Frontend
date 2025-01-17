@@ -22,34 +22,45 @@ const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
 
   return (
     <InputFormWrapper>
-      <Input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={inputValues.name}
-        onChange={handleInputChange}
-      />
-      <Input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={inputValues.password}
-        onChange={handleInputChange}
-      />
-      {currentType === "SignUp" && (
-        <Input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={inputValues.confirmPassword}
-          onChange={handleInputChange}
-        />
-      )}
+      <InputWrapper>
+        <InputGroup>
+          <Label>이름</Label>
+          <Input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={inputValues.name}
+            onChange={handleInputChange}
+          />
+        </InputGroup>
+        <InputGroup>
+          <Label>비밀번호</Label>
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={inputValues.password}
+            onChange={handleInputChange}
+          />
+        </InputGroup>
+        {currentType === "SignUp" && (
+          <InputGroup>
+            <Label>비밀번호 확인</Label>
+            <Input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={inputValues.confirmPassword}
+              onChange={handleInputChange}
+            />
+          </InputGroup>
+        )}
+      </InputWrapper>
       <SubmitButtonWrapper>
         <SubmitButton
           disabled={!(currentType === "SignUp" ? isSignUpValid : isSignInValid)}
         >
-          {currentType === "SignIn" ? "SIGN IN" : "SIGN UP"}
+          {currentType === "SignIn" ? "로그인하기!" : "회원가입하기!"}
         </SubmitButton>
       </SubmitButtonWrapper>
     </InputFormWrapper>
@@ -61,42 +72,72 @@ const InputFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding-top: 3px;
+`;
+
+const InputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const InputGroup = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const Label = styled.label`
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+  margin-left: 2px;
 `;
 
 const Input = styled.input`
   background: #f0f0f0;
   width: 100%;
-  height: auto;
-  padding: 10px;
+  height: 50px;
+  padding: 12px 15px;
   border: none;
   border-radius: 10px;
   outline: none;
-  font-size: 10px;
+  font-size: 14px;
 
   &:focus {
     background: #fff;
     border-bottom: 1px solid #004dff; /* 하단 파란색 보더 */
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); /* 드롭 섀도우 효과 */
   }
+
+  &::placeholder {
+    color: #999;
+  }
 `;
 
 const SubmitButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100%;
-  padding-top: 10px;
+  padding-top: 20px;
 `;
 
 const SubmitButton = styled.button`
-  width: 50%;
-  font-size: 10px;
+  width: 150px;
+  font-size: 18px;
   color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
   background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
   border: 1px solid ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
   border-radius: 5px;
-  padding: 8px 0;
+  padding: 12px 20px 12px 20px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   transition: background-color 0.3s, color 0.3s, border 0.3s;
+  font-weight: 500;
+  font-family: "HakgyoansimAllimjangTTF-R";
 
   &:hover {
     background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#fff")};
@@ -107,8 +148,8 @@ const SubmitButton = styled.button`
 
   &:active {
     background-color: ${({ disabled }) =>
-      disabled ? "#ccc" : "#004DFF"}; /* 클릭 시 짙은 파란색 */
-    color: ${({ disabled }) => (disabled ? "#000" : "#fff")};
+      disabled ? "#F0F0F0" : "#004DFF"}; /* 클릭 시 짙은 파란색 */
+    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
   }
 `;
 
