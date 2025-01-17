@@ -177,7 +177,7 @@ const CardText = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
   font-size: 14px;
-  color: #5c85ff;
+  color: black;
 `;
 
 const DateText = styled.div`
