@@ -4,11 +4,9 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
 import UploadPage from "./pages/UploadPage";
-
-import "./App.css";
+import ProblemContent from "./pages/PracticePage/ProblemContent";
+import WrongAnswer from "./pages/NotePage/WrongAnswer";
 import { problems } from "./pages/PracticePage/data";
-
-
 
 function App() {
   return (
@@ -17,6 +15,11 @@ function App() {
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<UploadPage />} />
+          <Route
+            path="/practice"
+            element={<ProblemContent problems={problems} />}
+          />
+          <Route path="/note" element={<WrongAnswer />} />
         </Routes>
       </ThemeProvider>
     </Router>

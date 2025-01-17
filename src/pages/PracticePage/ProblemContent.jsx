@@ -5,8 +5,9 @@ import MultipleChoice from "./MultipleChoice";
 import Subjective from "./Subjective";
 import ProblemList from "./ProblemList";
 import Header from "../../components/Header";
-import Button from "../../components/SolveButton";
 import Footer from "../../components/Footer";
+import SolveButton from "../../components/SolveButton";
+import { useNavigate } from "react-router-dom";
 
 // 문제 타입 상수 정의
 const PROBLEM_TYPES = {
@@ -15,6 +16,8 @@ const PROBLEM_TYPES = {
 };
 
 const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
+  const navigate = useNavigate();
+
   // 풀린 문제들의 ID를 저장하는 상태
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
@@ -65,11 +68,8 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       return;
     }
 
-    // 모든 문제가 완료되었을 때
-    alert("채점 중입니다.");
-    if (typeof onButtonClick === "function") {
-      onButtonClick();
-    }
+    // CompletePage로 이동
+    navigate("/complete");
   };
 
   // problems 배열에 isSolved 속성을 추가
@@ -105,50 +105,37 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
   return (
     <PageWrapper>
       <Header />
-      <Container>
-        <ProblemList problems={problemsWithStatus} />
-        <ContentWrapper>
-          <ProblemDetail>
-            {problems.map((problem) => (
-              <ProblemItem key={problem.id}>
-                {renderProblem(problem)}
-              </ProblemItem>
-            ))}
-          </ProblemDetail>
-          <ButtonWrapper>
-            <Button onClick={handleButtonClick}>
-              고생하셨습니다!
-              <br />
-              채점하기
-            </Button>
-          </ButtonWrapper>
-        </ContentWrapper>
-      </Container>
+      <MainContent>
+        <Container>
+          <ProblemList problems={problemsWithStatus} />
+          <ContentWrapper>
+            <ProblemDetail>
+              {problems.map((problem) => (
+                <ProblemItem key={problem.id}>
+                  {renderProblem(problem)}
+                </ProblemItem>
+              ))}
+            </ProblemDetail>
+            <ButtonWrapper>
+              <SolveButton onClick={handleButtonClick}>제출하기</SolveButton>
+            </ButtonWrapper>
+          </ContentWrapper>
+        </Container>
+      </MainContent>
       <Footer />
     </PageWrapper>
   );
 };
 
-ProblemContent.propTypes = {
-  problems: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onButtonClick: PropTypes.func,
-  readOnly: PropTypes.bool,
-};
-
-ProblemContent.defaultProps = {
-  onButtonClick: () => {},
-  readOnly: false,
-};
-
 const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  position: relative;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
   display: flex;
   flex-direction: column;
 `;
@@ -181,7 +168,28 @@ const ProblemItem = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   margin: 50px 0;
 `;
+
+// PropTypes 정의
+ProblemContent.propTypes = {
+  problems: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  onButtonClick: PropTypes.func,
+  readOnly: PropTypes.bool,
+};
+
+ProblemContent.defaultProps = {
+  onButtonClick: () => {},
+  readOnly: false,
+};
 
 export default ProblemContent;
