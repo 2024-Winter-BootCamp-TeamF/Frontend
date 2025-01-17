@@ -26,29 +26,39 @@ const Introduce = () => {
 
   return (
     <IntroduceWrapper>
-      <MenuSection>
-        {menuItems.map((item, index) => (
-          <MenuItem key={index}>
-            <MenuTitle>{item.title}</MenuTitle>
-            <IconWrapper>
-              <img src={item.icon} alt={item.title} />
-            </IconWrapper>
-          </MenuItem>
-        ))}
-      </MenuSection>
-      <ContentSection>
-        <PlaceholderText>(이미지 생기면 추가 예정)</PlaceholderText>
-      </ContentSection>
+      <ScrollSection>
+        <MenuSection>
+          {menuItems.map((item, index) => (
+            <MenuItem key={index}>
+              <MenuTitle>{item.title}</MenuTitle>
+              <IconWrapper>
+                <img src={item.icon} alt={item.title} />
+              </IconWrapper>
+            </MenuItem>
+          ))}
+        </MenuSection>
+        <ContentSection>
+          <PlaceholderText>(이미지 생기면 추가 예정)</PlaceholderText>
+        </ContentSection>
+      </ScrollSection>
     </IntroduceWrapper>
   );
 };
 
 const IntroduceWrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  margin: 0 auto;
+  padding: 40px;
+`;
+
+const ScrollSection = styled.div`
+  width: 100%;
+  height: 600px;
   display: flex;
   justify-content: space-between;
-  margin: 0 auto;
+  gap: 40px;
 `;
 
 const MenuSection = styled.div`
@@ -65,23 +75,18 @@ const MenuItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
   transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #6b93ff;
-  }
 `;
 
 const MenuTitle = styled.span`
   color: white;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
 `;
 
 const IconWrapper = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 
   img {
     width: 100%;
@@ -91,11 +96,10 @@ const IconWrapper = styled.div`
 `;
 
 const ContentSection = styled.div`
+  background-color: #fff;
   flex: 1;
-  border: 2px solid #84a7ff;
-  border-radius: 15px;
-  padding: 20px;
-  min-height: 500px;
+  border: 5px solid #84a7ff;
+  border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;

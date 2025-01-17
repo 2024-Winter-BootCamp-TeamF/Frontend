@@ -27,7 +27,7 @@ const Banner = () => {
 
 const BannerWrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background-image: url(${background});
   background-position: center; /* 배경 이미지 위치 */
   background-size: contain;
@@ -47,7 +47,7 @@ const BannerContent = styled.div`
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 70px;
+  padding: 70px 70px 50px 70px;
 `;
 
 const LogoWrapper = styled.div`

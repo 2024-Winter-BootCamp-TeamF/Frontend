@@ -18,7 +18,8 @@ const MainPage = () => {
 const MainPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 200vh; // 페이지 전체 높이
+  min-height: 100vh;
+  position: relative; /* 추가 */
 `;
 
 export default MainPage;
