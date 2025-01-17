@@ -98,14 +98,14 @@ const MultipleChoiceContainer = styled.div`
   }
 
   li {
-    margin: 10px 0;
+    margin: 15px 0;
     font-size: 18px;
     display: flex;
     align-items: center;
   }
 
   input[type="radio"] {
-    margin-left: 40px;
+    margin-left: 50px;
     margin-right: 15px;
     appearance: none;
     border-radius: 50%;
@@ -139,14 +139,14 @@ const MultipleChoiceContainer = styled.div`
 
 const Title = styled.h3`
   font-size: 24px;
-  margin: 40px 0 0 40px;
+  margin: 40px 0 0 50px;
   text-align: left;
 `;
 
 const Content = styled.p`
   font-size: 24px;
   margin: 0;
-  padding: 0 0 30px 40px;
+  padding: 0 0 25px 50px;
   text-align: left;
 `;
 
