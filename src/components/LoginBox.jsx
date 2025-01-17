@@ -40,6 +40,7 @@ const LoginBox = () => {
           currentType={currentType}
           inputValues={inputValues}
           setInputValues={setInputValues}
+          setCurrentType={setCurrentType}
         />
       </ContentsWrapper>
     </LoginBoxWrapper>

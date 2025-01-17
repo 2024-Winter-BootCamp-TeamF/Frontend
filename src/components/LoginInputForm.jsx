@@ -1,7 +1,13 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
-  // 상태 관리
+const LoginInputForm = ({
+  currentType,
+  inputValues,
+  setInputValues,
+  setCurrentType,
+}) => {
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -11,58 +17,116 @@ const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
     }));
   };
 
-  // 유효성 검사 예시 (비밀번호 일치 여부)
-  const isSignUpValid =
-    currentType === "SignUp" &&
-    inputValues.password &&
-    inputValues.password === inputValues.confirmPassword;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const isSignInValid =
-    currentType === "SignIn" && inputValues.name && inputValues.password;
+    if (currentType === "SignUp") {
+      // 입력값 확인
+      if (
+        !inputValues.name ||
+        !inputValues.password ||
+        !inputValues.confirmPassword
+      ) {
+        alert("모든 필드를 입력해주세요.");
+        return;
+      }
+
+      // 비밀번호 확인
+      if (inputValues.password !== inputValues.confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+      // 기존 사용자 확인
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (users.some((user) => user.name === inputValues.name)) {
+        alert("이미 존재하는 이름입니다.");
+        return;
+      }
+
+      // 새 사용자 저장
+      users.push({
+        name: inputValues.name,
+        password: inputValues.password,
+      });
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("회원가입이 완료되었습니다!");
+
+      // 입력값 초기화 후 로그인 화면으로 전환
+      setInputValues({
+        name: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setCurrentType("SignIn");
+    } else {
+      // 로그인 입력값 확인
+      if (!inputValues.name || !inputValues.password) {
+        alert("이름과 비밀번호를 모두 입력해주세요.");
+        return;
+      }
+
+      // 로그인 처리
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const user = users.find(
+        (user) =>
+          user.name === inputValues.name &&
+          user.password === inputValues.password
+      );
+
+      if (user) {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert("로그인 성공!");
+        navigate("/userpage");
+      } else {
+        alert("이름 또는 비밀번호가 일치하지 않습니다.");
+      }
+    }
+  };
 
   return (
     <InputFormWrapper>
-      <InputWrapper>
-        <InputGroup>
-          <Label>이름</Label>
-          <Input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={inputValues.name}
-            onChange={handleInputChange}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>비밀번호</Label>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={inputValues.password}
-            onChange={handleInputChange}
-          />
-        </InputGroup>
-        {currentType === "SignUp" && (
+      <form onSubmit={handleSubmit}>
+        <InputWrapper>
           <InputGroup>
-            <Label>비밀번호 확인</Label>
+            <Label>이름</Label>
             <Input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={inputValues.confirmPassword}
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={inputValues.name}
               onChange={handleInputChange}
             />
           </InputGroup>
-        )}
-      </InputWrapper>
-      <SubmitButtonWrapper>
-        <SubmitButton
-          disabled={!(currentType === "SignUp" ? isSignUpValid : isSignInValid)}
-        >
-          {currentType === "SignIn" ? "로그인하기!" : "회원가입하기!"}
-        </SubmitButton>
-      </SubmitButtonWrapper>
+          <InputGroup>
+            <Label>비밀번호</Label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={inputValues.password}
+              onChange={handleInputChange}
+            />
+          </InputGroup>
+          {currentType === "SignUp" && (
+            <InputGroup>
+              <Label>비밀번호 확인</Label>
+              <Input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={inputValues.confirmPassword}
+                onChange={handleInputChange}
+              />
+            </InputGroup>
+          )}
+        </InputWrapper>
+        <SubmitButtonWrapper>
+          <SubmitButton type="submit">
+            {currentType === "SignIn" ? "로그인하기!" : "회원가입하기!"}
+          </SubmitButton>
+        </SubmitButtonWrapper>
+      </form>
     </InputFormWrapper>
   );
 };
@@ -75,6 +139,10 @@ const InputFormWrapper = styled.div`
   justify-content: space-between;
   gap: 10px;
   padding-top: 3px;
+
+  form {
+    width: 100%;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -129,27 +197,25 @@ const SubmitButtonWrapper = styled.div`
 const SubmitButton = styled.button`
   width: 150px;
   font-size: 18px;
-  color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
-  background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
-  border: 1px solid ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
+  color: #fff;
+  background-color: #004dff;
+  border: 1px solid #004dff;
   border-radius: 5px;
   padding: 12px 20px 12px 20px;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  cursor: pointer;
   transition: background-color 0.3s, color 0.3s, border 0.3s;
   font-weight: 500;
   font-family: "HakgyoansimAllimjangTTF-R";
 
   &:hover {
-    background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#fff")};
-    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#004DFF")};
-    border: ${({ disabled }) =>
-      disabled ? "1px solid #F0F0F0" : "1px solid #004DFF"};
+    background-color: #fff;
+    color: #004dff;
+    border: 1px solid #004dff;
   }
 
   &:active {
-    background-color: ${({ disabled }) =>
-      disabled ? "#F0F0F0" : "#004DFF"}; /* 클릭 시 짙은 파란색 */
-    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
+    background-color: #004dff;
+    color: #fff;
   }
 `;
 
