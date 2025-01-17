@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import correctIcon from "../../images/correct.png";
+import confusedIcon from "../../images/confused.png";
 
 const COLORS = {
   PRIMARY: "#5887f4",
@@ -22,12 +23,23 @@ const ProblemList = ({ problems }) => {
           {problems.map((problem) => (
             <ProblemLi key={problem.id}>
               <ProblemTitle>{problem.title}</ProblemTitle>
-              <Icon
-                src={correctIcon}
-                alt="풀이 완료"
-                aria-label="풀이 완료 표시"
-                isVisible={problem.isSolved}
-              />
+              {problem.isDoubleClicked ? (
+                <Icon
+                  src={confusedIcon}
+                  alt="이해가 안 되요"
+                  aria-label="이해 안 됨 표시"
+                  isVisible={true}
+                />
+              ) : (
+                problem.isSolved && (
+                  <Icon
+                    src={correctIcon}
+                    alt="풀이 완료"
+                    aria-label="풀이 완료 표시"
+                    isVisible={true}
+                  />
+                )
+              )}
             </ProblemLi>
           ))}
         </ProblemUl>
@@ -41,7 +53,8 @@ ProblemList.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      isCorrect: PropTypes.bool,
+      isSolved: PropTypes.bool,
+      isDoubleClicked: PropTypes.bool,
     })
   ).isRequired,
   selectedProblemId: PropTypes.string,

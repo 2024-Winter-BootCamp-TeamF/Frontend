@@ -17,9 +17,11 @@ const PROBLEM_TYPES = {
 const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
   // 풀린 문제들의 ID를 저장하는 상태
   const [solvedProblems, setSolvedProblems] = useState(new Set());
+  const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
 
   // 문제가 풀렸을 때 호출되는 핸들러
-  const handleProblemSolved = (problemId, isSolved) => {
+  const handleProblemSolved = (problemId, isSolved, isDoubleClicked) => {
+    // 풀이 상태 업데이트
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
       if (isSolved) {
@@ -29,12 +31,52 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       }
       return newSolved;
     });
+
+    // 더블클릭 상태 업데이트
+    setDoubleClickedProblems((prev) => {
+      const newDoubleClicked = new Set(prev);
+      if (isDoubleClicked) {
+        newDoubleClicked.add(problemId);
+        // 더블클릭된 경우 solved 상태는 false로
+        setSolvedProblems((prev) => {
+          const newSolved = new Set(prev);
+          newSolved.delete(problemId);
+          return newSolved;
+        });
+      } else {
+        newDoubleClicked.delete(problemId);
+      }
+      return newDoubleClicked;
+    });
+  };
+
+  // 모든 문제가 풀렸는지 확인하는 함수
+  const areAllProblemsAnswered = () => {
+    return problems.every(
+      (problem) =>
+        solvedProblems.has(problem.id) || doubleClickedProblems.has(problem.id)
+    );
+  };
+
+  // 버튼 클릭 핸들러
+  const handleButtonClick = () => {
+    if (!areAllProblemsAnswered()) {
+      alert("모든 문제를 작성하세요.");
+      return;
+    }
+
+    // 모든 문제가 완료되었을 때
+    alert("채점 중입니다.");
+    if (typeof onButtonClick === "function") {
+      onButtonClick();
+    }
   };
 
   // problems 배열에 isSolved 속성을 추가
-  const problemsWithSolvedStatus = problems.map((problem) => ({
+  const problemsWithStatus = problems.map((problem) => ({
     ...problem,
     isSolved: solvedProblems.has(problem.id),
+    isDoubleClicked: doubleClickedProblems.has(problem.id),
   }));
 
   const renderProblem = (problem) => {
@@ -64,7 +106,7 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
     <PageWrapper>
       <Header />
       <Container>
-        <ProblemList problems={problemsWithSolvedStatus} />
+        <ProblemList problems={problemsWithStatus} />
         <ContentWrapper>
           <ProblemDetail>
             {problems.map((problem) => (
@@ -74,7 +116,7 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
             ))}
           </ProblemDetail>
           <ButtonWrapper>
-            <Button onClick={onButtonClick}>
+            <Button onClick={handleButtonClick}>
               고생하셨습니다!
               <br />
               채점하기
@@ -91,16 +133,17 @@ ProblemContent.propTypes = {
   problems: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(Object.values(PROBLEM_TYPES)).isRequired,
       title: PropTypes.string.isRequired,
       content: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
     })
   ).isRequired,
-  onButtonClick: PropTypes.func.isRequired,
+  onButtonClick: PropTypes.func,
   readOnly: PropTypes.bool,
 };
 
 ProblemContent.defaultProps = {
+  onButtonClick: () => {},
   readOnly: false,
 };
 

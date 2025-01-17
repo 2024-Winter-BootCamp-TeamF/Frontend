@@ -15,19 +15,24 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
 
   const handleDoubleClick = () => {
     if (readOnly) return;
-    setIsDoubleClicked(!isDoubleClicked);
+    const newDoubleClickState = !isDoubleClicked;
+    setIsDoubleClicked(newDoubleClickState);
+    // 더블클릭 상태만 변경하고 선택 상태는 유지
+    onProblemSolved(problem.id, true, newDoubleClickState);
   };
 
   const handleOptionSelect = (index) => {
     if (readOnly) return;
 
-    // 같은 옵션을 다시 클릭한 경우 선택 해제
-    if (selectedOption === index) {
-      setSelectedOption(null);
-      onProblemSolved(problem.id, false); // 선택 해제 시 false 전달
+    const newSelectedOption = selectedOption === index ? null : index;
+    setSelectedOption(newSelectedOption);
+
+    // 선택 상태 변경 시 더블클릭 상태는 false로 초기화
+    if (newSelectedOption !== null) {
+      setIsDoubleClicked(false);
+      onProblemSolved(problem.id, true, false);
     } else {
-      setSelectedOption(index);
-      onProblemSolved(problem.id, true); // 새로운 선택 시 true 전달
+      onProblemSolved(problem.id, false, false);
     }
   };
 

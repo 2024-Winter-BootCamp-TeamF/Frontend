@@ -15,9 +15,18 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [answer, setAnswer] = useState("");
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = (e) => {
+    e.preventDefault();
     if (readOnly) return;
-    setIsDoubleClicked(!isDoubleClicked);
+
+    const newDoubleClickState = !isDoubleClicked;
+    setIsDoubleClicked(newDoubleClickState);
+
+    onProblemSolved(
+      problem.id,
+      answer.trim().length > 0, // isSolved
+      newDoubleClickState // isDoubleClicked
+    );
   };
 
   const handleAnswerChange = (e) => {
@@ -25,8 +34,12 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
     const newAnswer = e.target.value;
     setAnswer(newAnswer);
 
-    // 입력값이 있으면 true, 없으면 false를 전달
-    onProblemSolved(problem.id, newAnswer.trim().length > 0);
+    // 더블클릭 상태는 유지하면서 입력 상태만 업데이트
+    onProblemSolved(
+      problem.id,
+      newAnswer.trim().length > 0, // isSolved
+      isDoubleClicked // 현재 더블클릭 상태 유지
+    );
   };
 
   return (
