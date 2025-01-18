@@ -24,13 +24,13 @@ const UserPageNote = () => {
       <Nav>
         <ExButton 
           variant="outlined"
-          onClick={() => navigate("/summary")}
+          onClick={() => navigate("/mypage/summary")}
         >
           요약본
         </ExButton>
         <ExButton 
           variant="outlined"
-          onClick={() => navigate("/practice")}
+          onClick={() => navigate("/mypage/practice")}
         >
           연습 문제
         </ExButton>

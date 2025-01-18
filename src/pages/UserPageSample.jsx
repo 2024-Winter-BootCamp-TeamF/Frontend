@@ -22,9 +22,24 @@ const UserPageSample = () => {
         </ProfileIcon>
       </Header>
       <Nav>
-        <ExButton variant="filled" isActive={true}>요약본</ExButton>
-        <ExButton variant="outlined" onClick={() => navigate("/practice")}>연습 문제</ExButton>
-        <ExButton variant="outlined" onClick={() => navigate("/note")}>오답 노트</ExButton>
+        <ExButton 
+          variant="filled" 
+          isActive={true}
+        >
+          요약본
+        </ExButton>
+        <ExButton 
+          variant="outlined" 
+          onClick={() => navigate("/mypage/practice")}
+        >
+          연습 문제
+        </ExButton>
+        <ExButton 
+          variant="outlined" 
+          onClick={() => navigate("/mypage/note")}
+        >
+          오답 노트
+        </ExButton>
       </Nav>
       <Content>
         <Card onClick={() => navigate("/sample")}>
