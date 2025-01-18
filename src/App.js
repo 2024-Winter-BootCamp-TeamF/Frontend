@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
+import UploadPage from "./pages/UploadPage";
 import UserPageSample from "./pages/UserPageSample";
 import UserPageEx from "./pages/UserPageEx";
 import UserPageNote from "./pages/UserPageNote";
@@ -17,11 +18,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
-          <Route path="/" element={<UserPageSample />} />
           <Route path="/mypage/summary" element={<UserPageSample />} />
           <Route path="/mypage/practice" element={<UserPageEx />} />
           <Route path="/mypage/note" element={<UserPageNote />} />
           <Route path="/sample" element={<SamplePage />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </ThemeProvider>
     </Router>

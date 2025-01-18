@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import FooterImage from "../images/footer.png";
-import userIcon from "../images/user.png";
-import logo from "../images/logo.svg";
 import addIcon from "../images/add.png";
 import summaryIcon from "../images/mypage_summary.png";
 import ExButton from "../components/ExButton";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 
 const UserPageSample = () => {
@@ -13,14 +12,7 @@ const UserPageSample = () => {
 
   return (
     <Container>
-      <Header>
-        <LogoWrapper>
-          <img src={logo} alt="내 교수님은 AI" />
-        </LogoWrapper>
-        <ProfileIcon>
-          <img src={userIcon} alt="Profile" />
-        </ProfileIcon>
-      </Header>
+      <Header />
       <Nav>
         <ExButton 
           variant="filled" 
@@ -85,9 +77,7 @@ const UserPageSample = () => {
           </CardText>
         </Card>
       </Content>
-      <Footer>
-        <FooterImg src={FooterImage} alt="Footer" />
-      </Footer>
+      <Footer />
     </Container>
   );
 };
@@ -100,33 +90,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  position: relative;
-  box-sizing: border-box;
-  // padding-top: 10px;
-  padding-bottom: 20px;
-`;
-
-const LogoWrapper = styled.div`
-  img {
-    width: 150px;
-    height: auto;
-  }
-`;
-
-const ProfileIcon = styled.div`
-  right: 20px;
-  position: absolute;
-  img {
-    width: 40px;
-    height: 40px;
-  }
 `;
 
 const Nav = styled.nav`
@@ -199,16 +162,4 @@ const DateText = styled.div`
   margin-top: 5px;
   font-size: 12px;
   color: #888888;
-`;
-
-const Footer = styled.footer`
-  margin-top: auto;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
-const FooterImg = styled.img`
-  width: 100%;
-  height: auto;
 `;
