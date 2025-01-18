@@ -1,7 +1,101 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
-  // 상태 관리
+const LoginInputForm = ({
+  currentType,
+  inputValues,
+  setInputValues,
+  setCurrentType,
+}) => {
+  const navigate = useNavigate();
+  const API_BASE_URL = "http://localhost:8000/api/user";
+
+  // 회원가입 API 호출
+  const signUp = async (userData) => {
+    try {
+      const signUpData = {
+        username: userData.id,
+        password: userData.password,
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/signup/`, signUpData);
+      if (response.status === 201) {
+        alert("회원가입이 완료되었습니다!");
+        setCurrentType("SignIn");
+        setInputValues({
+          id: "",
+          password: "",
+          confirmPassword: "",
+        });
+        return true;
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.data.username) {
+          alert("이미 존재하는 아이디입니다.");
+        } else if (error.response.data.password) {
+          alert(error.response.data.password[0]); // 비밀번호 유효성 검사 실패 메시지
+        } else if (error.response.data.error) {
+          alert(error.response.data.error); // 기타 에러 메시지
+        } else {
+          alert("회원가입 중 오류가 발생했습니다.");
+        }
+      } else {
+        alert("서버와의 연결이 실패했습니다.");
+      }
+      return false;
+    }
+  };
+
+  // 로그인 API 호출
+  const signIn = async (userData) => {
+    try {
+      const signInData = {
+        username: userData.id,
+        password: userData.password,
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/login/`, signInData);
+      if (response.status === 200) {
+        const token = response.data.key;
+        const username = signInData.username;
+
+        // 토큰 만료 시간을 1분으로 설정
+        const expirationTime = new Date().getTime() + 180 * 1000;
+
+        localStorage.setItem("accessToken", token);
+        localStorage.setItem("username", username);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("tokenExpiration", expirationTime.toString());
+
+        setTimeout(() => {
+          localStorage.clear();
+          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+          navigate("/login");
+        }, 600 * 1000);
+
+        navigate(`/users/${username}/summary`);
+        return true;
+      }
+    } catch (error) {
+      if (error.response) {
+        // 서버가 응답한 구체적인 에러 처리
+        if (error.response.data.error) {
+          alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+        } else if (error.response.data.username) {
+          alert(error.response.data.username[0]); // username 관련 에러
+        } else if (error.response.data.password) {
+          alert(error.response.data.password[0]); // password 관련 에러
+        } else {
+          alert("로그인 중 오류가 발생했습니다.");
+        }
+      } else {
+        alert("서버와의 연결이 실패했습니다.");
+      }
+      return false;
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -11,58 +105,71 @@ const LoginInputForm = ({ currentType, inputValues, setInputValues }) => {
     }));
   };
 
-  // 유효성 검사 예시 (비밀번호 일치 여부)
-  const isSignUpValid =
-    currentType === "SignUp" &&
-    inputValues.password &&
-    inputValues.password === inputValues.confirmPassword;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const isSignInValid =
-    currentType === "SignIn" && inputValues.name && inputValues.password;
+    const userData = {
+      id: inputValues.id,
+      password: inputValues.password,
+    };
+
+    if (currentType === "SignUp") {
+      const success = await signUp(userData);
+      if (success) {
+        setInputValues({
+          id: "",
+          password: "",
+          confirmPassword: "",
+        });
+      }
+    } else {
+      await signIn(userData);
+    }
+  };
 
   return (
     <InputFormWrapper>
-      <InputWrapper>
-        <InputGroup>
-          <Label>이름</Label>
-          <Input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={inputValues.name}
-            onChange={handleInputChange}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>비밀번호</Label>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={inputValues.password}
-            onChange={handleInputChange}
-          />
-        </InputGroup>
-        {currentType === "SignUp" && (
+      <form onSubmit={handleSubmit}>
+        <InputWrapper>
           <InputGroup>
-            <Label>비밀번호 확인</Label>
+            <Label>아이디</Label>
             <Input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={inputValues.confirmPassword}
+              type="text"
+              name="id"
+              placeholder="Id"
+              value={inputValues.id}
               onChange={handleInputChange}
             />
           </InputGroup>
-        )}
-      </InputWrapper>
-      <SubmitButtonWrapper>
-        <SubmitButton
-          disabled={!(currentType === "SignUp" ? isSignUpValid : isSignInValid)}
-        >
-          {currentType === "SignIn" ? "로그인하기!" : "회원가입하기!"}
-        </SubmitButton>
-      </SubmitButtonWrapper>
+          <InputGroup>
+            <Label>비밀번호</Label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={inputValues.password}
+              onChange={handleInputChange}
+            />
+          </InputGroup>
+          {currentType === "SignUp" && (
+            <InputGroup>
+              <Label>비밀번호 확인</Label>
+              <Input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={inputValues.confirmPassword}
+                onChange={handleInputChange}
+              />
+            </InputGroup>
+          )}
+        </InputWrapper>
+        <SubmitButtonWrapper>
+          <SubmitButton type="submit">
+            {currentType === "SignIn" ? "로그인하기!" : "회원가입하기!"}
+          </SubmitButton>
+        </SubmitButtonWrapper>
+      </form>
     </InputFormWrapper>
   );
 };
@@ -75,6 +182,10 @@ const InputFormWrapper = styled.div`
   justify-content: space-between;
   gap: 10px;
   padding-top: 3px;
+
+  form {
+    width: 100%;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -129,27 +240,25 @@ const SubmitButtonWrapper = styled.div`
 const SubmitButton = styled.button`
   width: 150px;
   font-size: 18px;
-  color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
-  background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
-  border: 1px solid ${({ disabled }) => (disabled ? "#F0F0F0" : "#004DFF")};
+  color: #fff;
+  background-color: #004dff;
+  border: 1px solid #004dff;
   border-radius: 5px;
   padding: 12px 20px 12px 20px;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  cursor: pointer;
   transition: background-color 0.3s, color 0.3s, border 0.3s;
   font-weight: 500;
   font-family: "HakgyoansimAllimjangTTF-R";
 
   &:hover {
-    background-color: ${({ disabled }) => (disabled ? "#F0F0F0" : "#fff")};
-    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#004DFF")};
-    border: ${({ disabled }) =>
-      disabled ? "1px solid #F0F0F0" : "1px solid #004DFF"};
+    background-color: #fff;
+    color: #004dff;
+    border: 1px solid #004dff;
   }
 
   &:active {
-    background-color: ${({ disabled }) =>
-      disabled ? "#F0F0F0" : "#004DFF"}; /* 클릭 시 짙은 파란색 */
-    color: ${({ disabled }) => (disabled ? "#D3D3D3" : "#fff")};
+    background-color: #004dff;
+    color: #fff;
   }
 `;
 

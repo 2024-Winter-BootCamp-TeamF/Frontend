@@ -2,14 +2,30 @@ import React from "react";
 import styled from "styled-components";
 import logo from "../images/logo.svg";
 import user from "../images/user.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleUserClick = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const username = localStorage.getItem("username");
+
+    if (isLoggedIn && username) {
+      navigate(`/users/${username}/summary`);
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <img src={logo} alt="logo" />
+        <Link to="/">
+          <img src={logo} alt="logo" />
+        </Link>
       </LogoWrapper>
-      <UserWrapper>
+      <UserWrapper onClick={handleUserClick}>
         <img src={user} alt="user" />
       </UserWrapper>
     </HeaderWrapper>
@@ -21,6 +37,7 @@ const HeaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: absolute; /* 페이지 내에서 자유롭게 배치되도록 설정 */
   box-sizing: border-box;
   background-color: #ffffff;
 
@@ -47,6 +64,7 @@ const UserWrapper = styled.div`
     width: 40px;
     height: 40px;
   }
+  cursor: pointer;
 `;
 
 export default Header;
