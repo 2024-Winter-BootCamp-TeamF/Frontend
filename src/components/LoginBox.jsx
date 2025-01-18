@@ -7,19 +7,17 @@ import character from "../images/character.png";
 const LoginBox = () => {
   const [currentType, setCurrentType] = useState("SignIn");
   const [inputValues, setInputValues] = useState({
-    username: "",
+    id: "",
     password: "",
-    name: "",
     confirmPassword: "",
   });
 
-  // currentType 변경 시 입력 값 초기화
+  // 토글 시 입력값 초기화
   const handleTypeChange = (newType) => {
     setCurrentType(newType);
     setInputValues({
-      username: "",
+      id: "",
       password: "",
-      name: "",
       confirmPassword: "",
     });
   };

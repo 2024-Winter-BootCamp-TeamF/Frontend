@@ -9,7 +9,7 @@ const LoginInputForm = ({
   setCurrentType,
 }) => {
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:8080/api";
+  const API_BASE_URL = "http://localhost:8000/api/user/";
 
   // 회원가입 API 호출
   const signUp = async (userData) => {
@@ -17,13 +17,17 @@ const LoginInputForm = ({
       const signUpData = {
         username: userData.id,
         password: userData.password,
-        password2: userData.confirmPassword,
       };
 
-      const response = await axios.post(`${API_BASE_URL}/signup`, signUpData);
+      const response = await axios.post(`${API_BASE_URL}/signup/`, signUpData);
       if (response.status === 201) {
         alert("회원가입이 완료되었습니다!");
         setCurrentType("SignIn");
+        setInputValues({
+          id: "",
+          password: "",
+          confirmPassword: "",
+        });
         return true;
       }
     } catch (error) {
@@ -46,9 +50,10 @@ const LoginInputForm = ({
 
       const response = await axios.post(`${API_BASE_URL}/signin`, signInData);
       if (response.status === 200) {
-        const { username } = response.data;
-        // 사용자 정보 저장
-        localStorage.setItem("username", username);
+        const token = response.data.key;
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", signInData.username);
+        navigate("/main");
         return true;
       }
     } catch (error) {
