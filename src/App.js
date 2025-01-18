@@ -9,6 +9,7 @@ import MainPage from "./pages/MainPage";
 import UserPageSample from "./pages/UserPageSample";
 import UserPageEx from "./pages/UserPageEx";
 import UserPageNote from "./pages/UserPageNote";
+import SamplePage from "./pages/SamplePage";
 
 import "./App.css";
 import { problems } from "./pages/PracticePage/data";
@@ -26,6 +27,7 @@ function App() {
             <Route path="summary" element={<UserPageSample />} />
             <Route path="practice" element={<UserPageEx />} />
             <Route path="notes" element={<UserPageNote />} />
+          </Route>
           <Route path="/sample" element={<SamplePage />} />
           <Route path="/upload" element={<UploadPage />} />
         </Routes>
