@@ -5,42 +5,47 @@ const ExButton = ({
   children,
   onClick,
   variant = "filled",
-  ariaLabel = "",
   isActive = false,
 }) => (
-  <>
-    <StyledButton onClick={onClick} variant={variant} aria-label={ariaLabel}>
-      {children}
-    </StyledButton>
-  </>
+  <StyledButton onClick={onClick} variant={variant} isActive={isActive}>
+    {children}
+  </StyledButton>
 );
 
-export default ExButton;
-
 const StyledButton = styled.button`
-  width: 230px;
+  // padding: 10px 20px;
+  width: 200px;
   height: 50px;
   font-size: 16px;
   font-weight: bold;
-  border-radius: 50px;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
 
-  ${({ variant, isActive }) =>
+  /* isActive가 true일 때의 스타일 */
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      background-color: #5c85ff !important;
+      color: white !important;
+      border: none !important;
+    `}
+
+  /* variant에 따른 기본 스타일 */
+  ${({ variant }) =>
     variant === "filled" &&
     css`
-      background-color: ${isActive ? '#5c85ff' : 'white'};
-      color: ${isActive ? 'white' : '#5c85ff'};
-      border: 2px solid #5c85ff;
+      background-color: #5c85ff;
+      color: white;
+      border: none;
 
       &:hover {
-        background-color: #5c85ff;
-        color: white;
+        background-color: #4668cc;
       }
     `}
 
-  ${({ variant, isActive }) =>
+  ${({ variant }) =>
     variant === "outlined" &&
     css`
       background-color: transparent;
@@ -48,8 +53,7 @@ const StyledButton = styled.button`
       border: 2px solid #5c85ff;
 
       &:hover {
-        background-color: #5c85ff;
-        color: white;
+        background-color: #eef4ff;
       }
     `}
 
@@ -61,3 +65,5 @@ const StyledButton = styled.button`
     outline: none;
   }
 `;
+
+export default ExButton;

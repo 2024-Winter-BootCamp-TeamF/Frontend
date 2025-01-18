@@ -26,7 +26,8 @@ function App() {
             <Route path="summary" element={<UserPageSample />} />
             <Route path="practice" element={<UserPageEx />} />
             <Route path="notes" element={<UserPageNote />} />
-          </Route>
+          <Route path="/sample" element={<SamplePage />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </ThemeProvider>
     </Router>
