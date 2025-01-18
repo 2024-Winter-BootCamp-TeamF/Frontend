@@ -9,6 +9,7 @@ import UserPageEx from "./pages/UserPageEx";
 import UserPageNote from "./pages/UserPageNote";
 import SamplePage from "./pages/SamplePage";
 import "./App.css";
+import { problems } from "./pages/PracticePage/data";
 
 
 

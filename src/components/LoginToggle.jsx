@@ -7,13 +7,13 @@ const LoginToggle = ({ currentType, setCurrentType }) => {
         isActive={currentType === "SignIn"}
         onClick={() => setCurrentType("SignIn")}
       >
-        SIGN IN
+        로그인
       </TypeButton>
       <TypeButton
         isActive={currentType === "SignUp"}
         onClick={() => setCurrentType("SignUp")}
       >
-        SIGN UP
+        회원가입
       </TypeButton>
     </ToggleSectionWrapper>
   );
@@ -21,21 +21,40 @@ const LoginToggle = ({ currentType, setCurrentType }) => {
 
 const ToggleSectionWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  width: 100%;
-  gap: 30px;
+  align-items: center;
 `;
 
 const TypeButton = styled.button`
   background: none;
   border: none;
   color: ${({ isActive }) => (isActive ? "#000" : "#D3D3D3")};
-  border-bottom: ${({ isActive }) => (isActive ? "2px solid #004dff" : "none")};
-  font-weight: ${({ isActive }) => (isActive ? "700" : "500")};
-  padding-bottom: 2px;
+  padding: 8px 0;
+  margin: 0 16px;
   cursor: pointer;
-  font-size: 14px;
+  font-family: "HakgyoansimAllimjangTTF-R";
+  font-size: 20px;
+  font-weight: ${({ isActive }) => (isActive ? "700" : "500")};
   transition: all 0.3s;
+  position: relative;
+  width: fit-content;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: ${({ isActive }) => (isActive ? "100%" : "0")};
+    height: 2px;
+    background: #004dff;
+    transition: width 0.3s;
+  }
+
+  &:hover:after {
+    width: 100%;
+  }
 `;
 
 export default LoginToggle;
