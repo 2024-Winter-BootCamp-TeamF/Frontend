@@ -28,6 +28,9 @@ function App() {
             <Route path="practice" element={<UserPageEx />} />
             <Route path="notes" element={<UserPageNote />} />
           </Route>
+          <Route path="mypage/summary" element={<UserPageSample />} />
+          <Route path="mypage/practice" element={<UserPageEx />} />
+          <Route path="mypage/note" element={<UserPageNote />} />
           <Route path="/sample" element={<SamplePage />} />
           <Route path="/upload" element={<UploadPage />} />
         </Routes>
