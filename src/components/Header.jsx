@@ -21,19 +21,16 @@ const HeaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-
-//   position: fixed; /* 페이지 상단에 고정 */
-//   top: 0; /* 화면의 최상단에 위치 */
-//   left: 0;
-//   z-index: 1000; /* 다른 요소 위에 표시되도록 z-index 설정 */
-//   background-color: #fff; /* 배경색 추가 (겹치는 요소 방지) */
-
-  position: absolute; /* 페이지 내에서 자유롭게 배치되도록 설정 */
   box-sizing: border-box;
-  padding: 10px 0 25px;
-  top: 0; /* 페이지의 가장 상단에 위치 */
-  z-index: 100; /* 항상 다른 요소들 위에 배치 */
   background-color: #ffffff;
+
+  padding: 20px 0;
+  position: relative;
+
+  // padding: 10px 0 25px;
+  // top: 0; /* 페이지의 가장 상단에 위치 */
+  // z-index: 100; /* 항상 다른 요소들 위에 배치 */
+  // position: absolute; /* 페이지 내에서 자유롭게 배치되도록 설정 */
 `;
 
 const LogoWrapper = styled.div`
