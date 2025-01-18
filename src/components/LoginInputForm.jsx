@@ -73,7 +73,7 @@ const LoginInputForm = ({
           localStorage.clear();
           alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
           navigate("/login");
-        }, 60 * 1000);
+        }, 600 * 1000);
 
         navigate(`/users/${username}/summary`);
         return true;
