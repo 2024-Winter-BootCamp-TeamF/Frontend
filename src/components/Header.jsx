@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <Link to="/main">
+        <Link to="/">
           <img src={logo} alt="logo" />
         </Link>
       </LogoWrapper>

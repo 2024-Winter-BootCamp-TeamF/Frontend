@@ -19,7 +19,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
-          <Route path="/main" element={<MainPage />} />
+          <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/users/:userId">

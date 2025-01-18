@@ -31,10 +31,18 @@ const LoginInputForm = ({
         return true;
       }
     } catch (error) {
-      if (error.response?.status === 409) {
-        alert("이미 존재하는 아이디입니다.");
+      if (error.response) {
+        if (error.response.data.username) {
+          alert("이미 존재하는 아이디입니다.");
+        } else if (error.response.data.password) {
+          alert(error.response.data.password[0]); // 비밀번호 유효성 검사 실패 메시지
+        } else if (error.response.data.error) {
+          alert(error.response.data.error); // 기타 에러 메시지
+        } else {
+          alert("회원가입 중 오류가 발생했습니다.");
+        }
       } else {
-        alert("회원가입 중 오류가 발생했습니다.");
+        alert("서버와의 연결이 실패했습니다.");
       }
       return false;
     }
@@ -53,20 +61,37 @@ const LoginInputForm = ({
         const token = response.data.key;
         const username = signInData.username;
 
-        // localStorage에 필요한 정보 저장
+        // 토큰 만료 시간을 1분으로 설정
+        const expirationTime = new Date().getTime() + 180 * 1000;
+
         localStorage.setItem("accessToken", token);
         localStorage.setItem("username", username);
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("tokenExpiration", expirationTime.toString());
 
-        // 유저별 페이지로 리다이렉트
+        setTimeout(() => {
+          localStorage.clear();
+          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+          navigate("/login");
+        }, 60 * 1000);
+
         navigate(`/users/${username}/summary`);
         return true;
       }
     } catch (error) {
-      if (error.response?.status === 401) {
-        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+      if (error.response) {
+        // 서버가 응답한 구체적인 에러 처리
+        if (error.response.data.error) {
+          alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+        } else if (error.response.data.username) {
+          alert(error.response.data.username[0]); // username 관련 에러
+        } else if (error.response.data.password) {
+          alert(error.response.data.password[0]); // password 관련 에러
+        } else {
+          alert("로그인 중 오류가 발생했습니다.");
+        }
       } else {
-        alert("로그인 중 오류가 발생했습니다.");
+        alert("서버와의 연결이 실패했습니다.");
       }
       return false;
     }
