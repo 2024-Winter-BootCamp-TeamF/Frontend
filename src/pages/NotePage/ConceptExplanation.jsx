@@ -94,7 +94,7 @@ const ConceptContainer = styled.div`
   border-radius: 10px;
   margin-left: 30px;
   margin-right: 60px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "50px")};
+  margin-top: ${(props) => (props.isFirst ? "100px" : "50px")};
   position: relative;
 
   @media screen and (max-width: 1200px) {

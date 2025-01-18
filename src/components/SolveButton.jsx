@@ -25,19 +25,18 @@ const StyledButton = styled.button`
   font-size: 24px;
   line-height: 30px;
   border-radius: 4px;
+  background-color: #5887f4;
+  color: white;
+  border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
   font-family: "HakgyoansimAllimjangTTF-R";
-<<<<<<< HEAD
 
-=======
->>>>>>> 1b8a76261748fc7acc5b0f472b039bf2c5e7611e
   /* 기본 스타일 */
   ${({ variant }) =>
     variant === "filled" &&
     css`
-<<<<<<< HEAD
       background-color: #5887f4;
       color: white;
       border: none;
@@ -48,17 +47,6 @@ const StyledButton = styled.button`
       }
     `}
 
-=======
-      background-color: #5887f4; /* 기본 배경색 */
-      color: white; /* 기본 글씨색 */
-      border: none;
-      &:hover {
-        background-color: white; /* 호버 시 배경색 */
-        color: #5887f4; /* 호버 시 글씨색 */
-        border: 2px solid #5887f4; /* 호버 시 테두리 */
-      }
-    `}
->>>>>>> 1b8a76261748fc7acc5b0f472b039bf2c5e7611e
   ${({ variant }) =>
     variant === "outlined" &&
     css`
@@ -69,10 +57,7 @@ const StyledButton = styled.button`
         background-color: #eef4ff;
       }
     `}
-<<<<<<< HEAD
 
-=======
->>>>>>> 1b8a76261748fc7acc5b0f472b039bf2c5e7611e
   &:active {
     transform: scale(1.05);
   }

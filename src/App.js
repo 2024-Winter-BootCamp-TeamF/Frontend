@@ -23,6 +23,7 @@ import MainPage from "./pages/MainPage";
 import AdditionalCompletePage from "./pages/AdditionalCompletePage";
 import CheckCompletePage from "./pages/CheckCompletePage copy";
 import PracticeCompletePage from "./pages/PracticeCompletePage";
+import GradingResults from "./pages/GradingResults";
 
 function App() {
   return (
@@ -33,18 +34,17 @@ function App() {
           {/* 기존 라우트 */}
           <Route path="/" element={<UploadPage />} />
           <Route path="/upload" element={<UploadPage />} />
+          <Route path="/grading-results" element={<GradingResults />} />
           <Route
             path="/practice"
             element={<ProblemContent problems={problems} />}
           />
           <Route path="/note" element={<WrongAnswer />} />
-
           {/* 마이페이지 라우트 */}
           <Route path="/sample" element={<SamplePage />} />
           <Route path="/mypage/summary" element={<UserPageSample />} />
           <Route path="/mypage/practice" element={<UserPageEx />} />
           <Route path="/mypage/note" element={<UserPageNote />} />
-
           {/* 새로운 라우트 */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/main" element={<MainPage />} />

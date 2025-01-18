@@ -63,7 +63,7 @@ const ReadOnlyWrapper = styled.div`
   pointer-events: none;
   margin-bottom: 50px;
   margin-right: 30px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "0")};
+  margin-top: ${(props) => (props.isFirst ? "100px" : "0")};
 
   > div {
     width: 100%;

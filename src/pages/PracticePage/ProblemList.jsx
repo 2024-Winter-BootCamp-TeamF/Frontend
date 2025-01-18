@@ -94,9 +94,9 @@ const ProblemListContainer = styled.div`
 const Title = styled.h2`
   font-size: ${SIZES.TITLE};
   text-align: center;
-  margin-top: 45px;
+  margin-top: 20px;
 
-  margin-bottom: 45px;
+  margin-bottom: 20px;
 `;
 
 const ProblemUl = styled.ul`
@@ -110,7 +110,7 @@ const ProblemLi = styled.li`
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   margin-left: 55px;
   border-radius: 4px;
   position: relative;
