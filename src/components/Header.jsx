@@ -8,11 +8,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleUserClick = () => {
-    // localStorage를 사용하여 로그인 상태 확인
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const userId = localStorage.getItem("userId");
 
-    if (isLoggedIn) {
-      navigate("/mypage");
+    if (isLoggedIn && userId) {
+      navigate(`/users/${userId}/summary`);
     } else {
       navigate("/login");
     }
@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <Link to="/mainpage">
+        <Link to="/main">
           <img src={logo} alt="logo" />
         </Link>
       </LogoWrapper>
