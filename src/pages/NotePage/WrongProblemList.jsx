@@ -53,7 +53,6 @@ const WrongProblemList = ({ problems }) => {
 
 const ProblemListContainer = styled.div`
   margin-left: 60px;
-
   @media screen and (max-width: 1200px) {
     margin-left: 20px;
   }
@@ -79,7 +78,7 @@ const ReadOnlyWrapper = styled.div`
 const SubjectiveWrapper = styled.div`
   margin-bottom: 50px;
   margin-right: 30px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "0")};
+  margin-top: ${(props) => (props.isFirst ? "100px" : "0")};
 
   @media screen and (max-width: 1200px) {
     margin-right: 20px;
@@ -135,6 +134,7 @@ const AnswerInput = styled.input`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 100px;
 `;
 
 const ButtonWrapper = styled.div`
