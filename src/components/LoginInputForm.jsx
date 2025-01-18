@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginInputForm = ({
   currentType,
@@ -8,6 +9,57 @@ const LoginInputForm = ({
   setCurrentType,
 }) => {
   const navigate = useNavigate();
+  const API_BASE_URL = "http://localhost:8080/api";
+
+  // 회원가입 API 호출
+  const signUp = async (userData) => {
+    try {
+      const signUpData = {
+        username: userData.id,
+        password: userData.password,
+        password2: userData.confirmPassword,
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/signup`, signUpData);
+      if (response.status === 201) {
+        alert("회원가입이 완료되었습니다!");
+        setCurrentType("SignIn");
+        return true;
+      }
+    } catch (error) {
+      if (error.response?.status === 409) {
+        alert("이미 존재하는 아이디입니다.");
+      } else {
+        alert("회원가입 중 오류가 발생했습니다.");
+      }
+      return false;
+    }
+  };
+
+  // 로그인 API 호출
+  const signIn = async (userData) => {
+    try {
+      const signInData = {
+        username: userData.id,
+        password: userData.password,
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/signin`, signInData);
+      if (response.status === 200) {
+        const { username } = response.data;
+        // 사용자 정보 저장
+        localStorage.setItem("username", username);
+        return true;
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+      } else {
+        alert("로그인 중 오류가 발생했습니다.");
+      }
+      return false;
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,67 +69,27 @@ const LoginInputForm = ({
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const userData = {
+      id: inputValues.id,
+      password: inputValues.password,
+    };
+
     if (currentType === "SignUp") {
-      // 입력값 확인
-      if (
-        !inputValues.id ||
-        !inputValues.password ||
-        !inputValues.confirmPassword
-      ) {
-        alert("모든 필드를 입력해주세요.");
-        return;
+      const success = await signUp(userData);
+      if (success) {
+        setInputValues({
+          id: "",
+          password: "",
+          confirmPassword: "",
+        });
       }
-
-      // 비밀번호 확인
-      if (inputValues.password !== inputValues.confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다.");
-        return;
-      }
-
-      // 기존 사용자 확인
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      if (users.some((user) => user.id === inputValues.id)) {
-        alert("이미 존재하는 아이디입니다.");
-        return;
-      }
-
-      // 새 사용자 저장
-      users.push({
-        id: inputValues.id,
-        password: inputValues.password,
-      });
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("회원가입이 완료되었습니다!");
-
-      // 입력값 초기화 후 로그인 화면으로 전환
-      setInputValues({
-        id: "",
-        password: "",
-        confirmPassword: "",
-      });
-      setCurrentType("SignIn");
     } else {
-      // 로그인 입력값 확인
-      if (!inputValues.id || !inputValues.password) {
-        alert("아이디와 비밀번호를 모두 입력해주세요.");
-        return;
-      }
-
-      // 로그인 처리
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const user = users.find(
-        (user) =>
-          user.id === inputValues.id && user.password === inputValues.password
-      );
-
-      if (user) {
-        localStorage.setItem("currentUser", JSON.stringify(user));
+      const success = await signIn(userData);
+      if (success) {
         navigate("/userpage");
-      } else {
-        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
       }
     }
   };
