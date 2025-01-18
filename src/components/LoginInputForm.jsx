@@ -51,9 +51,15 @@ const LoginInputForm = ({
       const response = await axios.post(`${API_BASE_URL}/login/`, signInData);
       if (response.status === 200) {
         const token = response.data.key;
+        const username = signInData.username;
+
+        // localStorage에 필요한 정보 저장
         localStorage.setItem("accessToken", token);
-        localStorage.setItem("username", signInData.username);
-        navigate("/main");
+        localStorage.setItem("username", username);
+        localStorage.setItem("isLoggedIn", "true");
+
+        // 유저별 페이지로 리다이렉트
+        navigate(`/users/${username}/summary`);
         return true;
       }
     } catch (error) {
@@ -92,10 +98,7 @@ const LoginInputForm = ({
         });
       }
     } else {
-      const success = await signIn(userData);
-      if (success) {
-        navigate("/mypage/summary");
-      }
+      await signIn(userData);
     }
   };
 
