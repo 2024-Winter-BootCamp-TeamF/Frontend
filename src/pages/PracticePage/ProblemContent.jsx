@@ -22,8 +22,27 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
 
+  // 문제 해결 결과 상태 정의
+  const [results, setResults] = useState(
+    problems.map((problem) => ({
+      id: problem.id,
+      number: problem.id, // 문제 번호
+      isCorrect: false, // 초기값은 false
+    }))
+  );
+
   // 문제가 풀렸을 때 호출되는 핸들러
-  const handleProblemSolved = (problemId, isSolved, isDoubleClicked) => {
+  const handleProblemSolved = (
+    problemId,
+    isSolved,
+    isDoubleClicked,
+    selectedAnswer
+  ) => {
+    // 문제 ID, 정답 여부, 더블클릭 상태, 선택한 정답 또는 입력한 답안 처리
+    console.log(
+      `문제 ID: ${problemId}, 정답 여부: ${isSolved}, 더블클릭 상태: ${isDoubleClicked}, 답안: ${selectedAnswer}`
+    );
+
     // 풀이 상태 업데이트
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
@@ -51,6 +70,18 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       }
       return newDoubleClicked;
     });
+
+    const updatedResults = results.map((result) => {
+      if (result.id === problemId) {
+        return {
+          ...result,
+          isCorrect: isSolved, // 정답 여부 업데이트
+        };
+      }
+      return result;
+    });
+
+    setResults(updatedResults);
   };
 
   // 모든 문제가 풀렸는지 확인하는 함수

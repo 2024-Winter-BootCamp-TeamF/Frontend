@@ -5,20 +5,7 @@ import Footer from "../components/Footer";
 import correctIcon from "../images/correct.png";
 import wrongIcon from "../images/wrong.png";
 
-const GradingResults = () => {
-  const results = [
-    { number: 1, isCorrect: true },
-    { number: 2, isCorrect: false },
-    { number: 3, isCorrect: true },
-    { number: 4, isCorrect: true },
-    { number: 5, isCorrect: true },
-    { number: 6, isCorrect: false },
-    { number: 7, isCorrect: true },
-    { number: 8, isCorrect: true },
-    { number: 9, isCorrect: true },
-    { number: 10, isCorrect: false },
-  ];
-
+const GradingResults = ({ results = [] }) => {
   return (
     <PageWrapper>
       <Header />

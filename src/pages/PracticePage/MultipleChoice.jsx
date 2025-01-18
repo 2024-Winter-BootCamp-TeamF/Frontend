@@ -14,7 +14,7 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleDoubleClick = (e) => {
-    e.preventDefault(); // 이벤트 기본 동작 방지
+    e.preventDefault();
     if (readOnly) return;
 
     const newDoubleClickState = !isDoubleClicked;
@@ -23,7 +23,8 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
     onProblemSolved(
       problem.id,
       selectedOption !== null, // isSolved
-      newDoubleClickState // isDoubleClicked
+      newDoubleClickState, // isDoubleClicked
+      selectedOption // 선택한 정답 전달
     );
   };
 
@@ -33,11 +34,14 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
     const newSelectedOption = selectedOption === index ? null : index;
     setSelectedOption(newSelectedOption);
 
-    // 더블클릭 상태는 유지하면서 선택 상태만 업데이트
+    // 정답 여부 확인
+    const isSolved = newSelectedOption !== null; // 선택한 답안이 있을 경우 true
+
     onProblemSolved(
       problem.id,
-      newSelectedOption !== null, // isSolved
-      isDoubleClicked // 현재 더블클릭 상태 유지
+      isSolved, // isSolved는 선택 여부에 따라 true
+      isDoubleClicked, // 현재 더블클릭 상태 유지
+      newSelectedOption // 선택한 정답 전달
     );
   };
 
