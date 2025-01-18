@@ -10,6 +10,16 @@ import { useNavigate } from "react-router-dom";
 const Introduce = () => {
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(null);
+  
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";  // 로그인 상태 확인
+
+  const handleButtonClick = () => {
+    if (isLoggedIn) {
+      navigate("/upload");  // 로그인 상태면 업로드 페이지로
+    } else {
+      navigate("/login");   // 비로그인 상태면 로그인 페이지로
+    }
+  };
 
   const menuItems = [
     {
@@ -81,9 +91,11 @@ AI 오답노트를 생성해보세요!
               ? `${menuItems[selectedIndex].title} 관련 이미지`
               : "(이미지 생기면 추가 예정)"}
           </PlaceholderText>
-          <DotButton onClick={() => navigate("/login")}>
-            <img src={circlesIcon} alt="로그인/회원가입" />
-            <ButtonText className="button-text">로그인/회원가입</ButtonText>
+          <DotButton onClick={handleButtonClick}>
+            <img src={circlesIcon} alt={isLoggedIn ? "업로드" : "로그인/회원가입"} />
+            <ButtonText className="button-text">
+              {isLoggedIn ? "업로드 페이지로!" : "로그인/회원가입"}
+            </ButtonText>
           </DotButton>
         </ContentSection>
       </ScrollSection>
