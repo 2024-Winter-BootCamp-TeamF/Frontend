@@ -9,7 +9,7 @@ const LoginInputForm = ({
   setCurrentType,
 }) => {
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:8000/api/user/";
+  const API_BASE_URL = "http://localhost:8000/api/user";
 
   // 회원가입 API 호출
   const signUp = async (userData) => {
@@ -48,10 +48,10 @@ const LoginInputForm = ({
         password: userData.password,
       };
 
-      const response = await axios.post(`${API_BASE_URL}/signin`, signInData);
+      const response = await axios.post(`${API_BASE_URL}/login/`, signInData);
       if (response.status === 200) {
         const token = response.data.key;
-        localStorage.setItem("token", token);
+        localStorage.setItem("accessToken", token);
         localStorage.setItem("username", signInData.username);
         navigate("/main");
         return true;
@@ -94,7 +94,7 @@ const LoginInputForm = ({
     } else {
       const success = await signIn(userData);
       if (success) {
-        navigate("/userpage");
+        navigate("/mypage/summary");
       }
     }
   };
