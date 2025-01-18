@@ -5,8 +5,10 @@ import noteIcon from "../images/note.png";
 import homeIcon from "../images/mypage.png";
 import circlesIcon from "../images/circles.png";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Introduce = () => {
+  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const menuItems = [
@@ -79,7 +81,7 @@ AI 오답노트를 생성해보세요!
               ? `${menuItems[selectedIndex].title} 관련 이미지`
               : "(이미지 생기면 추가 예정)"}
           </PlaceholderText>
-          <DotButton>
+          <DotButton onClick={() => navigate("/login")}>
             <img src={circlesIcon} alt="로그인/회원가입" />
             <ButtonText className="button-text">로그인/회원가입</ButtonText>
           </DotButton>
@@ -91,10 +93,11 @@ AI 오답노트를 생성해보세요!
 
 const IntroduceWrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   margin: 0 auto;
   padding: 40px;
+  position: relative;
 `;
 
 const ScrollSection = styled.div`

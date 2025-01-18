@@ -27,7 +27,7 @@ const Banner = () => {
 
 const BannerWrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   background-image: url(${background});
   background-position: center; /* 배경 이미지 위치 */
   background-size: contain;

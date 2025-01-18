@@ -20,7 +20,7 @@ const FooterWrapper = styled.div`
   position: relative;
 
   // position: absolute; /* 뷰포인트 내 고정을 막기 위한 설정 */
-  // z-index: -1; /* 헤더보다 낮은 z-index 설정 */
+  z-index: -1; /* 헤더보다 낮은 z-index 설정 */
   // bottom: 0;
 `;
 
