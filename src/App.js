@@ -22,7 +22,7 @@ import SamplePage from "./pages/SamplePage";
 import LoginPage from "./pages/LoginPage";
 import MainPage from "./pages/MainPage";
 import AdditionalCompletePage from "./pages/AdditionalCompletePage";
-import CheckCompletePage from "./pages/CheckCompletePage copy";
+import CheckCompletePage from "./pages/CheckCompletePage";
 import PracticeCompletePage from "./pages/PracticeCompletePage";
 import GradingResults from "./pages/GradingResults";
 
@@ -34,7 +34,10 @@ function App() {
         <Routes>
           {/* 기존 라우트 */}
           <Route path="/grading-results" element={<GradingResults />} />
-          <Route path="/practice" element={<ProblemContent problems={problems} />} />
+          <Route
+            path="/practice"
+            element={<ProblemContent problems={problems} />}
+          />
           <Route path="/note" element={<WrongAnswer />} />
 
           {/* 새로운 라우트 */}
