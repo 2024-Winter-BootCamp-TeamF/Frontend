@@ -70,7 +70,7 @@ const CompleteInfoWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-size: cover;
+  background-size: contain;
   background-image: url(${sub_background});
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
