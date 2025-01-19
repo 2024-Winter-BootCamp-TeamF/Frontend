@@ -1,30 +1,40 @@
 import React from "react";
 import styled from "styled-components";
-import FooterImage from "../images/footer.png";
-import userIcon from "../images/user.png";
-import logo from "../images/logo.svg";
 import addIcon from "../images/add.png";
 import ExIcon from "../images/mypage_practice.png";
 import ExButton from "../components/ExButton";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 const UserPageEx = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
-      <Header>
-        <LogoWrapper>
-          <img src={logo} alt="내 교수님은 AI" />
-        </LogoWrapper>
-        <ProfileIcon>
-          <img src={userIcon} alt="Profile" />
-        </ProfileIcon>
-      </Header>
+      <Header />
       <Nav>
-        <ExButton variant="outlined" >요약본</ExButton>
-        <ExButton variant="filled" isActive={true}>연습 문제</ExButton>
-        <ExButton variant="outlined" >오답 노트</ExButton>
+        <ExButton 
+          variant="outlined"
+          onClick={() => navigate("/mypage/summary")}
+        >
+          요약본
+        </ExButton>
+        <ExButton 
+          variant="filled" 
+          isActive={true}
+        >
+          연습 문제
+        </ExButton>
+        <ExButton 
+          variant="outlined" 
+          onClick={() => navigate("/mypage/note")}
+        >
+          오답 노트
+        </ExButton>
       </Nav>
       <Content>
-        <Card>
+        <Card onClick={() => navigate("/upload")}>
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
@@ -67,14 +77,11 @@ const UserPageEx = () => {
           </CardText>
         </Card>
       </Content>
-      <Footer>
-        <FooterImg src={FooterImage} alt="Footer" />
-      </Footer>
+      <Footer />
     </Container>
   );
 };
 
-export default UserPageEx;
 
 const Container = styled.div`
   min-height: 100vh;
@@ -82,32 +89,11 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
-`;
 
-const Header = styled.header`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  position: relative;
-  box-sizing: border-box;
-  // padding-top: 10px;
-  padding-bottom: 20px;
-`;
-
-const LogoWrapper = styled.div`
-  img {
-    width: 150px;
-    height: auto;
-  }
-`;
-
-const ProfileIcon = styled.div`
-  right: 20px;
-  position: absolute;
-  img {
-    width: 40px;
-    height: 40px;
+  /* Footer를 하단에 고정하기 위한 스타일 추가 */
+  > div:last-child {
+    margin-top: auto;  // Footer를 하단으로 밀어내기
+    width: 100%;       // Footer의 너비를 100%로 설정
   }
 `;
 
@@ -125,6 +111,9 @@ const Content = styled.div`
   width: 100%;
   max-width: 800px;
   margin-top: 25px;
+  
+  // margin-bottom: 50px;  // Footer와의 간격을 위해 추가
+
 `;
 
 const Card = styled.div`
@@ -137,7 +126,8 @@ const Card = styled.div`
   transition: transform 0.2s ease;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
   }
 `;
 
@@ -173,7 +163,7 @@ const CardText = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
   font-size: 14px;
-  color: #5c85ff;
+  color: black;
 `;
 
 const DateText = styled.div`
@@ -182,14 +172,4 @@ const DateText = styled.div`
   color: #888888;
 `;
 
-const Footer = styled.footer`
-  margin-top: auto;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
-const FooterImg = styled.img`
-  width: 100%;
-  height: auto;
-`;
+export default UserPageEx;

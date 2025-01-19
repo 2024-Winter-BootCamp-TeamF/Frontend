@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
+
 import "./App.css";
 
 // 기존 페이지 임포트
@@ -32,25 +33,28 @@ function App() {
         <GlobalStyle />
         <Routes>
           {/* 기존 라우트 */}
-          <Route path="/" element={<UploadPage />} />
-          <Route path="/upload" element={<UploadPage />} />
           <Route path="/grading-results" element={<GradingResults />} />
-          <Route
-            path="/practice"
-            element={<ProblemContent problems={problems} />}
-          />
+          <Route path="/practice" element={<ProblemContent problems={problems} />} />
           <Route path="/note" element={<WrongAnswer />} />
-          {/* 마이페이지 라우트 */}
-          <Route path="/sample" element={<SamplePage />} />
-          <Route path="/mypage/summary" element={<UserPageSample />} />
-          <Route path="/mypage/practice" element={<UserPageEx />} />
-          <Route path="/mypage/note" element={<UserPageNote />} />
+
           {/* 새로운 라우트 */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/main" element={<MainPage />} />
+
           <Route path="/Addcomplete" element={<AdditionalCompletePage />} />
           <Route path="/Checkcomplete" element={<CheckCompletePage />} />
           <Route path="/Praccomplete" element={<PracticeCompletePage />} />
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/users/:userId">
+            <Route path="summary" element={<UserPageSample />} />
+            <Route path="practice" element={<UserPageEx />} />
+            <Route path="notes" element={<UserPageNote />} />
+          </Route>
+          <Route path="mypage/summary" element={<UserPageSample />} />
+          <Route path="mypage/practice" element={<UserPageEx />} />
+          <Route path="mypage/note" element={<UserPageNote />} />
+          <Route path="/sample" element={<SamplePage />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </ThemeProvider>
     </Router>
