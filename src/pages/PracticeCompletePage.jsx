@@ -62,6 +62,7 @@ const CompletePageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
 `;
 
 const CompleteInfoWrapper = styled.div`
@@ -69,11 +70,13 @@ const CompleteInfoWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-size: contain;
+  background-size: cover;
   background-image: url(${sub_background});
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
   width: 100%;
+  gap: 20px;
+  padding-top: 25px;
 `;
 
 const ContentContainer = styled.div`
@@ -82,17 +85,16 @@ const ContentContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 800px;
-  margin-bottom: 40px;
 `;
 
 const CharacterSection = styled.div`
   position: absolute;
-  left: -40px;
-  bottom: -50px;
+  left: -5px;
+  bottom: -20px;
   z-index: 2;
 
   img {
-    width: 250px;
+    width: 200px;
     height: auto;
   }
 `;
@@ -102,26 +104,24 @@ const CommentBox = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  position: relative;
   background: white;
   border-radius: 4px;
   text-align: center;
   border: 2px solid #5887f4;
-  min-height: 400px;
-  width: 600px;
+  min-height: 370px;
+  width: 550px;
   padding: 15px;
-  margin-top: 50px;
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 30px;
+  font-weight: 500;
 `;
 
 const Comment = styled.p`
   font-size: 20px;
   line-height: 1.2;
-  text-align: l.2;
+  text-align: left;
 `;
 
 const ButtonSection = styled.div`
