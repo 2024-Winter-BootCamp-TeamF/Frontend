@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import ExButton from "../components/ExButton";
 import ExtensionIcon from "../images/Extension.png";
 import ReductionIcon from "../images/reduction.png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import SolveButton from "../components/SolveButton";
 
 const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
@@ -27,13 +27,16 @@ const SamplePage = () => {
       <MainContent>
         {showPDFViewer && (
           <PDFViewer>
-            <img src="/path-to-pdf-preview.png" alt="PDF Preview" />
+            <iframe
+              src="/compressed.tracemonkey-pldi-09.pdf"
+              title="PDF Viewer"
+            />
           </PDFViewer>
         )}
 
         {showPDFViewer && <Divider />}
 
-        <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "500px" }}>
+        <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "600px" }}>
           <IconWrapper
             onClick={isExtensionActive ? handleReductionClick : handleIconClick}
           >
@@ -42,19 +45,18 @@ const SamplePage = () => {
               alt="Extension"
             />
           </IconWrapper>
+          {/* 
           <Title>요약본 출력</Title>
           <Subtitle>(PDF 뷰어 사용)</Subtitle>
+          */}
+          <iframe
+            src="/compressed.tracemonkey-pldi-09.pdf"
+            title="PDF Viewer"
+            style={{ height: "100%", width: "100%" }}
+          />
         </SummaryBox>
       </MainContent>
-
-      <ButtonContainer>
-        <ExButton variant="filled" onClick={() => {}}>
-          PDF로 저장하기
-        </ExButton>
-        <ExButton variant="filled" onClick={() => {}}>
-          마이페이지에 저장하기
-        </ExButton>
-      </ButtonContainer>
+      <SolveButton>마이페이지로 이동하기</SolveButton>
       <Footer />
     </Container>
   );
@@ -72,7 +74,8 @@ const MainContent = styled.main`
   display: flex;
   width: 90%;
   max-width: 1200px;
-  margin-top: 100px;
+  margin-top: 30px;
+  margin-bottom: 60px;
 `;
 
 const PDFViewer = styled.div`
@@ -81,7 +84,12 @@ const PDFViewer = styled.div`
   border-radius: 8px;
   padding: 20px;
   background: #f5f5f5;
-  min-height: 350px;
+  min-height: 600px;
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 `;
 
 const SummaryBox = styled.div`
@@ -114,26 +122,9 @@ const IconWrapper = styled.div`
   }
 `;
 
-const Title = styled.h1`
-  font-size: 24px;
-  color: #000;
-  margin-bottom: 10px;
-`;
-
-const Subtitle = styled.h2`
-  font-size: 18px;
-  color: #666;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 20px;
-  margin: 30px 0;
-`;
-
 const Divider = styled.div`
   width: 2px;
-  height: 350px; // 높이는 필요에 따라 조절
+  height: 600px; // 높이는 필요에 따라 조절
   background-color: #86abff; // 회색 계열의 색상
   margin: 0 30px; // 좌우 여백
 `;
