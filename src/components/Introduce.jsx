@@ -200,27 +200,26 @@ const ItemContent = styled.div`
 
 const DotButton = styled.button`
   position: absolute;
-  bottom: -7%;
+  bottom: -5%;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
   border: 5px solid #5887f4;
   border-radius: 50px;
   cursor: pointer;
-  padding: 15px;
+  padding: 12px;
   display: flex;
   align-items: center;
-  width: 270px;
-  transition: width 0.5s ease;
+  width: 220px;
 
   .button-text {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 700;
     opacity: 1;
-    transform: translateX(-12px);
   }
 
   img {
-    width: 75px;
+    width: 50px;
     height: auto;
   }
 `;
