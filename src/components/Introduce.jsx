@@ -210,12 +210,16 @@ const DotButton = styled.button`
   padding: 12px;
   display: flex;
   align-items: center;
-  width: 220px;
+  justify-content: center;
+  width: 200px;
+  gap: 10px;
 
   .button-text {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     opacity: 1;
+    color: #5887f4;
+    font-family: "HakgyoansimAllimjangTTF-R";
   }
 
   img {
@@ -225,15 +229,11 @@ const DotButton = styled.button`
 `;
 
 const ButtonText = styled.span`
-  position: absolute;
-  left: 45%;
-  white-space: nowrap;
-  opacity: 0;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 1;
   color: #5887f4;
-  font-size: 20px;
   font-family: "HakgyoansimAllimjangTTF-R";
-  transform: translateX(-20px);
-  transition: all 0.5s ease;
 `;
 
 export default Introduce;
