@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ExButton from "../components/ExButton";
+import { useDropzone } from "react-dropzone";
 
 const UploadPage = () => {
+  const [lectureFiles, setLectureFiles] = useState([]);
+  const [problemFiles, setProblemFiles] = useState([]);
+
+  const onLectureDrop = useCallback((acceptedFiles) => {
+    setLectureFiles(prev => [...prev, ...acceptedFiles]);
+  }, []);
+
+  const onProblemDrop = useCallback((acceptedFiles) => {
+    setProblemFiles(prev => [...prev, ...acceptedFiles]);
+  }, []);
+
+  const removeLectureFile = (fileName) => {
+    setLectureFiles(lectureFiles.filter(file => file.name !== fileName));
+  };
+
+  const removeProblemFile = (fileName) => {
+    setProblemFiles(problemFiles.filter(file => file.name !== fileName));
+  };
+
+  const {
+    getRootProps: getLectureRootProps,
+    getInputProps: getLectureInputProps,
+    isDragActive: isLectureDragActive
+  } = useDropzone({ onDrop: onLectureDrop });
+
+  const {
+    getRootProps: getProblemRootProps,
+    getInputProps: getProblemInputProps,
+    isDragActive: isProblemDragActive
+  } = useDropzone({ onDrop: onProblemDrop });
+
   return (
     <Container>
       <Header />
@@ -15,16 +47,54 @@ const UploadPage = () => {
       </TitleSection>
 
       <UploadSection>
-        <UploadBox>
+        <UploadBox {...getLectureRootProps()}>
+          <input {...getLectureInputProps()} multiple />
           <UploadTitle>강의 자료 업로드</UploadTitle>
-          <UploadSubtitle>또는 드래그해서 파일 올리기</UploadSubtitle>
+          <UploadSubtitle>
+            {isLectureDragActive
+              ? "파일을 여기에 놓으세요"
+              : "또는 드래그해서 파일 올리기"}
+          </UploadSubtitle>
+          {lectureFiles.length > 0 && (
+            <FileList>
+              {lectureFiles.map((file, index) => (
+                <FileItem key={`lecture-${file.name}-${index}`}>
+                  <FileName>{file.name}</FileName>
+                  <RemoveButton onClick={(e) => {
+                    e.stopPropagation();
+                    removeLectureFile(file.name);
+                  }}>
+                    ×
+                  </RemoveButton>
+                </FileItem>
+              ))}
+            </FileList>
+          )}
         </UploadBox>
 
-        <Divider />
-
-        <UploadBox>
+        <UploadBox {...getProblemRootProps()}>
+          <input {...getProblemInputProps()} multiple />
           <UploadTitle>문제 유형 업로드</UploadTitle>
-          <UploadSubtitle>또는 드래그해서 파일 올리기</UploadSubtitle>
+          <UploadSubtitle>
+            {isProblemDragActive
+              ? "파일을 여기에 놓으세요"
+              : "또는 드래그해서 파일 올리기"}
+          </UploadSubtitle>
+          {problemFiles.length > 0 && (
+            <FileList>
+              {problemFiles.map((file, index) => (
+                <FileItem key={`problem-${file.name}-${index}`}>
+                  <FileName>{file.name}</FileName>
+                  <RemoveButton onClick={(e) => {
+                    e.stopPropagation();
+                    removeProblemFile(file.name);
+                  }}>
+                    ×
+                  </RemoveButton>
+                </FileItem>
+              ))}
+            </FileList>
+          )}
         </UploadBox>
       </UploadSection>
 
@@ -114,8 +184,47 @@ const UploadTitle = styled.h3`
 `;
 
 const UploadSubtitle = styled.p`
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
+`;
+
+const FileList = styled.div`
+  margin-top: 20px;
+  width: 90%;
+  max-height: 150px;
+  overflow-y: auto;
+`;
+
+const FileItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  margin: 4px 0;
+  background-color: #f8f9ff;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+const FileName = styled.span`
+  color: #5C85FF;
+  margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const RemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #ff5c5c;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 5px;
+  
+  &:hover {
+    color: #ff3333;
+  }
 `;
 
 const Divider = styled.div`
