@@ -7,10 +7,10 @@ import logo from "../images/logo.svg";
 const LoginPage = () => {
   return (
     <LoginPageWrapper>
-      <LogoSection>
-        <img src={logo} alt="logo" />
-      </LogoSection>
       <LoginBoxWrapper>
+        <LogoSection>
+          <img src={logo} alt="logo" />
+        </LogoSection>
         <LoginBox />
       </LoginBoxWrapper>
       <Footer />
@@ -25,15 +25,17 @@ const LogoSection = styled.div`
   img {
     width: 350px;
   }
-  padding-top: 20px;
   padding-bottom: 20px;
 `;
 
 const LoginBoxWrapper = styled.div`
+  padding-top: 30px;
   display: flex;
-  min-height: 425px;
+  min-height: 100vh;
   align-items: center;
-`
+  justify-content: flex-start;
+  flex-direction: column;
+`;
 
 const LoginPageWrapper = styled.div`
   width: 100%;
