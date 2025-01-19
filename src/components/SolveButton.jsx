@@ -20,10 +20,11 @@ const SolveButton = ({ children, onClick, variant = "filled" }) => {
 };
 
 const StyledButton = styled.button`
-  width: 555px;
-  height: 85px;
-  font-size: 24px;
+  width: 500px;
+  height: 70px;
+  font-size: 20px;
   line-height: 30px;
+  text-align: center;
   border-radius: 4px;
   background-color: #5887f4;
   color: white;
