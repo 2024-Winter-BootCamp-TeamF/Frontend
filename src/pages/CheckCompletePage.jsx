@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styled from "styled-components";
 import character from "../images/character.png";
-import sub_background from "../images/Frame4434.png";
+import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
 
 const CheckCompletePage = () => {
