@@ -71,7 +71,6 @@ const CharacterSection = styled.div`
 
 const CommentSection = styled.div`
   font-size: 30px;
-  padding-bottom: 30px;
 `;
 
 const ButtonSection = styled.div`

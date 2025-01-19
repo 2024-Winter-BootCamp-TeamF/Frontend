@@ -75,7 +75,7 @@ const CompleteInfoWrapper = styled.div`
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
   width: 100%;
-  gap: 20px;
+  gap: 5px;
   padding-top: 25px;
 `;
 
