@@ -34,7 +34,7 @@ const CheckCompletePage = () => {
 
 const CompletePageWrapper = styled.div`
   width: 100%;
-  height: 100vh; /* 화면 높이를 100%로 설정 */
+  min-height: 100vh; /* 화면 높이를 100%로 설정 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,24 +48,25 @@ const CompleteInfoWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-size: contain;
+  background-size: cover;
   background-image: url(${sub_background});
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
   width: 100%;
+  gap: 30px;
 `;
 
 const CharacterSection = styled.div`
+  padding-top: 20px;
   img {
-    width: 280px;
+    width: 270px;
     height: auto;
   }
 `;
 
 const CommentSection = styled.div`
-  font-size: 36px;
-  padding-top: 20px;
-  padding-bottom: 50px;
+  font-size: 30px;
+  padding-bottom: 30px;
 `;
 
 const ButtonSection = styled.div`
