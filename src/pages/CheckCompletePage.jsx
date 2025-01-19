@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styled from "styled-components";
 import character from "../images/character.png";
-import sub_background from "../images/sub_background.png";
+import sub_background from "../images/Frame4434.png";
 import SolveButton from "../components/SolveButton";
 
 const CheckCompletePage = () => {
@@ -34,12 +34,13 @@ const CheckCompletePage = () => {
 
 const CompletePageWrapper = styled.div`
   width: 100%;
-  min-height: 100vh; /* 화면 높이를 100%로 설정 */
+  height: 100vh; /* 화면 높이를 100%로 설정 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
 `;
 
 const CompleteInfoWrapper = styled.div`

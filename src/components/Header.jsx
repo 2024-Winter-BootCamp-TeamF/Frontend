@@ -43,6 +43,7 @@ const HeaderWrapper = styled.div`
   position: absolute;
   z-index: 10;
   padding: 10px;
+  top: 0;
 `;
 
 const LogoWrapper = styled.div`

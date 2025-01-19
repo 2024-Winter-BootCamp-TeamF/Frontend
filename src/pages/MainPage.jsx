@@ -3,12 +3,14 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Banner from "../components/Banner";
 import Introduce from "../components/Introduce";
+import ScrollIndicator from "../components/ScrollIndicator";
 
 const MainPage = () => {
   return (
     <MainPageWrapper>
       <Header />
       <Banner />
+      <ScrollIndicator />
       <Introduce />
       <Footer />
     </MainPageWrapper>

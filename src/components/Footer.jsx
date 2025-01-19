@@ -14,7 +14,6 @@ const Footer = () => {
 
 const FooterWrapper = styled.div`
   width: 100%;
-  height: 100px;
   background-color: white;
   position: absolute;
   bottom: 0;
@@ -30,8 +29,6 @@ const FooterImg = styled.div`
   img {
     width: 100%;
     height: auto;
-
-    display: block;
   }
 `;
 
