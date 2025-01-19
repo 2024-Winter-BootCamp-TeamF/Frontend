@@ -13,12 +13,19 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = (e) => {
+    e.preventDefault();
     if (readOnly) return;
+
     const newDoubleClickState = !isDoubleClicked;
     setIsDoubleClicked(newDoubleClickState);
-    // 더블클릭 상태만 변경하고 선택 상태는 유지
-    onProblemSolved(problem.id, true, newDoubleClickState);
+
+    onProblemSolved(
+      problem.id,
+      selectedOption !== null, // isSolved
+      newDoubleClickState, // isDoubleClicked
+      selectedOption // 선택한 정답 전달
+    );
   };
 
   const handleOptionSelect = (index) => {
@@ -27,13 +34,15 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
     const newSelectedOption = selectedOption === index ? null : index;
     setSelectedOption(newSelectedOption);
 
-    // 선택 상태 변경 시 더블클릭 상태는 false로 초기화
-    if (newSelectedOption !== null) {
-      setIsDoubleClicked(false);
-      onProblemSolved(problem.id, true, false);
-    } else {
-      onProblemSolved(problem.id, false, false);
-    }
+    // 정답 여부 확인
+    const isSolved = newSelectedOption !== null; // 선택한 답안이 있을 경우 true
+
+    onProblemSolved(
+      problem.id,
+      isSolved, // isSolved는 선택 여부에 따라 true
+      isDoubleClicked, // 현재 더블클릭 상태 유지
+      newSelectedOption // 선택한 정답 전달
+    );
   };
 
   return (
@@ -70,7 +79,7 @@ MultipleChoice.propTypes = {
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     options: PropTypes.arrayOf(PropTypes.string).isRequired,
-    selectedAnswer: PropTypes.number,
+    correctAnswer: PropTypes.number.isRequired,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
   onProblemSolved: PropTypes.func.isRequired,

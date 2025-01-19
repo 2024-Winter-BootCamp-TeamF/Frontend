@@ -25,7 +25,8 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
     onProblemSolved(
       problem.id,
       answer.trim().length > 0, // isSolved
-      newDoubleClickState // isDoubleClicked
+      newDoubleClickState, // isDoubleClicked
+      answer // 입력한 답 전달
     );
   };
 
@@ -34,11 +35,11 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
     const newAnswer = e.target.value;
     setAnswer(newAnswer);
 
-    // 더블클릭 상태는 유지하면서 입력 상태만 업데이트
     onProblemSolved(
       problem.id,
       newAnswer.trim().length > 0, // isSolved
-      isDoubleClicked // 현재 더블클릭 상태 유지
+      isDoubleClicked, // 현재 더블클릭 상태 유지
+      newAnswer // 입력한 답 전달
     );
   };
 
@@ -111,6 +112,7 @@ const Input = styled.input`
   border: 1px solid ${COLORS.BORDER};
   border-radius: 4px;
   margin-top: 10px;
+  margin-left: 30px;
 
   &:disabled {
     background-color: #f5f5f5;

@@ -1,9 +1,16 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import MultipleChoice from "../PracticePage/MultipleChoice";
 import Button from "../../components/SolveButton";
 
 const WrongProblemList = ({ problems }) => {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate("/mypage/summary");
+  };
+
   const renderProblem = (problem) => {
     if (problem.type === "multiple_choice") {
       return (
@@ -34,7 +41,7 @@ const WrongProblemList = ({ problems }) => {
     <Container>
       <ProblemListContainer>{problems.map(renderProblem)}</ProblemListContainer>
       <ButtonWrapper>
-        <Button>
+        <Button onClick={handleButtonClick}>
           많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!
           <br />
           마이페이지로 이동하기
@@ -46,7 +53,6 @@ const WrongProblemList = ({ problems }) => {
 
 const ProblemListContainer = styled.div`
   margin-left: 60px;
-
   @media screen and (max-width: 1200px) {
     margin-left: 20px;
   }
@@ -56,7 +62,6 @@ const ReadOnlyWrapper = styled.div`
   pointer-events: none;
   margin-bottom: 50px;
   margin-right: 30px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "0")};
 
   > div {
     width: 100%;
@@ -72,8 +77,11 @@ const ReadOnlyWrapper = styled.div`
 const SubjectiveWrapper = styled.div`
   margin-bottom: 50px;
   margin-right: 30px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "0")};
+<<<<<<< Updated upstream
+  margin-top: ${(props) => (props.isFirst ? "100px" : "0")};
 
+=======
+>>>>>>> Stashed changes
   @media screen and (max-width: 1200px) {
     margin-right: 20px;
   }
@@ -128,6 +136,7 @@ const AnswerInput = styled.input`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 100px;
 `;
 
 const ButtonWrapper = styled.div`
