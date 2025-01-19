@@ -40,6 +40,7 @@ const CompletePageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
 `;
 
 const CompleteInfoWrapper = styled.div`
@@ -52,19 +53,19 @@ const CompleteInfoWrapper = styled.div`
   background-position: center; /* 배경 이미지 위치 */
   height: 100%;
   width: 100%;
+  gap: 30px;
 `;
 
 const CharacterSection = styled.div`
+  padding-top: 20px;
   img {
-    width: 280px;
+    width: 270px;
     height: auto;
   }
 `;
 
 const CommentSection = styled.div`
-  font-size: 36px;
-  padding-top: 20px;
-  padding-bottom: 50px;
+  font-size: 30px;
 `;
 
 const ButtonSection = styled.div`

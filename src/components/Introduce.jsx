@@ -81,7 +81,7 @@ AI 오답노트를 생성해보세요!
           </PlaceholderText>
           <DotButton>
             <img src={circlesIcon} alt="로그인/회원가입" />
-            <ButtonText className="button-text">로그인/회원가입</ButtonText>
+            <ButtonText className="button-text">서비스 시작하기!</ButtonText>
           </DotButton>
         </ContentSection>
       </ScrollSection>
@@ -94,15 +94,18 @@ const IntroduceWrapper = styled.div`
   height: 100vh;
   display: flex;
   margin: 0 auto;
-  padding: 40px;
+  padding: 10px 30px 30px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ScrollSection = styled.div`
-  width: 100%;
-  height: 650px;
+  width: 80%;
+  height: 550px;
   display: flex;
   justify-content: space-between;
-  gap: 40px;
+  gap: 50px;
 `;
 
 const MenuSection = styled.div`
@@ -115,13 +118,13 @@ const MenuSection = styled.div`
 const MenuItem = styled.div`
   background-color: ${(props) => props.bgColor};
   border-radius: 15px;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: x all 0.3s ease;
   position: relative;
 
   ${(props) =>
@@ -131,15 +134,15 @@ const MenuItem = styled.div`
     
     ${MenuTitle} {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
-      font-size: 20px;
+      bottom: 15px;
+      left: 15px;
+      font-size: 18px;
     }
     
     ${IconWrapper} {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
     }
     
     ${ItemContent} {
@@ -147,14 +150,14 @@ const MenuItem = styled.div`
       top: 50%;
       transform: translateY(-50%);
       text-align: left;
-      font-size: 24px
+      font-size: 22px
     }
   `}
 `;
 
 const MenuTitle = styled.span`
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   transition: all 0.3s ease;
 `;
@@ -173,7 +176,7 @@ const IconWrapper = styled.div`
 
 const ContentSection = styled.div`
   background-color: #fff;
-  flex: 1;
+  width: 70%;
   border: 5px solid #5887f4;
   border-radius: 20px;
   display: flex;
@@ -197,43 +200,40 @@ const ItemContent = styled.div`
 
 const DotButton = styled.button`
   position: absolute;
-  bottom: -7%;
+  bottom: -5%;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
   border: 5px solid #5887f4;
   border-radius: 50px;
   cursor: pointer;
-  padding: 20px;
+  padding: 12px;
   display: flex;
   align-items: center;
-  width: 125px;
-  transition: width 0.5s ease;
+  justify-content: center;
+  width: 200px;
+  gap: 10px;
 
-  &:hover {
-    width: 270px;
-    .button-text {
-      opacity: 1;
-      transform: translateX(-10px);
-    }
+  .button-text {
+    font-size: 16px;
+    font-weight: 700;
+    opacity: 1;
+    color: #5887f4;
+    font-family: "HakgyoansimAllimjangTTF-R";
   }
 
   img {
-    width: 75px;
+    width: 50px;
     height: auto;
   }
 `;
 
 const ButtonText = styled.span`
-  position: absolute;
-  left: 45%;
-  white-space: nowrap;
-  opacity: 0;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 1;
   color: #5887f4;
-  font-size: 20px;
   font-family: "HakgyoansimAllimjangTTF-R";
-  transform: translateX(-20px);
-  transition: all 0.5s ease;
 `;
 
 export default Introduce;
