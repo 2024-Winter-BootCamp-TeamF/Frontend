@@ -14,27 +14,21 @@ const UserPageSample = () => {
     <Container>
       <Header />
       <Nav>
-        <ExButton 
-          variant="filled" 
-          isActive={true}
-        >
+        <ExButton variant="filled" isActive={true}>
           요약본
         </ExButton>
-        <ExButton 
-          variant="outlined" 
+        <ExButton
+          variant="outlined"
           onClick={() => navigate("/mypage/practice")}
         >
           연습 문제
         </ExButton>
-        <ExButton 
-          variant="outlined" 
-          onClick={() => navigate("/mypage/note")}
-        >
+        <ExButton variant="outlined" onClick={() => navigate("/mypage/note")}>
           오답 노트
         </ExButton>
       </Nav>
       <Content>
-        <Card onClick={() => navigate("/sample")}>
+        <Card onClick={() => navigate("/upload")}>
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
@@ -128,7 +122,7 @@ const AddIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  
+
   img {
     width: 40px;
     height: 40px;
@@ -142,7 +136,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  
+
   img {
     width: 50px;
     height: 50px;
