@@ -143,7 +143,7 @@ const IconWrapper = styled.div`
 
 const Divider = styled.div`
   width: 2px;
-  height: 480px; // 높이는 필요에 따라 조절
+  height: calc(100% - 10px); // 높이는 필요에 따라 조절
   background-color: #86abff; // 회색 계열의 색상
   margin: 0 40px; // 좌우 여백
 `;
