@@ -24,39 +24,45 @@ const SamplePage = () => {
   return (
     <Container>
       <Header />
-      <MainContent>
-        {showPDFViewer && (
-          <PDFViewer>
-            <iframe
-              src="/compressed.tracemonkey-pldi-09.pdf"
-              title="PDF Viewer"
-            />
-          </PDFViewer>
-        )}
+      <MainContentWrapper>
+        <MainContent>
+          {showPDFViewer && (
+            <PDFViewer>
+              <iframe
+                src="/compressed.tracemonkey-pldi-09.pdf"
+                title="PDF Viewer"
+              />
+            </PDFViewer>
+          )}
 
-        {showPDFViewer && <Divider />}
+          {showPDFViewer && <Divider />}
 
-        <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "600px" }}>
-          <IconWrapper
-            onClick={isExtensionActive ? handleReductionClick : handleIconClick}
-          >
-            <img
-              src={isExtensionActive ? ReductionIcon : ExtensionIcon}
-              alt="Extension"
-            />
-          </IconWrapper>
-          {/* 
+          <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "600px" }}>
+            <IconWrapper
+              onClick={
+                isExtensionActive ? handleReductionClick : handleIconClick
+              }
+            >
+              <img
+                src={isExtensionActive ? ReductionIcon : ExtensionIcon}
+                alt="Extension"
+              />
+            </IconWrapper>
+            {/* 
           <Title>요약본 출력</Title>
           <Subtitle>(PDF 뷰어 사용)</Subtitle>
           */}
-          <iframe
-            src="/compressed.tracemonkey-pldi-09.pdf"
-            title="PDF Viewer"
-            style={{ height: "100%", width: "100%" }}
-          />
-        </SummaryBox>
-      </MainContent>
-      <SolveButton>마이페이지로 이동하기</SolveButton>
+            <iframe
+              src="/compressed.tracemonkey-pldi-09.pdf"
+              title="PDF Viewer"
+              style={{ height: "100%", width: "100%" }}
+            />
+          </SummaryBox>
+        </MainContent>
+        <SolveButton
+          children={"마이페이지에 저장 완료!\n마이페이지로 이동하기"}
+        />
+      </MainContentWrapper>
       <Footer />
     </Container>
   );
@@ -64,27 +70,33 @@ const SamplePage = () => {
 
 const Container = styled.div`
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `;
 
 const MainContent = styled.main`
   display: flex;
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
-  margin-top: 30px;
-  margin-bottom: 60px;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 15px;
+`;
+
+const MainContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const PDFViewer = styled.div`
   flex: 1;
-  border: 1px solid #ccc;
+  padding: 10px;
+
+  border: 2px solid #5887f4;
   border-radius: 8px;
-  padding: 20px;
-  background: #f5f5f5;
-  min-height: 600px;
+  background: #fff;
+
+  height: 500px;
   iframe {
     width: 100%;
     height: 100%;
@@ -94,14 +106,15 @@ const PDFViewer = styled.div`
 
 const SummaryBox = styled.div`
   flex: 1;
-  border: 2px solid #9ebbff;
+  background: #fff;
+  border: 2px solid #5887f4;
   border-radius: 8px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 350px;
+  height: 500px;
   position: relative;
 `;
 
@@ -124,7 +137,7 @@ const IconWrapper = styled.div`
 
 const Divider = styled.div`
   width: 2px;
-  height: 600px; // 높이는 필요에 따라 조절
+  height: 480px; // 높이는 필요에 따라 조절
   background-color: #86abff; // 회색 계열의 색상
   margin: 0 30px; // 좌우 여백
 `;
