@@ -208,13 +208,13 @@ const TitleSection = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 500;
   margin-top: 20px;
 `;
 
 const SubTitle = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   color: #666;
   font-weight: 500;
 `;
