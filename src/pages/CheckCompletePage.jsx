@@ -4,8 +4,15 @@ import styled from "styled-components";
 import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
+import { useNavigate } from "react-router-dom";
 
 const CheckCompletePage = () => {
+  const navigate = useNavigate();
+
+  const handleResultClick = () => {
+    navigate("/grading-results");
+  };
+
   return (
     <CompletePageWrapper>
       <Header />
@@ -24,7 +31,10 @@ const CheckCompletePage = () => {
             ))}
         </CommentSection>
         <ButtonSection>
-          <SolveButton children={`과연 나의 학습 결과는?!\n결과 확인하기`} />
+          <SolveButton
+            onClick={handleResultClick}
+            children={`과연 나의 학습 결과는?!\n결과 확인하기`}
+          />
         </ButtonSection>
       </CompleteInfoWrapper>
       <Footer />
