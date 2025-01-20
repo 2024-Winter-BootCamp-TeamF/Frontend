@@ -14,31 +14,31 @@ const UploadPage = () => {
   const navigate = useNavigate();
 
   const onLectureDrop = useCallback((acceptedFiles) => {
-    setLectureFiles(prev => [...prev, ...acceptedFiles]);
+    setLectureFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
 
   const onProblemDrop = useCallback((acceptedFiles) => {
-    setProblemFiles(prev => [...prev, ...acceptedFiles]);
+    setProblemFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
 
   const removeLectureFile = (fileName) => {
-    setLectureFiles(lectureFiles.filter(file => file.name !== fileName));
+    setLectureFiles(lectureFiles.filter((file) => file.name !== fileName));
   };
 
   const removeProblemFile = (fileName) => {
-    setProblemFiles(problemFiles.filter(file => file.name !== fileName));
+    setProblemFiles(problemFiles.filter((file) => file.name !== fileName));
   };
 
   const {
     getRootProps: getLectureRootProps,
     getInputProps: getLectureInputProps,
-    isDragActive: isLectureDragActive
+    isDragActive: isLectureDragActive,
   } = useDropzone({ onDrop: onLectureDrop });
 
   const {
     getRootProps: getProblemRootProps,
     getInputProps: getProblemInputProps,
-    isDragActive: isProblemDragActive
+    isDragActive: isProblemDragActive,
   } = useDropzone({ onDrop: onProblemDrop });
 
   const handleUpload = () => {
@@ -46,10 +46,10 @@ const UploadPage = () => {
       alert("강의 자료를 업로드해주세요.");
       return;
     }
-    
+
     setIsLoading(true);
     // 여기에 실제 파일 업로드 로직 추가
-    setTimeout(() => {  // 임시로 타임아웃 사용
+    setTimeout(() => {
       setIsLoading(false);
       setShowModal(true);
     }, 2000);
@@ -78,10 +78,12 @@ const UploadPage = () => {
               {lectureFiles.map((file, index) => (
                 <FileItem key={`lecture-${file.name}-${index}`}>
                   <FileName>{file.name}</FileName>
-                  <RemoveButton onClick={(e) => {
-                    e.stopPropagation();
-                    removeLectureFile(file.name);
-                  }}>
+                  <RemoveButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeLectureFile(file.name);
+                    }}
+                  >
                     ×
                   </RemoveButton>
                 </FileItem>
@@ -103,10 +105,12 @@ const UploadPage = () => {
               {problemFiles.map((file, index) => (
                 <FileItem key={`problem-${file.name}-${index}`}>
                   <FileName>{file.name}</FileName>
-                  <RemoveButton onClick={(e) => {
-                    e.stopPropagation();
-                    removeProblemFile(file.name);
-                  }}>
+                  <RemoveButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeProblemFile(file.name);
+                    }}
+                  >
                     ×
                   </RemoveButton>
                 </FileItem>
@@ -119,16 +123,18 @@ const UploadPage = () => {
       <InstructionSection>
         <InstructionTitle></InstructionTitle>
         <InstructionList>
-          <li>요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에 업로드해주세요.</li>
-          <li>원하는 문제 유형을 업로드하면 비슷한 유형의 문제로 출제됩니다.</li>
+          <li>
+            요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
+            업로드해주세요.
+          </li>
+          <li>
+            원하는 문제 유형을 업로드하면 비슷한 유형의 문제로 출제됩니다.
+          </li>
         </InstructionList>
       </InstructionSection>
 
       <ButtonSection>
-        <ExButton 
-          variant="filled" 
-          onClick={handleUpload}
-        >
+        <ExButton variant="filled" onClick={handleUpload}>
           파일 업로드
         </ExButton>
       </ButtonSection>
@@ -147,20 +153,20 @@ const UploadPage = () => {
           <ModalContent>
             <ModalTitle>작업을 선택해주세요</ModalTitle>
             <ModalButtons>
-              <ExButton 
-                variant="filled" 
+              <ExButton
+                variant="filled"
                 onClick={() => {
                   setShowModal(false);
-                  navigate('/mypage/summary');  // UserPageSample로 이동
+                  navigate("/sample", { state: { pdfFile: lectureFiles[0] } });
                 }}
               >
                 요약 확인하기
               </ExButton>
-              <ExButton 
-                variant="filled" 
+              <ExButton
+                variant="filled"
                 onClick={() => {
                   setShowModal(false);
-                  navigate('/mypage/practice');  // UserPageEx로 이동
+                  navigate("/mypage/practice"); // UserPageEx로 이동
                 }}
               >
                 연습문제 풀이하기
@@ -212,7 +218,7 @@ const UploadSection = styled.div`
 const UploadBox = styled.div`
   width: 400px;
   height: 300px;
-  border: 2px dashed #86ABFF;
+  border: 2px dashed #86abff;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -257,7 +263,7 @@ const FileItem = styled.div`
 `;
 
 const FileName = styled.span`
-  color: #5C85FF;
+  color: #5c85ff;
   margin-right: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -271,7 +277,7 @@ const RemoveButton = styled.button`
   font-size: 18px;
   cursor: pointer;
   padding: 0 5px;
-  
+
   &:hover {
     color: #ff3333;
   }
@@ -296,7 +302,7 @@ const InstructionTitle = styled.h3`
 const InstructionList = styled.ul`
   list-style-type: none;
   text-align: left;
-  
+
   li {
     margin: 10px 0;
     color: #666;
@@ -351,7 +357,7 @@ const CloseButton = styled.button`
   font-size: 20px;
   cursor: pointer;
   color: #666;
-  
+
   &:hover {
     color: #333;
   }
@@ -361,7 +367,7 @@ const LoadingContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;  // spinner와 텍스트 사이 간격
+  gap: 30px; // spinner와 텍스트 사이 간격
 `;
 
 const LoadingModal = styled(Modal)`
@@ -375,13 +381,17 @@ const LoadingSpinner = styled.div`
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #86ABFF;
+  border-top: 5px solid #86abff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
