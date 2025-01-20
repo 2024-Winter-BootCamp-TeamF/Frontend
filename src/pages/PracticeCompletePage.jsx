@@ -4,8 +4,19 @@ import styled from "styled-components";
 import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
+import { useNavigate } from "react-router-dom";
 
 const PracticeCompletePage = () => {
+  const navigate = useNavigate();
+
+  const handlePracticeClick = () => {
+    navigate("/practice");
+  };
+
+  const handleMyPageClick = () => {
+    navigate("/mypage/practice");
+  };
+
   return (
     <CompletePageWrapper>
       <Header />
@@ -37,15 +48,11 @@ const PracticeCompletePage = () => {
         <ButtonSection>
           <SolveButton
             children={`지금 풀면 A+ 각.\n연습 문제 풀어보기`}
-            onClick={() => {
-              /* 문제 풀기 페이지로 이동 */
-            }}
+            onClick={handlePracticeClick}
           />
           <SolveButton
-            children={`교수님 저는 아직 마음의 준비가 필요합니다....\n마이페이지에 저장하기`}
-            onClick={() => {
-              /* 마이페이지로 이동 */
-            }}
+            children={`교수님 저는 아직 마음의 준비가 필요합니다....\n마이페이지로 이동하기`}
+            onClick={handleMyPageClick}
           />
         </ButtonSection>
       </CompleteInfoWrapper>
