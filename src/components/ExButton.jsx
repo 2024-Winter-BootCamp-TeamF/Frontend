@@ -14,8 +14,8 @@ const ExButton = ({
 
 const StyledButton = styled.button`
   // padding: 10px 20px;
-  width: 200px;
-  height: 50px;
+  width: 180px;
+  height: 45px;
   font-family: "HakgyoansimAllimjangTTF-R";
   font-size: 16px;
   font-weight: 500;
@@ -54,7 +54,7 @@ const StyledButton = styled.button`
     css`
       background-color: transparent;
       color: #5c85ff;
-      border: 2px solid #5c85ff;
+      border: 2px solid #5887f4;
 
       &:hover {
         background-color: #fff;

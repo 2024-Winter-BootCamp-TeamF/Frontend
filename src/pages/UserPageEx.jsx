@@ -86,8 +86,9 @@ const Container = styled.div`
 const Nav = styled.nav`
   display: flex;
   justify-content: center;
-  margin: 10px 20px;
-  gap: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  gap: 20px;
 `;
 
 const Content = styled.div`
@@ -96,9 +97,7 @@ const Content = styled.div`
   gap: 20px;
   width: 100%;
   max-width: 800px;
-  margin-top: 25px;
-
-  // margin-bottom: 50px;  // Footer와의 간격을 위해 추가
+  margin-top: 15px;
 `;
 
 const DeleteButton = styled.button`
