@@ -131,7 +131,7 @@ const Comment = styled.p`
 
 const ButtonSection = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 100px;
   margin-top: 40px;
 `;
 
