@@ -169,7 +169,7 @@ const UploadPage = () => {
                   variant="filled"
                   onClick={() => {
                     setShowModal(false);
-                    navigate("/sample"); // SamplePage로 이동
+                    navigate("/PracComplete"); // SamplePage로 이동
                   }}
                 >
                   연습문제 생성하기
