@@ -25,9 +25,9 @@ const SamplePage = () => {
     <Container>
       <Header />
       <MainContentWrapper>
-        <MainContent>
+        <MainContent isExtensionActive={isExtensionActive}>
           {showPDFViewer && (
-            <PDFViewer>
+            <PDFViewer hide={isExtensionActive}>
               <iframe
                 src="/compressed.tracemonkey-pldi-09.pdf"
                 title="PDF Viewer"
@@ -35,23 +35,17 @@ const SamplePage = () => {
             </PDFViewer>
           )}
 
-          {showPDFViewer && <Divider />}
+          {showPDFViewer && !isExtensionActive && <Divider />}
 
-          <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "350px" }}>
+          <SummaryBox isExtensionActive={isExtensionActive}>
             <IconWrapper
-              onClick={
-                isExtensionActive ? handleReductionClick : handleIconClick
-              }
+              onClick={isExtensionActive ? handleReductionClick : handleIconClick}
             >
               <img
                 src={isExtensionActive ? ReductionIcon : ExtensionIcon}
                 alt="Extension"
               />
             </IconWrapper>
-            {/* 
-          <Title>요약본 출력</Title>
-          <Subtitle>(PDF 뷰어 사용)</Subtitle>
-          */}
             <iframe
               src="/compressed.tracemonkey-pldi-09.pdf"
               title="PDF Viewer"
@@ -77,8 +71,9 @@ const MainContent = styled.main`
   width: 100%;
   max-width: 1200px;
   align-items: center;
-  margin-bottom: 40px;
-  margin-top: 15px;
+  margin-bottom: 30px;
+  justify-content: ${props => props.isExtensionActive ? 'center' : 'space-between'};
+  transition: all 0.3s ease;
 `;
 
 const MainContentWrapper = styled.div`
@@ -89,14 +84,14 @@ const MainContentWrapper = styled.div`
 `;
 
 const PDFViewer = styled.div`
-  flex: 1;
+  width: 50%; // flex 대신 고정 너비 사용
   padding: 10px;
-
   border: 2px solid #5887f4;
   border-radius: 8px;
   background: #fff;
-
   height: 500px;
+  display: ${props => props.hide ? 'none' : 'block'};
+  
   iframe {
     width: 100%;
     height: 100%;
@@ -105,7 +100,7 @@ const PDFViewer = styled.div`
 `;
 
 const SummaryBox = styled.div`
-  flex: 1;
+  width: ${props => props.isExtensionActive ? '60%' : '48%'}; // 확장 시 더 넓은 너비
   background: #fff;
   border: 2px solid #5887f4;
   border-radius: 8px;
@@ -116,6 +111,7 @@ const SummaryBox = styled.div`
   justify-content: center;
   height: 500px;
   position: relative;
+  transition: width 0.3s ease;
 `;
 
 const IconWrapper = styled.div`
@@ -139,7 +135,7 @@ const Divider = styled.div`
   width: 2px;
   height: 480px; // 높이는 필요에 따라 조절
   background-color: #86abff; // 회색 계열의 색상
-  margin: 0 30px; // 좌우 여백
+  margin: 0 40px; // 좌우 여백
 `;
 
 export default SamplePage;
