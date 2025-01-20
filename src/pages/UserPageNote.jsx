@@ -104,6 +104,12 @@ const DeleteButton = styled.button`
 `;
 
 const Card = styled.div`
+  width: 185px;
+  height: 195px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
   border: 2px solid #5c85ff;
   border-radius: 10px;
@@ -137,7 +143,6 @@ const IconWrapper = styled.div`
 `;
 
 const CardText = styled.div`
-  margin-top: 15px;
   margin-bottom: 15px;
   font-size: 14px;
   color: black;
