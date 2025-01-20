@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
@@ -41,18 +42,99 @@ const UploadPage = () => {
     isDragActive: isProblemDragActive,
   } = useDropzone({ onDrop: onProblemDrop });
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (lectureFiles.length === 0) {
       alert("강의 자료를 업로드해주세요.");
       return;
     }
 
     setIsLoading(true);
-    // 여기에 실제 파일 업로드 로직 추가
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const formData = new FormData();
+      lectureFiles.forEach((file) => {
+        // 파일 형식 확인 (예: pdf, ppt, doc, png, jpg)
+        const validFileTypes = [
+          "application/pdf",
+          "application/vnd.ms-powerpoint",
+          "application/msword",
+          "image/png",
+          "image/jpeg",
+        ];
+        if (validFileTypes.includes(file.type)) {
+          formData.append("file", file); // "file" 키로 파일 추가
+        } else {
+          alert("지원하지 않는 파일 형식입니다.");
+          return;
+        }
+      });
+
+      // API 호출
+      const response = await axios.post(
+        "http://localhost:8000/api/pdf/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("강의 자료 업로드 성공:", response.data);
+
+      // 문제 파일도 업로드
+      const problemFormData = new FormData();
+      problemFiles.forEach((file) => {
+        const validFileTypes = [
+          "application/pdf",
+          "application/vnd.ms-powerpoint",
+          "application/msword",
+          "image/png",
+          "image/jpeg",
+        ];
+        if (validFileTypes.includes(file.type)) {
+          problemFormData.append("file", file); // "file" 키로 파일 추가
+        } else {
+          alert("지원하지 않는 파일 형식입니다.");
+          return;
+        }
+      });
+      const problemResponse = await axios.post(
+        "http://localhost:8000/api/pdf/upload",
+        problemFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("문제 파일 업로드 성공:", problemResponse.data);
+
       setShowModal(true);
-    }, 2000);
+    } catch (error) {
+      console.error("파일 업로드 중 오류 발생:", error);
+      alert("파일 업로드에 실패했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file); // "file" 키로 파일 추가
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data); // 응답 데이터 출력
+    } catch (error) {
+      console.error("파일 업로드 중 오류 발생:", error);
+    }
   };
 
   return (
