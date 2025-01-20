@@ -1,10 +1,10 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import logo from "../images/logo.svg";
 import user from "../images/user.png";
 import { Link, useNavigate } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ isMain }) => {
   const navigate = useNavigate();
 
   const handleUserClick = () => {
@@ -19,7 +19,7 @@ const Header = () => {
   };
 
   return (
-    <HeaderWrapper>
+    <HeaderWrapper isMain={isMain}>
       <LogoWrapper>
         <Link to="/">
           <img src={logo} alt="logo" />
@@ -37,13 +37,21 @@ const HeaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  position: absolute; /* 페이지 내에서 자유롭게 배치되도록 설정 */
   box-sizing: border-box;
   background-color: #ffffff;
-  position: absolute;
   z-index: 10;
   padding: 10px;
-  top: 0;
+
+  ${({ isMain }) =>
+    isMain
+      ? css`
+          position: absolute;
+          top: 0;
+        `
+      : css`
+          position: relative;
+          top: 0;
+        `}
 `;
 
 const LogoWrapper = styled.div`
