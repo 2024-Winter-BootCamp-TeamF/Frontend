@@ -39,7 +39,9 @@ const SamplePage = () => {
 
           <SummaryBox isExtensionActive={isExtensionActive}>
             <IconWrapper
-              onClick={isExtensionActive ? handleReductionClick : handleIconClick}
+              onClick={
+                isExtensionActive ? handleReductionClick : handleIconClick
+              }
             >
               <img
                 src={isExtensionActive ? ReductionIcon : ExtensionIcon}
@@ -72,9 +74,9 @@ const MainContent = styled.main`
   max-width: 1200px;
   align-items: center;
   margin-bottom: 30px;
-  justify-content: ${props => props.isExtensionActive ? 'center' : 'space-between'};
+  justify-content: ${(props) =>
+    props.isExtensionActive ? "center" : "space-between"};
   transition: all 0.3s ease;
-  margin-top: 20px;
 `;
 
 const MainContentWrapper = styled.div`
@@ -82,6 +84,7 @@ const MainContentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 85vh;
 `;
 
 const PDFViewer = styled.div`
@@ -91,8 +94,8 @@ const PDFViewer = styled.div`
   border-radius: 8px;
   background: #fff;
   height: 500px;
-  display: ${props => props.hide ? 'none' : 'block'};
-  
+  display: ${(props) => (props.hide ? "none" : "block")};
+
   iframe {
     width: 100%;
     height: 100%;
@@ -101,7 +104,8 @@ const PDFViewer = styled.div`
 `;
 
 const SummaryBox = styled.div`
-  width: ${props => props.isExtensionActive ? '60%' : '48%'}; // 확장 시 더 넓은 너비
+  width: ${(props) =>
+    props.isExtensionActive ? "60%" : "48%"}; // 확장 시 더 넓은 너비
   background: #fff;
   border: 2px solid #5887f4;
   border-radius: 8px;
