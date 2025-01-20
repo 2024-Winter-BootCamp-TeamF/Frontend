@@ -6,10 +6,15 @@ import ReductionIcon from "../images/reduction (2).png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SolveButton from "../components/SolveButton";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
   const [isExtensionActive, setIsExtensionActive] = useState(false);
+  const [isLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pdfFile = location.state?.pdfFile;
 
   const handleIconClick = () => {
     setShowPDFViewer(false);
@@ -27,15 +32,23 @@ const SamplePage = () => {
       <MainContentWrapper>
         <MainContent isExtensionActive={isExtensionActive}>
           {showPDFViewer && (
-            <PDFViewer hide={isExtensionActive}>
+            <PDFViewer hide={!showPDFViewer}>
               <iframe
-                src="/compressed.tracemonkey-pldi-09.pdf#toolbar=0"
+                src={
+                  pdfFile
+                    ? `${URL.createObjectURL(pdfFile)}#toolbar=0`
+                    : "path/to/your/pdf/file.pdf"
+                }
+                width="100%"
+                height="100%"
                 title="PDF Viewer"
               />
             </PDFViewer>
           )}
 
-          {showPDFViewer && !isExtensionActive && <Divider />}
+          {showPDFViewer && !isExtensionActive && (
+            <Divider hide={!showPDFViewer} />
+          )}
 
           <SummaryBox isExtensionActive={isExtensionActive}>
             <IconWrapper
@@ -48,18 +61,31 @@ const SamplePage = () => {
                 alt="Extension"
               />
             </IconWrapper>
-            <iframe
-              src="/compressed.tracemonkey-pldi-09.pdf#toolbar=0"
+            {/* 
+          <Title>요약본 출력</Title>
+          <Subtitle>(PDF 뷰어 사용)</Subtitle>
+          */}
+            {/* <iframe
+              src="/compressed.tracemonkey-pldi-09.pdf"
               title="PDF Viewer"
               style={{ height: "100%", width: "100%" }}
-            />
+            /> */}
           </SummaryBox>
         </MainContent>
-        <SolveButton
-          children={"마이페이지에 저장 완료!\n마이페이지로 이동하기"}
-        />
+        <SolveButton onClick={() => navigate("/mypage/summary")}>
+          마이페이지로 이동하기
+        </SolveButton>
       </MainContentWrapper>
       <Footer />
+
+      {isLoading && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>요약본을 생성하고 있습니다...</LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
     </Container>
   );
 };
@@ -94,6 +120,9 @@ const PDFViewer = styled.div`
   border-radius: 8px;
   background: #fff;
   height: 100%;
+  opacity: ${(props) => (props.hide ? 0 : 1)};
+  transform: ${(props) => (props.hide ? "translateX(-20px)" : "translateX(0)")};
+  transition: all 0.3s ease;
   display: ${(props) => (props.hide ? "none" : "block")};
 
   iframe {
@@ -115,12 +144,16 @@ const SummaryBox = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
+  transform: ${(props) =>
+    props.isExtensionActive ? "translateX(0)" : "translateX(0)"};
+  opacity: 1;
 
   iframe {
     width: 100%;
     height: 100%;
     border: none;
+    transition: all 0.3s ease;
   }
 `;
 
@@ -143,9 +176,56 @@ const IconWrapper = styled.div`
 
 const Divider = styled.div`
   width: 2px;
-  height: calc(100% - 10px); // 높이는 필요에 따라 조절
-  background-color: #86abff; // 회색 계열의 색상
-  margin: 0 40px; // 좌우 여백
+  height: calc(100% - 10px);
+  background-color: #86abff;
+  margin: 0 40px;
+  transition: opacity 0.3s ease;
+  opacity: ${(props) => (props.hide ? 0 : 1)};
+`;
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #86abff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 18px;
+  margin: 0;
 `;
 
 export default SamplePage;
