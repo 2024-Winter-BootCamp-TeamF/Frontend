@@ -42,8 +42,6 @@ const CompletePageWrapper = styled.div`
   min-height: 100vh; /* 화면 높이를 100%로 설정 */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   position: relative;
 `;
@@ -56,7 +54,7 @@ const CompleteInfoWrapper = styled.div`
   background-size: contain;
   background-image: url(${sub_background});
   background-position: center; /* 배경 이미지 위치 */
-  height: 100%;
+  min-height: 75vh;
   width: 100%;
   gap: 30px;
 `;

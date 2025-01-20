@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ExtensionIcon from "../images/Extension.png";
-import ReductionIcon from "../images/reduction.png";
+
+import ExtensionIcon from "../images/Extension (2).png";
+import ReductionIcon from "../images/reduction (2).png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SolveButton from "../components/SolveButton";
@@ -21,49 +22,60 @@ const SamplePage = () => {
   };
 
   const handleReductionClick = () => {
-    setShowPDFViewer(true);
-    setIsExtensionActive(false);
+    setShowPDFViewer(true); // PDFViewer 다시 보이도록 설정
+    setIsExtensionActive(false); // 아이콘을 원래 상태로 되돌림
   };
 
   return (
     <Container>
       <Header />
-      <MainContent>
-        {showPDFViewer && (
-          <PDFViewer>
-            <iframe
-              src={
-                pdfFile
-                  ? URL.createObjectURL(pdfFile)
-                  : "path/to/your/pdf/file.pdf"
+      <MainContentWrapper>
+        <MainContent isExtensionActive={isExtensionActive}>
+          {showPDFViewer && (
+            <PDFViewer hide={!showPDFViewer}>
+              <iframe
+                src={
+                  pdfFile
+                    ? `${URL.createObjectURL(pdfFile)}#toolbar=0`
+                    : "path/to/your/pdf/file.pdf"
+                }
+                width="100%"
+                height="100%"
+                title="PDF Viewer"
+              />
+            </PDFViewer>
+          )}
+
+          {showPDFViewer && !isExtensionActive && (
+            <Divider hide={!showPDFViewer} />
+          )}
+
+          <SummaryBox isExtensionActive={isExtensionActive}>
+            <IconWrapper
+              onClick={
+                isExtensionActive ? handleReductionClick : handleIconClick
               }
-              width="100%"
-              height="100%"
-              title="PDF Viewer"
-            />
-          </PDFViewer>
-        )}
-
-        {showPDFViewer && <Divider />}
-
-        <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "600px" }}>
-          <IconWrapper
-            onClick={isExtensionActive ? handleReductionClick : handleIconClick}
-          >
-            <img
-              src={isExtensionActive ? ReductionIcon : ExtensionIcon}
-              alt="Extension"
-            />
-          </IconWrapper>
-          {/* 
+            >
+              <img
+                src={isExtensionActive ? ReductionIcon : ExtensionIcon}
+                alt="Extension"
+              />
+            </IconWrapper>
+            {/* 
           <Title>요약본 출력</Title>
           <Subtitle>(PDF 뷰어 사용)</Subtitle>
           */}
-        </SummaryBox>
-      </MainContent>
-      <SolveButton onClick={() => navigate("/mypage/summary")}>
-        마이페이지로 이동하기
-      </SolveButton>
+            {/* <iframe
+              src="/compressed.tracemonkey-pldi-09.pdf"
+              title="PDF Viewer"
+              style={{ height: "100%", width: "100%" }}
+            /> */}
+          </SummaryBox>
+        </MainContent>
+        <SolveButton onClick={() => navigate("/mypage/summary")}>
+          마이페이지로 이동하기
+        </SolveButton>
+      </MainContentWrapper>
       <Footer />
 
       {isLoading && (
@@ -80,68 +92,95 @@ const SamplePage = () => {
 
 const Container = styled.div`
   min-height: 100vh;
+`;
+
+const MainContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 80vh;
 `;
 
 const MainContent = styled.main`
   display: flex;
-  width: 90%;
-  max-width: 1200px;
-  margin-top: 30px;
-  margin-bottom: 60px;
+  width: 100%;
+  align-items: center;
+  justify-content: ${(props) =>
+    props.isExtensionActive ? "center" : "space-between"};
+  transition: all 0.3s ease;
+  padding: 20px 100px 40px 100px;
+  height: 85%; // MainContentWrapper의 높이를 기준으로 설정
 `;
 
 const PDFViewer = styled.div`
-  flex: 1;
-  border: 2px solid #9ebbff;
+  width: 50%;
+  padding: 20px;
+  border: 2px solid #5887f4;
   border-radius: 8px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 350px;
-  position: relative;
+  background: #fff;
+  height: 100%;
+  opacity: ${(props) => (props.hide ? 0 : 1)};
+  transform: ${(props) => (props.hide ? "translateX(-20px)" : "translateX(0)")};
+  transition: all 0.3s ease;
+  display: ${(props) => (props.hide ? "none" : "block")};
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 `;
 
 const SummaryBox = styled.div`
-  flex: 1;
-  border: 2px solid #9ebbff;
+  width: ${(props) => (props.isExtensionActive ? "70%" : "50%")};
+  height: 100%;
+  background: #fff;
+  border: 2px solid #5887f4;
   border-radius: 8px;
-  padding: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 350px;
   position: relative;
+  transition: all 0.3s ease;
+  transform: ${(props) =>
+    props.isExtensionActive ? "translateX(0)" : "translateX(0)"};
+  opacity: 1;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transition: all 0.3s ease;
+  }
 `;
 
 const IconWrapper = styled.div`
   position: absolute;
-  left: -28px;
+  left: -65px;
   top: 50%;
   transform: translateY(-50%);
-  cursor: pointer;
+  cursor: pointer; // 커서를 포인터로 변경
   img {
-    width: 55px;
-    height: 55px;
-    transition: transform 0.2s;
+    width: 45px;
+    height: 45px;
+    transition: transform 0.2s; // 부드러운 애니메이션 추가
   }
 
   &:hover img {
-    transform: scale(1.1);
+    transform: scale(1.1); // 마우스 오버 시 이미지 크기 증가
   }
 `;
 
 const Divider = styled.div`
   width: 2px;
-  height: 600px;
+  height: calc(100% - 10px);
   background-color: #86abff;
-  margin: 0 30px;
+  margin: 0 40px;
+  transition: opacity 0.3s ease;
+  opacity: ${(props) => (props.hide ? 0 : 1)};
 `;
 
 const LoadingModal = styled.div`
@@ -173,7 +212,6 @@ const LoadingSpinner = styled.div`
   border-top: 5px solid #86abff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-
   @keyframes spin {
     0% {
       transform: rotate(0deg);

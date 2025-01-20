@@ -77,14 +77,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white;
+  position: relative;
 `;
 
 const Nav = styled.nav`
   display: flex;
   justify-content: center;
-  margin: 10px 20px;
-  gap: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  gap: 20px;
 `;
 
 const Content = styled.div`
@@ -93,7 +94,8 @@ const Content = styled.div`
   gap: 20px;
   width: 100%;
   max-width: 800px;
-  margin-top: 25px;
+  margin-top: 15px;
+  margin-bottom: 120px;
 `;
 
 const DeleteButton = styled.button`
@@ -111,14 +113,20 @@ const DeleteButton = styled.button`
 `;
 
 const Card = styled.div`
+  width: 185px;
+  height: 195px;
   background-color: #ffffff;
   border: 2px solid #5c85ff;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   cursor: pointer;
   transition: transform 0.2s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     transform: scale(1.05);
@@ -133,7 +141,6 @@ const AddIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
 
   img {
     width: 40px;
@@ -150,15 +157,14 @@ const IconWrapper = styled.div`
   margin-bottom: 10px;
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin-top: 20px;
     margin-bottom: 15px;
   }
 `;
 
 const CardText = styled.div`
-  margin-top: 15px;
   margin-bottom: 15px;
   font-size: 14px;
   color: black;
@@ -166,6 +172,6 @@ const CardText = styled.div`
 
 const DateText = styled.div`
   margin-top: 5px;
-  font-size: 12px;
   color: #888888;
+  font-size: 12px;
 `;

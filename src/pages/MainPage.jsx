@@ -8,7 +8,7 @@ import ScrollIndicator from "../components/ScrollIndicator";
 const MainPage = () => {
   return (
     <MainPageWrapper>
-      <Header />
+      <Header isMain={true} />
       <Banner />
       <ScrollIndicator />
       <Introduce />

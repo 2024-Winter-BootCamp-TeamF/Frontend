@@ -14,11 +14,13 @@ const ExButton = ({
 
 const StyledButton = styled.button`
   // padding: 10px 20px;
-  width: 200px;
-  height: 50px;
+  width: 180px;
+  height: 45px;
+  font-family: "HakgyoansimAllimjangTTF-R";
   font-size: 16px;
-  font-weight: bold;
-  border-radius: 20px;
+  font-weight: 500;
+  border-radius: 50px;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -27,16 +29,18 @@ const StyledButton = styled.button`
   ${({ isActive }) =>
     isActive &&
     css`
-      background-color: #5c85ff !important;
+      background-color: #5887f4 !important;
       color: white !important;
       border: none !important;
+      font-weight: 700;
+      letter-spacing: 2px;
     `}
 
   /* variant에 따른 기본 스타일 */
   ${({ variant }) =>
     variant === "filled" &&
     css`
-      background-color: #5c85ff;
+      background-color: #5887f4;
       color: white;
       border: none;
 
@@ -50,10 +54,10 @@ const StyledButton = styled.button`
     css`
       background-color: transparent;
       color: #5c85ff;
-      border: 2px solid #5c85ff;
+      border: 2px solid #5887f4;
 
       &:hover {
-        background-color: #eef4ff;
+        background-color: #fff;
       }
     `}
 
