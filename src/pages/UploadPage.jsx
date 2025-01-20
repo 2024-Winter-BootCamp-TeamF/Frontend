@@ -204,13 +204,13 @@ const MainContentWrapper = styled.div`
 
 const TitleSection = styled.div`
   text-align: center;
-  margin: 5px 0;
+  margin: px 0;
 `;
 
 const MainTitle = styled.h1`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin-top: 20px;
 `;
 
 const SubTitle = styled.h2`
@@ -300,7 +300,7 @@ const InstructionSection = styled.div`
 `;
 
 const InstructionList = styled.ul`
-  font-size: 18px;
+  font-size: 15px;
   list-style-type: none;
   text-align: left;
 
