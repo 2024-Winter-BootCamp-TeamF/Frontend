@@ -74,6 +74,7 @@ const MainContent = styled.main`
   margin-bottom: 30px;
   justify-content: ${props => props.isExtensionActive ? 'center' : 'space-between'};
   transition: all 0.3s ease;
+  margin-top: 20px;
 `;
 
 const MainContentWrapper = styled.div`
