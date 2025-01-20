@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import ExtensionIcon from "../images/Extension.png";
-import ReductionIcon from "../images/reduction.png";
+import ExtensionIcon from "../images/Extension (2).png";
+import ReductionIcon from "../images/reduction (2).png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SolveButton from "../components/SolveButton";
@@ -117,13 +117,13 @@ const SummaryBox = styled.div`
 
 const IconWrapper = styled.div`
   position: absolute;
-  left: -28px;
+  left: -65px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer; // 커서를 포인터로 변경
   img {
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     transition: transform 0.2s; // 부드러운 애니메이션 추가
   }
 
