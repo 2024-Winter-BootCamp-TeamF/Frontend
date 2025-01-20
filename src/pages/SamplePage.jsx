@@ -103,8 +103,8 @@ const PDFViewer = styled.div`
 `;
 
 const SummaryBox = styled.div`
-  width: ${(props) =>
-    props.isExtensionActive ? "60%" : "48%"}; // 확장 시 더 넓은 너비
+  width: ${(props) => (props.isExtensionActive ? "70%" : "50%")};
+  height: 500px; // 항상 500px로 고정
   background: #fff;
   border: 2px solid #5887f4;
   border-radius: 8px;
@@ -113,9 +113,14 @@ const SummaryBox = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
   position: relative;
   transition: width 0.3s ease;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 `;
 
 const IconWrapper = styled.div`
