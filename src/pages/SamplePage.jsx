@@ -73,7 +73,7 @@ const MainContentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 85vh;
+  height: 80vh;
 `;
 
 const MainContent = styled.main`
