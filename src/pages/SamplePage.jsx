@@ -71,12 +71,11 @@ const Container = styled.div`
 const MainContent = styled.main`
   display: flex;
   width: 100%;
-  max-width: 1400px;
   align-items: center;
-  margin-bottom: 30px;
   justify-content: ${(props) =>
     props.isExtensionActive ? "center" : "space-between"};
   transition: all 0.3s ease;
+  padding: 20px 100px 50px 100px;
 `;
 
 const MainContentWrapper = styled.div`
@@ -114,7 +113,7 @@ const SummaryBox = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 500px;
+  height: 100%;
   position: relative;
   transition: width 0.3s ease;
 `;
