@@ -12,7 +12,7 @@ import UserPageNote from "./pages/UserPageNote";
 import SamplePage from "./pages/SamplePage";
 
 import "./App.css";
-import { problems } from "./pages/PracticePage/data";
+// import { problems } from "./pages/PracticePage/data";
 
 function App() {
   return (

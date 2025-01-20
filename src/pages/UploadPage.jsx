@@ -2,12 +2,16 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ExButton from "../components/ExButton";
+import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
   const [problemFiles, setProblemFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const onLectureDrop = useCallback((acceptedFiles) => {
     setLectureFiles(prev => [...prev, ...acceptedFiles]);
@@ -36,6 +40,20 @@ const UploadPage = () => {
     getInputProps: getProblemInputProps,
     isDragActive: isProblemDragActive
   } = useDropzone({ onDrop: onProblemDrop });
+
+  const handleUpload = () => {
+    if (lectureFiles.length === 0) {
+      alert("강의 자료를 업로드해주세요.");
+      return;
+    }
+    
+    setIsLoading(true);
+    // 여기에 실제 파일 업로드 로직 추가
+    setTimeout(() => {  // 임시로 타임아웃 사용
+      setIsLoading(false);
+      setShowModal(true);
+    }, 2000);
+  };
 
   return (
     <Container>
@@ -108,18 +126,50 @@ const UploadPage = () => {
 
       <ButtonSection>
         <ExButton 
-          variant="outlined"  
-          onClick={() => {}}
-        >
-          요약본 생성하기
-        </ExButton>
-        <ExButton 
           variant="filled" 
-          onClick={() => {}}
+          onClick={handleUpload}
         >
-          연습 문제 생성하기
+          파일 업로드
         </ExButton>
       </ButtonSection>
+
+      {isLoading && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>파일을 처리하고 있습니다...</LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
+
+      {showModal && (
+        <Modal>
+          <ModalContent>
+            <ModalTitle>작업을 선택해주세요</ModalTitle>
+            <ModalButtons>
+              <ExButton 
+                variant="filled" 
+                onClick={() => {
+                  setShowModal(false);
+                  navigate('/mypage/summary');  // UserPageSample로 이동
+                }}
+              >
+                요약 확인하기
+              </ExButton>
+              <ExButton 
+                variant="filled" 
+                onClick={() => {
+                  setShowModal(false);
+                  navigate('/mypage/practice');  // UserPageEx로 이동
+                }}
+              >
+                연습문제 풀이하기
+              </ExButton>
+            </ModalButtons>
+            <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+          </ModalContent>
+        </Modal>
+      )}
 
       <Footer />
     </Container>
@@ -227,11 +277,11 @@ const RemoveButton = styled.button`
   }
 `;
 
-const Divider = styled.div`
-  width: 2px;
-  height: 300px;
-  background-color: #E0E0E0;
-`;
+// const Divider = styled.div`
+//   width: 2px;
+//   height: 300px;
+//   background-color: #E0E0E0;
+// `;
 
 const InstructionSection = styled.div`
   // margin: 40px 0;
@@ -257,6 +307,88 @@ const ButtonSection = styled.div`
   display: flex;
   gap: 20px;
   margin: 10px 0;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  position: relative;
+  min-width: 300px;
+`;
+
+const ModalTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+`;
+
+const ModalButtons = styled.div`
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  
+  &:hover {
+    color: #333;
+  }
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;  // spinner와 텍스트 사이 간격
+`;
+
+const LoadingModal = styled(Modal)`
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #86ABFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 18px;
+  margin: 0;
 `;
 
 export default UploadPage;
