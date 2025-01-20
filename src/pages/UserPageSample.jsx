@@ -15,6 +15,7 @@ const UserPageSample = () => {
     { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
     { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
     { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
+    
   ]);
 
   const handleDelete = (id) => {
@@ -77,7 +78,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white;
+  position: relative;
 `;
 
 const Nav = styled.nav`

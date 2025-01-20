@@ -80,13 +80,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white;
-
-  /* Footer를 하단에 고정하기 위한 스타일 추가 */
-  > div:last-child {
-    margin-top: auto; // Footer를 하단으로 밀어내기
-    width: 100%; // Footer의 너비를 100%로 설정
-  }
+  position: relative;
 `;
 
 const Nav = styled.nav`
