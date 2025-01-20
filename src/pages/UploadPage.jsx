@@ -58,124 +58,128 @@ const UploadPage = () => {
   return (
     <Container>
       <Header />
+      <MainContentWrapper>
+        <TitleSection>
+          <MainTitle>
+            PDF를 업로드하고 요약된 강의자료로 학습해보세요!
+          </MainTitle>
+          <SubTitle>연습 문제를 만들어서 실전 대비까지!</SubTitle>
+        </TitleSection>
 
-      <TitleSection>
-        <MainTitle>PDF를 업로드하고 요약된 강의자료로 학습해보세요!</MainTitle>
-        <SubTitle>연습 문제를 만들어서 실전 대비까지!</SubTitle>
-      </TitleSection>
+        <UploadSection>
+          <UploadBox {...getLectureRootProps()}>
+            <input {...getLectureInputProps()} multiple />
+            <UploadTitle>강의 자료 업로드</UploadTitle>
+            <UploadSubtitle>
+              {isLectureDragActive
+                ? "파일을 여기에 놓으세요"
+                : "또는 드래그해서 파일 올리기"}
+            </UploadSubtitle>
+            {lectureFiles.length > 0 && (
+              <FileList>
+                {lectureFiles.map((file, index) => (
+                  <FileItem key={`lecture-${file.name}-${index}`}>
+                    <FileName>{file.name}</FileName>
+                    <RemoveButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeLectureFile(file.name);
+                      }}
+                    >
+                      ×
+                    </RemoveButton>
+                  </FileItem>
+                ))}
+              </FileList>
+            )}
+          </UploadBox>
 
-      <UploadSection>
-        <UploadBox {...getLectureRootProps()}>
-          <input {...getLectureInputProps()} multiple />
-          <UploadTitle>강의 자료 업로드</UploadTitle>
-          <UploadSubtitle>
-            {isLectureDragActive
-              ? "파일을 여기에 놓으세요"
-              : "또는 드래그해서 파일 올리기"}
-          </UploadSubtitle>
-          {lectureFiles.length > 0 && (
-            <FileList>
-              {lectureFiles.map((file, index) => (
-                <FileItem key={`lecture-${file.name}-${index}`}>
-                  <FileName>{file.name}</FileName>
-                  <RemoveButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeLectureFile(file.name);
-                    }}
-                  >
-                    ×
-                  </RemoveButton>
-                </FileItem>
-              ))}
-            </FileList>
-          )}
-        </UploadBox>
+          <UploadBox {...getProblemRootProps()}>
+            <input {...getProblemInputProps()} multiple />
+            <UploadTitle>문제 유형 업로드</UploadTitle>
+            <UploadSubtitle>
+              {isProblemDragActive
+                ? "파일을 여기에 놓으세요"
+                : "또는 드래그해서 파일 올리기"}
+            </UploadSubtitle>
+            {problemFiles.length > 0 && (
+              <FileList>
+                {problemFiles.map((file, index) => (
+                  <FileItem key={`problem-${file.name}-${index}`}>
+                    <FileName>{file.name}</FileName>
+                    <RemoveButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeProblemFile(file.name);
+                      }}
+                    >
+                      ×
+                    </RemoveButton>
+                  </FileItem>
+                ))}
+              </FileList>
+            )}
+          </UploadBox>
+        </UploadSection>
 
-        <UploadBox {...getProblemRootProps()}>
-          <input {...getProblemInputProps()} multiple />
-          <UploadTitle>문제 유형 업로드</UploadTitle>
-          <UploadSubtitle>
-            {isProblemDragActive
-              ? "파일을 여기에 놓으세요"
-              : "또는 드래그해서 파일 올리기"}
-          </UploadSubtitle>
-          {problemFiles.length > 0 && (
-            <FileList>
-              {problemFiles.map((file, index) => (
-                <FileItem key={`problem-${file.name}-${index}`}>
-                  <FileName>{file.name}</FileName>
-                  <RemoveButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeProblemFile(file.name);
-                    }}
-                  >
-                    ×
-                  </RemoveButton>
-                </FileItem>
-              ))}
-            </FileList>
-          )}
-        </UploadBox>
-      </UploadSection>
+        <InstructionSection>
+          <InstructionList>
+            <li>
+              요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
+              업로드해주세요.
+            </li>
+            <li>
+              원하는 문제 유형을 업로드하면 비슷한 유형의 문제로 출제됩니다.
+            </li>
+          </InstructionList>
+        </InstructionSection>
 
-      <InstructionSection>
-        <InstructionTitle></InstructionTitle>
-        <InstructionList>
-          <li>
-            요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
-            업로드해주세요.
-          </li>
-          <li>
-            원하는 문제 유형을 업로드하면 비슷한 유형의 문제로 출제됩니다.
-          </li>
-        </InstructionList>
-      </InstructionSection>
+        <ButtonSection>
+          <ExButton variant="filled" onClick={handleUpload}>
+            파일 업로드
+          </ExButton>
+        </ButtonSection>
 
-      <ButtonSection>
-        <ExButton variant="filled" onClick={handleUpload}>
-          파일 업로드
-        </ExButton>
-      </ButtonSection>
+        {isLoading && (
+          <LoadingModal>
+            <LoadingContent>
+              <LoadingSpinner />
+              <LoadingText>파일을 처리하고 있습니다...</LoadingText>
+            </LoadingContent>
+          </LoadingModal>
+        )}
 
-      {isLoading && (
-        <LoadingModal>
-          <LoadingContent>
-            <LoadingSpinner />
-            <LoadingText>파일을 처리하고 있습니다...</LoadingText>
-          </LoadingContent>
-        </LoadingModal>
-      )}
-
-      {showModal && (
-        <Modal>
-          <ModalContent>
-            <ModalTitle>작업을 선택해주세요</ModalTitle>
-            <ModalButtons>
-              <ExButton
-                variant="filled"
-                onClick={() => {
-                  setShowModal(false);
-                  navigate("/sample", { state: { pdfFile: lectureFiles[0] } });
-                }}
-              >
-                요약 확인하기
-              </ExButton>
-              <ExButton
-                variant="filled"
-                onClick={() => {
-                  setShowModal(false);
-                  navigate("/mypage/practice"); // UserPageEx로 이동
-                }}
-              >
-                연습문제 풀이하기
-              </ExButton>
-            </ModalButtons>
-            <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
-          </ModalContent>
-        </Modal>
-      )}
+        {showModal && (
+          <Modal>
+            <ModalContent>
+              <ModalTitle>작업을 선택해주세요</ModalTitle>
+              <ModalButtons>
+                <ExButton
+                  variant="filled"
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate("/sample", {
+                      state: { pdfFile: lectureFiles[0] },
+                    });
+                  }}
+                >
+                  요약본 생성하기
+                </ExButton>
+                <ExButton
+                  variant="filled"
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate("/PracComplete"); // SamplePage로 이동
+                  }}
+                >
+                  연습문제 생성하기
+                </ExButton>
+              </ModalButtons>
+              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+            </ModalContent>
+          </Modal>
+        )}
+      </MainContentWrapper>
 
       <Footer />
     </Container>
@@ -187,24 +191,32 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   position: relative;
+`;
+
+const MainContentWrapper = styled.div`
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const TitleSection = styled.div`
   text-align: center;
-  margin: 5px 0;
+  margin: px 0;
 `;
 
 const MainTitle = styled.h1`
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-top: 20px;
 `;
 
 const SubTitle = styled.h2`
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
+  font-weight: 500;
 `;
 
 const UploadSection = styled.div`
@@ -212,13 +224,13 @@ const UploadSection = styled.div`
   justify-content: center;
   align-items: center;
   gap: 40px;
-  margin: 20px 0;
+  margin: 25px;
 `;
 
 const UploadBox = styled.div`
   width: 400px;
   height: 300px;
-  border: 2px dashed #86abff;
+  border: 2px dashed #5c85ff;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -228,26 +240,26 @@ const UploadBox = styled.div`
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #5c85ff;
+    border-color: #5887f4;
     background-color: #f8f9ff;
   }
 `;
 
 const UploadTitle = styled.h3`
-  font-size: 20px;
-  color: #5c85ff;
+  font-size: 24px;
+  color: #5887f4;
   margin-bottom: 10px;
 `;
 
 const UploadSubtitle = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
 `;
 
 const FileList = styled.div`
   margin-top: 20px;
   width: 90%;
-  max-height: 150px;
+  max-height: 180px;
   overflow-y: auto;
 `;
 
@@ -263,7 +275,7 @@ const FileItem = styled.div`
 `;
 
 const FileName = styled.span`
-  color: #5c85ff;
+  color: #5887f4;
   margin-right: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -273,7 +285,7 @@ const FileName = styled.span`
 const RemoveButton = styled.button`
   background: none;
   border: none;
-  color: #ff5c5c;
+  color: #f24822;
   font-size: 18px;
   cursor: pointer;
   padding: 0 5px;
@@ -283,36 +295,25 @@ const RemoveButton = styled.button`
   }
 `;
 
-// const Divider = styled.div`
-//   width: 2px;
-//   height: 300px;
-//   background-color: #E0E0E0;
-// `;
-
 const InstructionSection = styled.div`
-  // margin: 40px 0;
   text-align: center;
 `;
 
-const InstructionTitle = styled.h3`
-  font-size: 18px;
-  // margin-bottom: 10px;
-`;
-
 const InstructionList = styled.ul`
+  font-size: 15px;
   list-style-type: none;
   text-align: left;
 
   li {
-    margin: 10px 0;
     color: #666;
+    line-height: 30px;
   }
 `;
 
 const ButtonSection = styled.div`
   display: flex;
   gap: 20px;
-  margin: 10px 0;
+  margin-top: 20px;
 `;
 
 const Modal = styled.div`
@@ -378,10 +379,10 @@ const LoadingModal = styled(Modal)`
 `;
 
 const LoadingSpinner = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #86abff;
+  border-top: 5px solid #5887f4;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -397,7 +398,7 @@ const LoadingSpinner = styled.div`
 
 const LoadingText = styled.p`
   color: #333;
-  font-size: 18px;
+  font-size: 24px;
   margin: 0;
 `;
 
