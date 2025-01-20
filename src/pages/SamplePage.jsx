@@ -29,7 +29,7 @@ const SamplePage = () => {
           {showPDFViewer && (
             <PDFViewer hide={isExtensionActive}>
               <iframe
-                src="/compressed.tracemonkey-pldi-09.pdf"
+                src="/compressed.tracemonkey-pldi-09.pdf#toolbar=0"
                 title="PDF Viewer"
               />
             </PDFViewer>
@@ -49,7 +49,7 @@ const SamplePage = () => {
               />
             </IconWrapper>
             <iframe
-              src="/compressed.tracemonkey-pldi-09.pdf"
+              src="/compressed.tracemonkey-pldi-09.pdf#toolbar=0"
               title="PDF Viewer"
               style={{ height: "100%", width: "100%" }}
             />
@@ -89,11 +89,11 @@ const MainContent = styled.main`
 
 const PDFViewer = styled.div`
   width: 50%;
-  padding: 10px;
+  padding: 20px;
   border: 2px solid #5887f4;
   border-radius: 8px;
   background: #fff;
-  height: 100%; // MainContent의 높이를 상속
+  height: 100%;
   display: ${(props) => (props.hide ? "none" : "block")};
 
   iframe {
@@ -105,11 +105,11 @@ const PDFViewer = styled.div`
 
 const SummaryBox = styled.div`
   width: ${(props) => (props.isExtensionActive ? "70%" : "50%")};
-  height: 100%; // MainContent의 높이를 상속
+  height: 100%;
   background: #fff;
   border: 2px solid #5887f4;
   border-radius: 8px;
-  padding: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
