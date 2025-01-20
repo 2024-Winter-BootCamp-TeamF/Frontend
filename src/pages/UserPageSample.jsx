@@ -95,6 +95,7 @@ const Content = styled.div`
   width: 100%;
   max-width: 800px;
   margin-top: 15px;
+  margin-bottom: 120px;
 `;
 
 const DeleteButton = styled.button`
@@ -115,7 +116,7 @@ const Card = styled.div`
   background-color: #ffffff;
   border: 2px solid #5c85ff;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -151,8 +152,8 @@ const IconWrapper = styled.div`
   margin-bottom: 10px;
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin-top: 20px;
     margin-bottom: 15px;
   }
@@ -167,6 +168,7 @@ const CardText = styled.div`
 
 const DateText = styled.div`
   margin-top: 5px;
+  color: #888888;
   font-size: 12px;
   color: #888888;
 `;
