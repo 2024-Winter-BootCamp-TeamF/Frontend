@@ -37,7 +37,7 @@ const SamplePage = () => {
 
           {showPDFViewer && <Divider />}
 
-          <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "600px" }}>
+          <SummaryBox style={{ minHeight: showPDFViewer ? "350px" : "350px" }}>
             <IconWrapper
               onClick={
                 isExtensionActive ? handleReductionClick : handleIconClick
