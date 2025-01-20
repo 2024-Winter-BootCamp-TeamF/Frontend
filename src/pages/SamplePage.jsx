@@ -71,7 +71,7 @@ const Container = styled.div`
 const MainContent = styled.main`
   display: flex;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   align-items: center;
   margin-bottom: 30px;
   justify-content: ${(props) =>
