@@ -68,16 +68,6 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const MainContent = styled.main`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: ${(props) =>
-    props.isExtensionActive ? "center" : "space-between"};
-  transition: all 0.3s ease;
-  padding: 20px 100px 50px 100px;
-`;
-
 const MainContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -86,13 +76,24 @@ const MainContentWrapper = styled.div`
   height: 85vh;
 `;
 
+const MainContent = styled.main`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: ${(props) =>
+    props.isExtensionActive ? "center" : "space-between"};
+  transition: all 0.3s ease;
+  padding: 20px 100px 40px 100px;
+  height: 85%; // MainContentWrapper의 높이를 기준으로 설정
+`;
+
 const PDFViewer = styled.div`
-  width: 50%; // flex 대신 고정 너비 사용
+  width: 50%;
   padding: 10px;
   border: 2px solid #5887f4;
   border-radius: 8px;
   background: #fff;
-  height: 500px;
+  height: 100%; // MainContent의 높이를 상속
   display: ${(props) => (props.hide ? "none" : "block")};
 
   iframe {
@@ -104,7 +105,7 @@ const PDFViewer = styled.div`
 
 const SummaryBox = styled.div`
   width: ${(props) => (props.isExtensionActive ? "70%" : "50%")};
-  height: 500px; // 항상 500px로 고정
+  height: 100%; // MainContent의 높이를 상속
   background: #fff;
   border: 2px solid #5887f4;
   border-radius: 8px;
