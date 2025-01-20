@@ -4,8 +4,19 @@ import styled from "styled-components";
 import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
+import { useNavigate } from "react-router-dom";
 
 const AdditionalCompletePage = () => {
+  const navigate = useNavigate();
+
+  const handlePracticeClick = () => {
+    navigate("/practice");
+  };
+
+  const handleMyPageClick = () => {
+    navigate("/mypage/practice");
+  };
+
   return (
     <CompletePageWrapper>
       <Header />
@@ -25,10 +36,12 @@ const AdditionalCompletePage = () => {
         </CommentSection>
         <ButtonSection>
           <SolveButton
+            onClick={handlePracticeClick}
             children={`지금이라면 다 맞을 수 있어\n추가 연습 문제 풀어보기`}
           />
           <SolveButton
-            children={`공부를 조금 더... 해볼까...?\n마이페이지에 저장하기`}
+            onClick={handleMyPageClick}
+            children={`공부를 조금 더... 해볼까...?\n마이페이지로 이동하기`}
           />
         </ButtonSection>
       </CompleteInfoWrapper>
