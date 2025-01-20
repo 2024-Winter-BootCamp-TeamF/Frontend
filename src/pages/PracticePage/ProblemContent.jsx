@@ -5,8 +5,9 @@ import MultipleChoice from "./MultipleChoice";
 import Subjective from "./Subjective";
 import ProblemList from "./ProblemList";
 import Header from "../../components/Header";
-import Button from "../../components/SolveButton";
 import Footer from "../../components/Footer";
+import SolveButton from "../../components/SolveButton";
+import { useNavigate } from "react-router-dom";
 
 // 문제 타입 상수 정의
 const PROBLEM_TYPES = {
@@ -15,12 +16,33 @@ const PROBLEM_TYPES = {
 };
 
 const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
+  const navigate = useNavigate();
+
   // 풀린 문제들의 ID를 저장하는 상태
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
 
+  // 문제 해결 결과 상태 정의
+  const [results, setResults] = useState(
+    problems.map((problem) => ({
+      id: problem.id,
+      number: problem.id, // 문제 번호
+      isCorrect: false, // 초기값은 false
+    }))
+  );
+
   // 문제가 풀렸을 때 호출되는 핸들러
-  const handleProblemSolved = (problemId, isSolved, isDoubleClicked) => {
+  const handleProblemSolved = (
+    problemId,
+    isSolved,
+    isDoubleClicked,
+    selectedAnswer
+  ) => {
+    // 문제 ID, 정답 여부, 더블클릭 상태, 선택한 정답 또는 입력한 답안 처리
+    console.log(
+      `문제 ID: ${problemId}, 정답 여부: ${isSolved}, 더블클릭 상태: ${isDoubleClicked}, 답안: ${selectedAnswer}`
+    );
+
     // 풀이 상태 업데이트
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
@@ -48,6 +70,18 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       }
       return newDoubleClicked;
     });
+
+    const updatedResults = results.map((result) => {
+      if (result.id === problemId) {
+        return {
+          ...result,
+          isCorrect: isSolved, // 정답 여부 업데이트
+        };
+      }
+      return result;
+    });
+
+    setResults(updatedResults);
   };
 
   // 모든 문제가 풀렸는지 확인하는 함수
@@ -65,11 +99,8 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       return;
     }
 
-    // 모든 문제가 완료되었을 때
-    alert("채점 중입니다.");
-    if (typeof onButtonClick === "function") {
-      onButtonClick();
-    }
+    // CheckCompletePage로 이동
+    navigate("/Checkcomplete");
   };
 
   // problems 배열에 isSolved 속성을 추가
@@ -105,50 +136,37 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
   return (
     <PageWrapper>
       <Header />
-      <Container>
-        <ProblemList problems={problemsWithStatus} />
-        <ContentWrapper>
-          <ProblemDetail>
-            {problems.map((problem) => (
-              <ProblemItem key={problem.id}>
-                {renderProblem(problem)}
-              </ProblemItem>
-            ))}
-          </ProblemDetail>
-          <ButtonWrapper>
-            <Button onClick={handleButtonClick}>
-              고생하셨습니다!
-              <br />
-              채점하기
-            </Button>
-          </ButtonWrapper>
-        </ContentWrapper>
-      </Container>
+      <MainContent>
+        <Container>
+          <ProblemList problems={problemsWithStatus} />
+          <ContentWrapper>
+            <ProblemDetail>
+              {problems.map((problem) => (
+                <ProblemItem key={problem.id}>
+                  {renderProblem(problem)}
+                </ProblemItem>
+              ))}
+            </ProblemDetail>
+            <ButtonWrapper>
+              <SolveButton onClick={handleButtonClick}>제출하기</SolveButton>
+            </ButtonWrapper>
+          </ContentWrapper>
+        </Container>
+      </MainContent>
       <Footer />
     </PageWrapper>
   );
 };
 
-ProblemContent.propTypes = {
-  problems: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onButtonClick: PropTypes.func,
-  readOnly: PropTypes.bool,
-};
-
-ProblemContent.defaultProps = {
-  onButtonClick: () => {},
-  readOnly: false,
-};
-
 const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  position: relative;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
   display: flex;
   flex-direction: column;
 `;
@@ -181,7 +199,28 @@ const ProblemItem = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   margin: 50px 0;
 `;
+
+// PropTypes 정의
+ProblemContent.propTypes = {
+  problems: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  onButtonClick: PropTypes.func,
+  readOnly: PropTypes.bool,
+};
+
+ProblemContent.defaultProps = {
+  onButtonClick: () => {},
+  readOnly: false,
+};
 
 export default ProblemContent;

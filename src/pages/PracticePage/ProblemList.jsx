@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import correctIcon from "../../images/correct.png";
 import confusedIcon from "../../images/confused.png";
+import wrongIcon from "../../images/wrong.png";
 
 const COLORS = {
   PRIMARY: "#5887f4",
@@ -31,14 +32,12 @@ const ProblemList = ({ problems }) => {
                   isVisible={true}
                 />
               ) : (
-                problem.isSolved && (
-                  <Icon
-                    src={correctIcon}
-                    alt="풀이 완료"
-                    aria-label="풀이 완료 표시"
-                    isVisible={true}
-                  />
-                )
+                <Icon
+                  src={problem.isSolved ? correctIcon : wrongIcon}
+                  alt={problem.isSolved ? "풀이 완료" : "오답"}
+                  aria-label={problem.isSolved ? "풀이 완료 표시" : "오답 표시"}
+                  isVisible={problem.isSolved || problem.isDoubleClicked}
+                />
               )}
             </ProblemLi>
           ))}
@@ -94,9 +93,9 @@ const ProblemListContainer = styled.div`
 const Title = styled.h2`
   font-size: ${SIZES.TITLE};
   text-align: center;
-  margin-top: 45px;
+  margin-top: 20px;
 
-  margin-bottom: 45px;
+  margin-bottom: 20px;
 `;
 
 const ProblemUl = styled.ul`
@@ -110,7 +109,7 @@ const ProblemLi = styled.li`
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   margin-left: 55px;
   border-radius: 4px;
   position: relative;

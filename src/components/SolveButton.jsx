@@ -2,7 +2,9 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 const SolveButton = ({ children, onClick, variant = "filled" }) => {
-  const parts = children.split("\n");
+  const parts =
+    typeof children === "string" ? children.split("\n") : [children];
+
   return (
     <>
       <StyledButton onClick={onClick} variant={variant}>
@@ -17,14 +19,16 @@ const SolveButton = ({ children, onClick, variant = "filled" }) => {
   );
 };
 
-export default SolveButton;
-
 const StyledButton = styled.button`
-  width: 555px;
-  height: 85px;
-  font-size: 24px;
+  width: 500px;
+  height: 70px;
+  font-size: 20px;
   line-height: 30px;
+  text-align: center;
   border-radius: 4px;
+  background-color: #5887f4;
+  color: white;
+  border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -34,14 +38,13 @@ const StyledButton = styled.button`
   ${({ variant }) =>
     variant === "filled" &&
     css`
-      background-color: #5887f4; /* 기본 배경색 */
-      color: white; /* 기본 글씨색 */
+      background-color: #5887f4;
+      color: white;
       border: none;
-
       &:hover {
-        background-color: white; /* 호버 시 배경색 */
-        color: #5887f4; /* 호버 시 글씨색 */
-        border: 2px solid #5887f4; /* 호버 시 테두리 */
+        background-color: white;
+        color: #5887f4;
+        border: 2px solid #5887f4;
       }
     `}
 
@@ -51,7 +54,6 @@ const StyledButton = styled.button`
       background-color: transparent;
       color: #5887f4;
       border: 2px solid #5887f4;
-
       &:hover {
         background-color: #eef4ff;
       }
@@ -60,12 +62,11 @@ const StyledButton = styled.button`
   &:active {
     transform: scale(1.05);
   }
-
   &:focus {
     outline: none;
   }
-
   span.bold {
     font-weight: 700;
   }
 `;
+export default SolveButton;

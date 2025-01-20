@@ -27,10 +27,10 @@ const Banner = () => {
 
 const BannerWrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   background-image: url(${background});
   background-position: center; /* 배경 이미지 위치 */
-  background-size: contain;
+  background-size: cover;
   display: flex;
   align-items: flex-end;
 `;
@@ -40,8 +40,8 @@ const BannerContent = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
 `;
 
 const TitleSection = styled.div`
@@ -52,22 +52,25 @@ const TitleSection = styled.div`
 
 const LogoWrapper = styled.div`
   img {
-    width: 600px;
+    width: 500px;
     height: auto;
   }
 `;
 
 const SubTitle = styled.p`
-  font-size: 50px;
+  font-size: 40px;
   color: #5887f4;
   margin: 10px 0 0 0;
+  padding-bottom: 100px;
 `;
 
 const CharacterSection = styled.div`
+  padding-top: 100px;
+  padding-left: 50px;
   padding-bottom: 15px;
   img {
     width: auto;
-    max-height: 600px;
+    max-height: 450px;
   }
 `;
 

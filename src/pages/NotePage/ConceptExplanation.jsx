@@ -3,8 +3,15 @@ import styled from "styled-components";
 import Button from "../../components/SolveButton";
 import DownloadButton from "../../components/DownloadButton";
 import { conceptData } from "./data/conceptData";
+import { useNavigate } from "react-router-dom";
 
 const ConceptExplanation = () => {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate("/Addcomplete");
+  };
+
   return (
     <Container>
       <RightSection>
@@ -39,7 +46,7 @@ const ConceptExplanation = () => {
         </ConceptsWrapper>
       </RightSection>
       <SolveButtonWrapper>
-        <Button variant="filled">
+        <Button variant="filled" onClick={handleButtonClick}>
           한숨 쉴 시간에 한 문제라도 더 풀자 <br />
           추가 연습 문제 생성하기
         </Button>
@@ -87,7 +94,7 @@ const ConceptContainer = styled.div`
   border-radius: 10px;
   margin-left: 30px;
   margin-right: 60px;
-  margin-top: ${(props) => (props.isFirst ? "70px" : "50px")};
+  margin-top: ${(props) => (props.isFirst ? "100px" : "50px")};
   position: relative;
 
   @media screen and (max-width: 1200px) {
