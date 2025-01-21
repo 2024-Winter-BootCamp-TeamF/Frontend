@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../axiosInstance";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
@@ -13,6 +13,8 @@ const UploadPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
+  console.log("Access Token:", token);
 
   const onLectureDrop = useCallback((acceptedFiles) => {
     setLectureFiles((prev) => [...prev, ...acceptedFiles]);
@@ -56,13 +58,10 @@ const UploadPage = () => {
         formData.append("file", file);
       });
 
-      const response = await axios.request({
+      const response = await axiosInstance.request({
         method: "POST",
-        url: "http://localhost:8000/api/pdf/upload/",
+        url: "/pdf/upload/",
         data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       });
       console.log(response.data);
 

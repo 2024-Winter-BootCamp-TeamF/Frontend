@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import axiosInstance from "../axiosInstance";
 
 import ExtensionIcon from "../images/Extension (2).png";
 import ReductionIcon from "../images/reduction (2).png";
@@ -21,12 +21,9 @@ const SamplePage = () => {
   useEffect(() => {
     const fetchSummaryPDF = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/langchain/summary/",
-          {
-            file_ids: [20],
-          }
-        );
+        const response = await axiosInstance.post("/langchain/summary/", {
+          file_id: [20],
+        });
         setSummaryPDF(response.data.summary_pdf_url);
       } catch (error) {
         console.error("요약 PDF를 가져오는 중 오류 발생:", error);
