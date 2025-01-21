@@ -49,45 +49,41 @@ const UploadPage = () => {
     }
 
     setIsLoading(true);
-    try {
-      const lectureData = await uploadFiles(
-        "http://localhost:8000/api/pdf/upload", // 서버의 파일 업로드 URL
-        lectureFiles
-      );
-      console.log("강의 자료 업로드 성공:", lectureData);
 
-      if (problemFiles.length > 0) {
-        const problemData = await uploadFiles(
-          "http://localhost:8000/api/pdf/upload", // 서버의 파일 업로드 URL
-          problemFiles
-        );
-        console.log("문제 파일 업로드 성공:", problemData);
-      }
+    try {
+      const formData = new FormData();
+      lectureFiles.forEach((file) => {
+        formData.append("file", file);
+      });
+
+      const response = await axios.request({
+        method: "POST",
+        url: "http://localhost:8000/api/pdf/upload/",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
 
       setShowModal(true);
     } catch (error) {
-      console.error("파일 업로드 중 오류 발생:", error);
-      alert("파일 업로드에 실패했습니다.");
+      if (error.response) {
+        console.error(
+          "Server Error:",
+          error.response.status,
+          error.response.data
+        );
+        alert(`서버 오류: ${error.response.status} - ${error.response.data}`);
+      } else if (error.request) {
+        console.error("No Response from Server:", error.request);
+        alert("서버로부터 응답이 없습니다.");
+      } else {
+        console.error("Axios Configuration Error:", error.message);
+        alert(`Axios 설정 오류: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const uploadFiles = async (url, files) => {
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("file", file); // "file" 키로 파일 추가
-    });
-
-    try {
-      const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // 요청의 Content-Type 설정
-        },
-      });
-      return response.data; // 서버의 응답 데이터 반환
-    } catch (error) {
-      throw new Error(`업로드 실패: ${error.message}`);
     }
   };
 
@@ -157,7 +153,6 @@ const UploadPage = () => {
       </UploadSection>
 
       <InstructionSection>
-        <InstructionTitle></InstructionTitle>
         <InstructionList>
           <li>
             요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
@@ -319,20 +314,8 @@ const RemoveButton = styled.button`
   }
 `;
 
-// const Divider = styled.div`
-//   width: 2px;
-//   height: 300px;
-//   background-color: #E0E0E0;
-// `;
-
 const InstructionSection = styled.div`
-  // margin: 40px 0;
   text-align: center;
-`;
-
-const InstructionTitle = styled.h3`
-  font-size: 18px;
-  // margin-bottom: 10px;
 `;
 
 const InstructionList = styled.ul`
