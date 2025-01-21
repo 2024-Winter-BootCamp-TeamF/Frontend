@@ -77,11 +77,8 @@ const ReadOnlyWrapper = styled.div`
 const SubjectiveWrapper = styled.div`
   margin-bottom: 50px;
   margin-right: 30px;
-<<<<<<< Updated upstream
   margin-top: ${(props) => (props.isFirst ? "100px" : "0")};
 
-=======
->>>>>>> Stashed changes
   @media screen and (max-width: 1200px) {
     margin-right: 20px;
   }

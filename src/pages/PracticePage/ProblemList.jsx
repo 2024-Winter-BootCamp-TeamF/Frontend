@@ -60,25 +60,24 @@ ProblemList.propTypes = {
 };
 
 const Container = styled.div`
-  display: flex;
+  position: relative;
   min-width: 200px;
+  height: 95.2%;
 `;
 
 const ProblemListContainer = styled.div`
-  position: fixed;
+  position: sticky;
+  top: 100px; // Header 높이만큼 여백
   width: 200px;
-  height: auto; // 문제 수에 따라 자동 조정
+  height: auto;
+  max-height: calc(100vh - 200px); // viewport 높이에서 상하 여백 제외
   background-color: ${COLORS.BACKGROUND};
   border: 3px solid ${COLORS.PRIMARY};
   box-sizing: border-box;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  padding: 20px 0 20px 0;
-
-  @media screen and (max-width: 1200px) {
-    left: 50px;
-  }
+  padding: 20px 0;
+  overflow-y: auto;
 
   @media screen and (max-width: 1024px) {
     position: static;
