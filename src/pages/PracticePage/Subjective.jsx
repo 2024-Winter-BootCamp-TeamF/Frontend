@@ -73,8 +73,8 @@ Subjective.propTypes = {
 };
 
 const SubjectiveContainer = styled.div`
-  width: 980px;
-  height: 213px;
+  width: 900px;
+  height: auto;
   background-color: ${COLORS.BACKGROUND};
   border: 3px solid
     ${(props) =>
@@ -83,7 +83,7 @@ const SubjectiveContainer = styled.div`
         : props.isDoubleClicked
         ? COLORS.SECONDARY
         : COLORS.PRIMARY};
-  padding: 20px;
+  padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 8px;
   transition: border-color 0.3s ease;
@@ -91,28 +91,22 @@ const SubjectiveContainer = styled.div`
 
 const Title = styled.h3`
   text-align: left;
-  margin-top: 20px;
-  margin-left: 30px;
   font-size: 24px;
 `;
 
 const Content = styled.p`
   text-align: left;
-  margin-bottom: 20px;
-  margin-left: 30px;
   font-size: 24px;
+  margin-bottom: 30px;
 `;
 
 const Input = styled.input`
-  width: 850px;
-  height: 40px;
+  width: 100%;
+  height: auto;
   padding: 10px;
-  text-align: left;
   font-size: 16px;
   border: 1px solid ${COLORS.BORDER};
   border-radius: 4px;
-  margin-top: 10px;
-  margin-left: 30px;
 
   &:disabled {
     background-color: #f5f5f5;

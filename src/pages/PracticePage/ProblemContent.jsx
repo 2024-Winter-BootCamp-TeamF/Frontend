@@ -146,16 +146,17 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 100px;
+  margin-top: 50px;
 `;
 
 const Container = styled.div`
   display: flex;
   flex: 1;
   position: relative;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  justify-content: center;
 `;
 
 const SidebarWrapper = styled.div`

@@ -62,7 +62,7 @@ ProblemList.propTypes = {
 const Container = styled.div`
   position: relative;
   min-width: 200px;
-  height: 95.2%;
+  height: 95%;
 `;
 
 const ProblemListContainer = styled.div`
