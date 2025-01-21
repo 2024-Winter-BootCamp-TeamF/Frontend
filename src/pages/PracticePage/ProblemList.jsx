@@ -70,7 +70,7 @@ const ProblemListContainer = styled.div`
   top: 100px; // Header 높이만큼 여백
   width: 200px;
   height: auto;
-  max-height: calc(100vh - 200px); // viewport 높이에서 상하 여백 제외
+  max-height: calc(100vh - 180px); // viewport 높이에서 상하 여백 제외
   background-color: ${COLORS.BACKGROUND};
   border: 3px solid ${COLORS.PRIMARY};
   box-sizing: border-box;
@@ -88,7 +88,7 @@ const ProblemListContainer = styled.div`
 const Title = styled.h2`
   font-size: ${SIZES.TITLE};
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const ProblemUl = styled.ul`
@@ -110,9 +110,9 @@ const ProblemLi = styled.li`
 `;
 
 const ProblemTitle = styled.span`
-  font-size: ${SIZES.TITLE};
   text-align: left;
   width: 100%;
+  font-size: 22px;
 `;
 
 const Icon = styled.img`
