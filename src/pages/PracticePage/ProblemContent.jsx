@@ -125,7 +125,10 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
               ))}
             </ProblemDetail>
             <ButtonWrapper>
-              <SolveButton onClick={handleButtonClick}>제출하기</SolveButton>
+              <SolveButton
+                onClick={handleButtonClick}
+                children={"고생하셨습니다! 이제 채점해볼까요?\n채점하기"}
+              ></SolveButton>
             </ButtonWrapper>
           </ContentWrapper>
         </Container>
@@ -187,7 +190,7 @@ const ProblemItem = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 50px 0;
+  margin: 50px;
 `;
 
 ProblemContent.propTypes = {
