@@ -17,6 +17,11 @@ const SamplePage = () => {
   const topK = location.state?.top_k;
   const topics = location.state?.topics;
 
+  const handleTopicsNext = () => {
+    const { topic } = location.state || {};
+    navigate("/createpractice", { state: { topics, summaryPDF } });
+  };
+
   useEffect(() => {
     const fetchSummaryPDF = async () => {
       try {
@@ -103,9 +108,10 @@ const SamplePage = () => {
             <BoldText>요약본만 확인하기</BoldText>
           </SampleButton2>
           <SampleButton2
-            onClick={() =>
-              navigate("/createpractice", { state: { summaryPDF } })
-            }
+            onClick={() => {
+              navigate("/createpractice", { state: { summaryPDF } });
+              handleTopicsNext();
+            }}
           >
             <LightText>연습 문제로 확실히 대비해볼까?</LightText>
             <BoldText>연습 문제 생성하기</BoldText>

@@ -7,6 +7,7 @@ import SampleButton from "../components/SampleButton";
 import axiosInstance from "../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import character from "../images/character.png";
+import { useLocation } from "react-router-dom";
 
 function CreatePracPage() {
   const [pdfFile, setPdfFile] = useState(null);
@@ -15,6 +16,12 @@ function CreatePracPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const { topics, summaryPDF } = location.state || {};
+
+  console.log("Topics:", topics);
+  console.log("SummaryPDF:", summaryPDF);
 
   const onProblemDrop = useCallback((acceptedFiles) => {
     // 드래그로 파일을 업로드했을 때 받아온 파일을 콘솔로 확인
@@ -95,6 +102,32 @@ function CreatePracPage() {
     }
   };
 
+  const handleCreate = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/question/create/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            topics: [topics, summaryPDF], // topic과 summary를 함께 전달
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to create practice questions");
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
   return (
     <Container>
       <Header />
@@ -108,7 +141,12 @@ function CreatePracPage() {
         <MainContent>
           <PDFSection>
             <PDFViewer>
-              <iframe src={"a"} title="PDF Viewer" width="100%" height="100%" />
+              <iframe
+                src={summaryPDF}
+                title="PDF Viewer"
+                width="100%"
+                height="100%"
+              />
             </PDFViewer>
           </PDFSection>
 
@@ -175,13 +213,12 @@ function CreatePracPage() {
               <CharacterWrapper>
                 <img src={character} alt="chracter" />
               </CharacterWrapper>
-              <TextWrapper>
-                파일 업로드가 완료되었습니다!
-              </TextWrapper>
+              <TextWrapper>파일 업로드가 완료되었습니다!</TextWrapper>
             </ModalContent>
             <ButtonContainer>
               <StyledExButton
                 onClick={() => {
+                  handleCreate();
                   setShowModal(false);
                   navigate("/praccomplete", {
                     state: {
@@ -424,8 +461,8 @@ const CloseButton = styled.button`
 `;
 
 const ModalContent = styled.div`
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
@@ -441,9 +478,8 @@ const CharacterWrapper = styled.div`
 `;
 
 const TextWrapper = styled.div`
-    font-size: 20px;
-
-`
+  font-size: 20px;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
