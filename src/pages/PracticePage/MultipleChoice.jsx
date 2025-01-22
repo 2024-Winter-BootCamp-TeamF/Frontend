@@ -6,7 +6,8 @@ import PropTypes from "prop-types";
 const COLORS = {
   PRIMARY: "#5887f4",
   SECONDARY: "#F24822",
-  BORDER: "#E2DFDF",
+  BORDER: "#E0E0E0",
+  BACKGROUND: "#ffffff",
 };
 
 const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
@@ -50,6 +51,15 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
       onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
+      style={{
+        borderColor: window.location.href.includes("grading-results")
+          ? problem.is_correct
+            ? COLORS.PRIMARY
+            : "#F24822" // 경로에 따라 테두리 색상 설정
+          : isDoubleClicked
+          ? COLORS.SECONDARY // 더블클릭 시 색상
+          : COLORS.PRIMARY, // 기본 테두리 색상
+      }}
     >
       <Title>{problem.title}</Title>
       <Content>{problem.content}</Content>
@@ -89,13 +99,7 @@ const MultipleChoiceContainer = styled.div`
   width: 900px;
   height: auto;
   background-color: #ffffff;
-  border: 3px solid
-    ${(props) =>
-      props.readOnly
-        ? COLORS.PRIMARY
-        : props.isDoubleClicked
-        ? COLORS.SECONDARY
-        : COLORS.PRIMARY};
+  border: 3px solid ${COLORS.BORDER}; // 기본 테두리 색상
   padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 10px;

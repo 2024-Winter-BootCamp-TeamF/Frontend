@@ -15,11 +15,11 @@ const SIZES = {
   TITLE: "24px",
 };
 
-const ProblemList = ({ problems }) => {
+const ProblemList = ({ problems, title = "문제 목록" }) => {
   return (
     <Container>
       <ProblemListContainer>
-        <Title>문제 목록</Title>
+        <Title>{title}</Title>
         <ProblemUl>
           {problems.map((problem) => (
             <ProblemLi key={problem.id}>
@@ -39,6 +39,14 @@ const ProblemList = ({ problems }) => {
                   isVisible={problem.isSolved || problem.isDoubleClicked}
                 />
               )}
+              {window.location.href.includes("grading-results") ? (
+                <Icon
+                  src={problem.is_correct ? correctIcon : wrongIcon}
+                  alt={problem.is_correct ? "정답" : "오답"}
+                  aria-label={problem.is_correct ? "정답 표시" : "오답 표시"}
+                  isVisible={true}
+                />
+              ) : null}
             </ProblemLi>
           ))}
         </ProblemUl>
@@ -57,6 +65,7 @@ ProblemList.propTypes = {
     })
   ).isRequired,
   selectedProblemId: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 const Container = styled.div`

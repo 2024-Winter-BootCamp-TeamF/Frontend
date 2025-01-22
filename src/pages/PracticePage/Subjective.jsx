@@ -48,6 +48,15 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
       onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
+      style={{
+        borderColor: window.location.href.includes("grading-results")
+          ? problem.is_correct
+            ? COLORS.PRIMARY
+            : COLORS.SECONDARY // 경로에 따라 테두리 색상 설정
+          : isDoubleClicked
+          ? COLORS.SECONDARY // 더블클릭 시 색상
+          : COLORS.PRIMARY, // 기본 테두리 색상
+      }}
     >
       <Title>{problem.title}</Title>
       <Content>{problem.content}</Content>
@@ -76,13 +85,7 @@ const SubjectiveContainer = styled.div`
   width: 900px;
   height: auto;
   background-color: ${COLORS.BACKGROUND};
-  border: 3px solid
-    ${(props) =>
-      props.readOnly
-        ? COLORS.PRIMARY
-        : props.isDoubleClicked
-        ? COLORS.SECONDARY
-        : COLORS.PRIMARY};
+  border: 3px solid ${COLORS.BORDER}; // 기본 테두리 색상
   padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 8px;
