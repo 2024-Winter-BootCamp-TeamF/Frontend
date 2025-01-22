@@ -14,7 +14,12 @@ const PROBLEM_TYPES = {
   SHORT_ANSWER: "short_answer",
 };
 
-const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
+const ProblemContent = ({
+  problems,
+  onButtonClick,
+  readOnly,
+  onProblemSolved,
+}) => {
   const navigate = useNavigate();
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
@@ -23,6 +28,7 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       id: problem.id,
       number: problem.id,
       isCorrect: false,
+      selectedAnswer: null,
     }))
   );
 
@@ -32,6 +38,15 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
+    const correctAnswer = problems.find(
+      (p) => p.id === problemId
+    ).correctAnswer;
+    const isCorrect = selectedAnswer === correctAnswer;
+
+    console.log(
+      `문제 ID: ${problemId}, 선택한 답: ${selectedAnswer}, 정답 여부: ${isCorrect}`
+    );
+
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
       if (isSolved) {
@@ -59,9 +74,17 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
 
     setResults((prev) =>
       prev.map((result) =>
-        result.id === problemId ? { ...result, isCorrect: isSolved } : result
+        result.id === problemId
+          ? {
+              ...result,
+              isCorrect: isCorrect,
+              selectedAnswer: selectedAnswer,
+            }
+          : result
       )
     );
+
+    onProblemSolved(problemId, isSolved, isDoubleClicked, selectedAnswer);
   };
 
   const areAllProblemsAnswered = () => {
@@ -71,11 +94,12 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
     );
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (onProblemSolved) => {
     if (!areAllProblemsAnswered()) {
       alert("모든 문제를 작성하세요.");
       return;
     }
+    onButtonClick(results, onProblemSolved);
     navigate("/Checkcomplete");
   };
 
@@ -83,6 +107,8 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
     ...problem,
     isSolved: solvedProblems.has(problem.id),
     isDoubleClicked: doubleClickedProblems.has(problem.id),
+    isCorrect:
+      results.find((result) => result.id === problem.id)?.isCorrect || false,
   }));
 
   const renderProblem = (problem) => {
@@ -126,7 +152,7 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
             </ProblemDetail>
             <ButtonWrapper>
               <SolveButton
-                onClick={handleButtonClick}
+                onClick={() => handleButtonClick(handleProblemSolved)}
                 children={"고생하셨습니다! 이제 채점해볼까요?\n채점하기"}
               ></SolveButton>
             </ButtonWrapper>
@@ -204,11 +230,13 @@ ProblemContent.propTypes = {
   ).isRequired,
   onButtonClick: PropTypes.func,
   readOnly: PropTypes.bool,
+  onProblemSolved: PropTypes.func,
 };
 
 ProblemContent.defaultProps = {
   onButtonClick: () => {},
   readOnly: false,
+  onProblemSolved: () => {},
 };
 
 export default ProblemContent;
