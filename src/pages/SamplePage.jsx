@@ -16,14 +16,22 @@ const SamplePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pdfFile = location.state?.pdfFile;
+  const topK = location.state?.top_k;
+  const topics = location.state?.topics;
+
+  console.log("Received top_k:", topK);
+  console.log("Received topics:", topics);
+
   const [summaryPDF, setSummaryPDF] = useState(null);
 
   useEffect(() => {
     const fetchSummaryPDF = async () => {
       try {
         const response = await axiosInstance.post("/langchain/summary/", {
-          file_id: [20],
+          top_k: topK,
+          topics: topics,
         });
+
         setSummaryPDF(response.data.summary_pdf_url);
       } catch (error) {
         console.error("요약 PDF를 가져오는 중 오류 발생:", error);
@@ -31,7 +39,7 @@ const SamplePage = () => {
     };
 
     fetchSummaryPDF();
-  }, []);
+  }, [topK, topics]);
 
   const handleIconClick = () => {
     setShowPDFViewer(false);
