@@ -65,13 +65,13 @@ const LoginInputForm = ({
         localStorage.setItem("username", username);
         localStorage.setItem("isLoggedIn", "true");
 
-        setTimeout(() => {
-          localStorage.clear();
-          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-          navigate("/login");
-        }, 600 * 1000);
+        // setTimeout(() => {
+        //   localStorage.clear();
+        //   alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        //   navigate("/login");
+        // }, 600 * 1000);
 
-        navigate(`/users/${username}/summary`);
+        navigate(`/mypage/summary`);
         return true;
       }
     } catch (error) {
