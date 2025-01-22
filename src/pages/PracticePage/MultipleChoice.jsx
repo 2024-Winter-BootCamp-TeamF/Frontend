@@ -86,8 +86,8 @@ MultipleChoice.propTypes = {
 };
 
 const MultipleChoiceContainer = styled.div`
-  width: 980px;
-  height: 432px;
+  width: 900px;
+  height: auto;
   background-color: #ffffff;
   border: 3px solid
     ${(props) =>
@@ -96,7 +96,7 @@ const MultipleChoiceContainer = styled.div`
         : props.isDoubleClicked
         ? COLORS.SECONDARY
         : COLORS.PRIMARY};
-  padding: 0px;
+  padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 10px;
   transition: border-color 0.3s ease;
@@ -107,15 +107,14 @@ const MultipleChoiceContainer = styled.div`
   }
 
   li {
-    margin: 15px 0;
     font-size: 18px;
     display: flex;
     align-items: center;
+    gap: 15px;
+    line-height: 45px;
   }
 
   input[type="radio"] {
-    margin-left: 50px;
-    margin-right: 15px;
     appearance: none;
     border-radius: 50%;
     width: 28px;
@@ -148,14 +147,12 @@ const MultipleChoiceContainer = styled.div`
 
 const Title = styled.h3`
   font-size: 24px;
-  margin: 40px 0 0 50px;
   text-align: left;
 `;
 
 const Content = styled.p`
   font-size: 24px;
-  margin: 0;
-  padding: 0 0 25px 50px;
+  margin-bottom: 30px;
   text-align: left;
 `;
 

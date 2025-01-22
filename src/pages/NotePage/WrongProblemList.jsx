@@ -1,15 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import MultipleChoice from "../PracticePage/MultipleChoice";
-import Button from "../../components/SolveButton";
 
 const WrongProblemList = ({ problems }) => {
-  const navigate = useNavigate();
 
-  const handleButtonClick = () => {
-    navigate("/mypage/summary");
-  };
+
 
   const renderProblem = (problem) => {
     if (problem.type === "multiple_choice") {
@@ -40,13 +35,6 @@ const WrongProblemList = ({ problems }) => {
   return (
     <Container>
       <ProblemListContainer>{problems.map(renderProblem)}</ProblemListContainer>
-      <ButtonWrapper>
-        <Button onClick={handleButtonClick}>
-          많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!
-          <br />
-          마이페이지로 이동하기
-        </Button>
-      </ButtonWrapper>
     </Container>
   );
 };
@@ -77,11 +65,8 @@ const ReadOnlyWrapper = styled.div`
 const SubjectiveWrapper = styled.div`
   margin-bottom: 50px;
   margin-right: 30px;
-<<<<<<< Updated upstream
   margin-top: ${(props) => (props.isFirst ? "100px" : "0")};
 
-=======
->>>>>>> Stashed changes
   @media screen and (max-width: 1200px) {
     margin-right: 20px;
   }
@@ -139,10 +124,5 @@ const Container = styled.div`
   margin-top: 100px;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 50px 0;
-`;
 
 export default WrongProblemList;

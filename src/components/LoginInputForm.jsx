@@ -58,24 +58,20 @@ const LoginInputForm = ({
 
       const response = await axios.post(`${API_BASE_URL}/login/`, signInData);
       if (response.status === 200) {
-        const token = response.data.key;
+        const token = response.data.token;
         const username = signInData.username;
-
-        // 토큰 만료 시간을 1분으로 설정
-        const expirationTime = new Date().getTime() + 180 * 1000;
 
         localStorage.setItem("accessToken", token);
         localStorage.setItem("username", username);
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("tokenExpiration", expirationTime.toString());
 
-        setTimeout(() => {
-          localStorage.clear();
-          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-          navigate("/login");
-        }, 600 * 1000);
+        // setTimeout(() => {
+        //   localStorage.clear();
+        //   alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        //   navigate("/login");
+        // }, 600 * 1000);
 
-        navigate(`/users/${username}/summary`);
+        navigate(`/mypage/summary`);
         return true;
       }
     } catch (error) {

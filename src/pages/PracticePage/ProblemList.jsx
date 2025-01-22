@@ -60,29 +60,24 @@ ProblemList.propTypes = {
 };
 
 const Container = styled.div`
-  display: flex;
-  margin-top: 150px;
-  min-width: 263px;
+  position: relative;
+  min-width: 200px;
+  height: 95%;
 `;
 
 const ProblemListContainer = styled.div`
-  position: fixed;
-  top: 200px;
-  left: 100px;
-  width: 263px;
-  height: auto; // 문제 수에 따라 자동 조정
+  position: sticky;
+  top: 100px; // Header 높이만큼 여백
+  width: 200px;
+  height: auto;
+  max-height: calc(100vh - 180px); // viewport 높이에서 상하 여백 제외
   background-color: ${COLORS.BACKGROUND};
   border: 3px solid ${COLORS.PRIMARY};
-  padding: 29px 30px;
   box-sizing: border-box;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 300px;
-  z-index: 1000;
-
-  @media screen and (max-width: 1200px) {
-    left: 50px;
-  }
+  padding: 20px 0;
+  overflow-y: auto;
 
   @media screen and (max-width: 1024px) {
     position: static;
@@ -93,8 +88,6 @@ const ProblemListContainer = styled.div`
 const Title = styled.h2`
   font-size: ${SIZES.TITLE};
   text-align: center;
-  margin-top: 20px;
-
   margin-bottom: 20px;
 `;
 
@@ -102,30 +95,31 @@ const ProblemUl = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 `;
 
 const ProblemLi = styled.li`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 10px;
-  margin-bottom: 5px;
-  margin-left: 55px;
+  width: 100px;
   border-radius: 4px;
   position: relative;
+  padding: 5px;
 `;
 
 const ProblemTitle = styled.span`
-  font-size: ${SIZES.TITLE};
   text-align: left;
   width: 100%;
+  font-size: 22px;
 `;
 
 const Icon = styled.img`
   width: ${SIZES.ICON};
   height: ${SIZES.ICON};
   position: absolute;
-  left: 50%;
+  left: 80%;
   transform: translateX(-50%);
   visibility: ${(props) => (props.isVisible ? "visible" : "hidden")};
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
