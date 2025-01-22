@@ -7,6 +7,8 @@ import ReductionIcon from "../images/reduction (2).png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SolveButton from "../components/SolveButton";
+import SampleButton from "../components/SampleButton";
+import SampleButton2 from "../components/SampleButton2";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const SamplePage = () => {
@@ -76,7 +78,7 @@ const SamplePage = () => {
           )}
 
           <SummaryBox isExtensionActive={isExtensionActive}>
-            <IconWrapper
+            {/* <IconWrapper
               onClick={
                 isExtensionActive ? handleReductionClick : handleIconClick
               }
@@ -95,9 +97,16 @@ const SamplePage = () => {
             )}
           </SummaryBox>
         </MainContent>
-        <SolveButton onClick={() => navigate("/mypage/summary")}>
-          마이페이지로 이동하기
-        </SolveButton>
+        <ButtonContainer>
+          <SampleButton2 onClick={() => navigate("/mypage/summary")}>
+            <LightText>연습 문제까지 볼 시간이 없다.</LightText>
+            <BoldText>요약본만 확인하기</BoldText>
+          </SampleButton2>
+          <SampleButton2 onClick={() => navigate("/mypage/summary")}>
+            <LightText>연습 문제로 확실히 대비해볼까?</LightText>
+            <BoldText>연습 문제 생성하기</BoldText>
+          </SampleButton2>
+        </ButtonContainer>
       </MainContentWrapper>
       <Footer />
 
@@ -249,6 +258,24 @@ const LoadingText = styled.p`
   color: #333;
   font-size: 18px;
   margin: 0;
+`;
+
+const LightText = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+`;
+
+const BoldText = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 5px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 70px; // 버튼 사이의 간격
+  margin-top: 0px;
 `;
 
 export default SamplePage;
