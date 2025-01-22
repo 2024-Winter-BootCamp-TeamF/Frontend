@@ -25,10 +25,6 @@ const UploadPage = () => {
     setLectureFiles(lectureFiles.filter((file) => file.name !== fileName));
   };
 
-  const removeProblemFile = (fileName) => {
-    setProblemFiles(problemFiles.filter((file) => file.name !== fileName));
-  };
-
   const {
     getRootProps: getLectureRootProps,
     getInputProps: getLectureInputProps,
@@ -92,47 +88,17 @@ const UploadPage = () => {
                 ))}
               </FileList>
             )}
-          </UploadBox>
-
-          <UploadBox {...getProblemRootProps()}>
-            <input {...getProblemInputProps()} multiple />
-            <UploadTitle>문제 유형 업로드</UploadTitle>
-            <UploadSubtitle>
-              {isProblemDragActive
-                ? "파일을 여기에 놓으세요"
-                : "또는 드래그해서 파일 올리기"}
-            </UploadSubtitle>
-            {problemFiles.length > 0 && (
-              <FileList>
-                {problemFiles.map((file, index) => (
-                  <FileItem key={`problem-${file.name}-${index}`}>
-                    <FileName>{file.name}</FileName>
-                    <RemoveButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeProblemFile(file.name);
-                      }}
-                    >
-                      ×
-                    </RemoveButton>
-                  </FileItem>
-                ))}
-              </FileList>
-            )}
+            <InstructionSection>
+              <InstructionList>
+                <li>
+                  요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
+                  업로드해주세요.
+                </li>
+                <li>연습문제는 강의요약 이후 생성할 수 있습니다.</li>
+              </InstructionList>
+            </InstructionSection>
           </UploadBox>
         </UploadSection>
-
-        <InstructionSection>
-          <InstructionList>
-            <li>
-              요약하고 싶은, 혹은 연습 문제를 만들고 싶은 강의자료를 왼쪽에
-              업로드해주세요.
-            </li>
-            <li>
-              원하는 문제 유형을 업로드하면 비슷한 유형의 문제로 출제됩니다.
-            </li>
-          </InstructionList>
-        </InstructionSection>
 
         <ButtonSection>
           <ExButton variant="filled" onClick={handleUpload}>
@@ -228,8 +194,8 @@ const UploadSection = styled.div`
 `;
 
 const UploadBox = styled.div`
-  width: 400px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
   border: 2px dashed #5c85ff;
   border-radius: 10px;
   display: flex;
@@ -296,13 +262,13 @@ const RemoveButton = styled.button`
 `;
 
 const InstructionSection = styled.div`
-  text-align: center;
+  margin-top: 60px;
 `;
 
 const InstructionList = styled.ul`
   font-size: 15px;
   list-style-type: none;
-  text-align: left;
+  text-align: center;
 
   li {
     color: #666;
