@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
   const [isExtensionActive, setIsExtensionActive] = useState(false);
+  const [summaryPDF, setSummaryPDF] = useState(null);
   const [isLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,22 +22,29 @@ const SamplePage = () => {
   const topK = location.state?.top_k;
   const topics = location.state?.topics;
 
-  console.log("Received top_k:", topK);
-  console.log("Received topics:", topics);
-
-  const [summaryPDF, setSummaryPDF] = useState(null);
-
   useEffect(() => {
     const fetchSummaryPDF = async () => {
       try {
+        console.log("요청 데이터:", { top_k: topK, topics: topics });
+
         const response = await axiosInstance.post("/langchain/summary/", {
-          top_k: topK,
-          topics: topics,
+          top_k: topK, // 숫자
+          topics: topics, // 문자열 배열
         });
 
-        setSummaryPDF(response.data.summary_pdf_url);
+        if (response.data.status === "success") {
+          setSummaryPDF(response.data.pdf_url); // 서버 응답이 올바른 경우 처리
+        } else {
+          console.error(
+            "API 호출 성공했지만 유효하지 않은 응답:",
+            response.data
+          );
+        }
       } catch (error) {
-        console.error("요약 PDF를 가져오는 중 오류 발생:", error);
+        console.error(
+          "요약 PDF를 가져오는 중 오류 발생:",
+          error.response?.data || error.message
+        );
       }
     };
 
@@ -78,6 +86,15 @@ const SamplePage = () => {
           )}
 
           <SummaryBox isExtensionActive={isExtensionActive}>
+            {summaryPDF ? (
+              <iframe
+                src={summaryPDF}
+                title="Summary PDF Viewer"
+                style={{ height: "100%", width: "100%" }}
+              />
+            ) : (
+              <LoadingText>요약본을 불러오는 중입니다...</LoadingText>
+            )}
             {/* <IconWrapper
               onClick={
                 isExtensionActive ? handleReductionClick : handleIconClick
