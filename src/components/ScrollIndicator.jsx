@@ -1,8 +1,15 @@
 import styled from "styled-components";
 
 const ScrollIndicator = () => {
+  const handleScroll = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <IndicatorWrapper>
+    <IndicatorWrapper onClick={handleScroll}>
       <ScrollText>아래로 내려서 더 알아보기!</ScrollText>
       <ScrollArrow>↓</ScrollArrow>
     </IndicatorWrapper>
@@ -16,6 +23,11 @@ const IndicatorWrapper = styled.div`
   padding: 10px;
   gap: 8px;
   background-color: #5887f4;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 const ScrollText = styled.span`
