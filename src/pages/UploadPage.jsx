@@ -252,6 +252,7 @@ const SubTitle = styled.h2`
   font-size: 20px;
   color: #666;
   font-weight: 500;
+  margin-bottom: 10px;
 `;
 
 const UploadSection = styled.div`
@@ -331,7 +332,7 @@ const RemoveButton = styled.button`
 `;
 
 const InstructionSection = styled.div`
-  margin-top: 60px;
+  margin-top: 40px;
 `;
 
 const InstructionList = styled.ul`
