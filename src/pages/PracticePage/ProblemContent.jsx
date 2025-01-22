@@ -9,7 +9,6 @@ import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
 import { useNavigate } from "react-router-dom";
 
-// 문제 타입 상수 정의
 const PROBLEM_TYPES = {
   MULTIPLE_CHOICE: "multiple_choice",
   SHORT_ANSWER: "short_answer",
@@ -17,33 +16,22 @@ const PROBLEM_TYPES = {
 
 const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
   const navigate = useNavigate();
-
-  // 풀린 문제들의 ID를 저장하는 상태
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
-
-  // 문제 해결 결과 상태 정의
   const [results, setResults] = useState(
     problems.map((problem) => ({
       id: problem.id,
-      number: problem.id, // 문제 번호
-      isCorrect: false, // 초기값은 false
+      number: problem.id,
+      isCorrect: false,
     }))
   );
 
-  // 문제가 풀렸을 때 호출되는 핸들러
   const handleProblemSolved = (
     problemId,
     isSolved,
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 문제 ID, 정답 여부, 더블클릭 상태, 선택한 정답 또는 입력한 답안 처리
-    console.log(
-      `문제 ID: ${problemId}, 정답 여부: ${isSolved}, 더블클릭 상태: ${isDoubleClicked}, 답안: ${selectedAnswer}`
-    );
-
-    // 풀이 상태 업데이트
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
       if (isSolved) {
@@ -54,12 +42,10 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       return newSolved;
     });
 
-    // 더블클릭 상태 업데이트
     setDoubleClickedProblems((prev) => {
       const newDoubleClicked = new Set(prev);
       if (isDoubleClicked) {
         newDoubleClicked.add(problemId);
-        // 더블클릭된 경우 solved 상태는 false로
         setSolvedProblems((prev) => {
           const newSolved = new Set(prev);
           newSolved.delete(problemId);
@@ -71,20 +57,13 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       return newDoubleClicked;
     });
 
-    const updatedResults = results.map((result) => {
-      if (result.id === problemId) {
-        return {
-          ...result,
-          isCorrect: isSolved, // 정답 여부 업데이트
-        };
-      }
-      return result;
-    });
-
-    setResults(updatedResults);
+    setResults((prev) =>
+      prev.map((result) =>
+        result.id === problemId ? { ...result, isCorrect: isSolved } : result
+      )
+    );
   };
 
-  // 모든 문제가 풀렸는지 확인하는 함수
   const areAllProblemsAnswered = () => {
     return problems.every(
       (problem) =>
@@ -92,18 +71,14 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
     );
   };
 
-  // 버튼 클릭 핸들러
   const handleButtonClick = () => {
     if (!areAllProblemsAnswered()) {
       alert("모든 문제를 작성하세요.");
       return;
     }
-
-    // CheckCompletePage로 이동
     navigate("/Checkcomplete");
   };
 
-  // problems 배열에 isSolved 속성을 추가
   const problemsWithStatus = problems.map((problem) => ({
     ...problem,
     isSolved: solvedProblems.has(problem.id),
@@ -138,7 +113,9 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
       <Header />
       <MainContent>
         <Container>
-          <ProblemList problems={problemsWithStatus} />
+          <SidebarWrapper>
+            <ProblemList problems={problemsWithStatus} />
+          </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
               {problems.map((problem) => (
@@ -148,7 +125,10 @@ const ProblemContent = ({ problems, onButtonClick, readOnly }) => {
               ))}
             </ProblemDetail>
             <ButtonWrapper>
-              <SolveButton onClick={handleButtonClick}>제출하기</SolveButton>
+              <SolveButton
+                onClick={handleButtonClick}
+                children={"고생하셨습니다! 이제 채점해볼까요?\n채점하기"}
+              ></SolveButton>
             </ButtonWrapper>
           </ContentWrapper>
         </Container>
@@ -169,31 +149,40 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 50px;
 `;
 
 const Container = styled.div`
   display: flex;
-  margin-top: 100px;
   flex: 1;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-content: center;
+`;
+
+const SidebarWrapper = styled.div`
+  width: 200px;
+  margin-right: 80px;
 `;
 
 const ContentWrapper = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  padding-left: 80px;
-  margin-top: 100px;
   align-items: center;
+  padding-bottom: 50px;
 `;
 
 const ProblemDetail = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 50px;
 `;
 
 const ProblemItem = styled.div`
-  margin-bottom: 50px;
   display: flex;
   justify-content: center;
 `;
@@ -201,10 +190,9 @@ const ProblemItem = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 50px 0;
+  margin: 50px;
 `;
 
-// PropTypes 정의
 ProblemContent.propTypes = {
   problems: PropTypes.arrayOf(
     PropTypes.shape({
