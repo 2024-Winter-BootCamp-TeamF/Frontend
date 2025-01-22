@@ -5,12 +5,15 @@ import Footer from "../components/Footer";
 import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../axiosInstance";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
   const [problemFiles, setProblemFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [topK, setTopK] = useState(5);
+  const [topics, setTopics] = useState([""]);
   const navigate = useNavigate();
 
   const onLectureDrop = useCallback((acceptedFiles) => {
@@ -41,18 +44,58 @@ const UploadPage = () => {
     isDragActive: isProblemDragActive,
   } = useDropzone({ onDrop: onProblemDrop });
 
-  const handleUpload = () => {
+  const handleAddTopic = () => {
+    if (topics.length < 3) {
+      setTopics((prev) => [...prev, ""]);
+    }
+  };
+
+  const handleTopicChange = (index, value) => {
+    const newTopics = [...topics];
+    newTopics[index] = value;
+    setTopics(newTopics);
+  };
+
+  const handleUpload = async () => {
     if (lectureFiles.length === 0) {
       alert("강의 자료를 업로드해주세요.");
       return;
     }
 
     setIsLoading(true);
-    // 여기에 실제 파일 업로드 로직 추가
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      const formData = new FormData();
+      lectureFiles.forEach((file) => {
+        formData.append("file", file);
+      });
+
+      const response = await axiosInstance.request({
+        method: "POST",
+        url: "/pdf/upload/",
+        data: formData,
+      });
+      console.log(response.data);
+
       setShowModal(true);
-    }, 2000);
+    } catch (error) {
+      if (error.response) {
+        console.error(
+          "Server Error:",
+          error.response.status,
+          error.response.data
+        );
+        alert(`서버 오류: ${error.response.status} - ${error.response.data}`);
+      } else if (error.request) {
+        console.error("No Response from Server:", error.request);
+        alert("서버로부터 응답이 없습니다.");
+      } else {
+        console.error("Axios Configuration Error:", error.message);
+        alert(`Axios 설정 오류: ${error.message}`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -152,30 +195,56 @@ const UploadPage = () => {
         {showModal && (
           <Modal>
             <ModalContent>
-              <ModalTitle>작업을 선택해주세요</ModalTitle>
-              <ModalButtons>
-                <ExButton
-                  variant="filled"
+              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+              <InputWrapper>
+                <label htmlFor="top_k">Top K</label>
+                <StyledSelect
+                  id="top_k"
+                  value={topK}
+                  onChange={(e) => setTopK(e.target.value)}
+                >
+                  {[...Array(8)].map((_, index) => (
+                    <option key={index + 3} value={index + 3}>
+                      {index + 3}
+                    </option>
+                  ))}
+                </StyledSelect>
+              </InputWrapper>
+              {topics.map((topic, index) => (
+                <InputWrapper key={index}>
+                  <label htmlFor={`topic_${index}`}>Topic {index + 1}</label>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <StyledInput
+                      type="text"
+                      id={`topic_${index}`}
+                      value={topic}
+                      onChange={(e) => handleTopicChange(index, e.target.value)}
+                      style={{ width: index === 0 ? "auto" : "100%" }}
+                    />
+                    {index === 0 && (
+                      <StyledButton onClick={handleAddTopic}>
+                        추가하기
+                      </StyledButton>
+                    )}
+                  </div>
+                </InputWrapper>
+              ))}
+              <ButtonContainer>
+                <StyledExButton
                   onClick={() => {
                     setShowModal(false);
                     navigate("/sample", {
-                      state: { pdfFile: lectureFiles[0] },
+                      state: {
+                        pdfFile: lectureFiles[0],
+                        top_k: topK,
+                        topics: topics.filter((topic) => topic.trim() !== ""),
+                      },
                     });
                   }}
                 >
                   요약본 생성하기
-                </ExButton>
-                <ExButton
-                  variant="filled"
-                  onClick={() => {
-                    setShowModal(false);
-                    navigate("/PracComplete"); // SamplePage로 이동
-                  }}
-                >
-                  연습문제 생성하기
-                </ExButton>
-              </ModalButtons>
-              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+                </StyledExButton>
+              </ButtonContainer>
             </ModalContent>
           </Modal>
         )}
@@ -337,18 +406,6 @@ const ModalContent = styled.div`
   min-width: 300px;
 `;
 
-const ModalTitle = styled.h2`
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-`;
-
-const ModalButtons = styled.div`
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-`;
-
 const CloseButton = styled.button`
   position: absolute;
   top: 10px;
@@ -400,6 +457,78 @@ const LoadingText = styled.p`
   color: #333;
   font-size: 24px;
   margin: 0;
+`;
+
+const InputWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  label {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  input {
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #5887f4;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+`;
+
+const StyledInput = styled.input`
+  padding: 10px;
+  border: 1px solid #5887f4;
+  border-radius: 5px;
+  width: 100%;
+`;
+
+const StyledSelect = styled.select`
+  padding: 10px;
+  border: 1px solid #5887f4;
+  border-radius: 5px;
+  width: 100%;
+`;
+
+const StyledButton = styled.button`
+  background-color: #5887f4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 30px;
+
+  &:hover {
+    background-color: #4a6fb4;
+  }
+`;
+
+const StyledExButton = styled.button`
+  background-color: #5887f4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #4a6fb4;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 `;
 
 export default UploadPage;

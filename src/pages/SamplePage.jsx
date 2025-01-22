@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axiosInstance from "../axiosInstance";
 
 import ExtensionIcon from "../images/Extension (2).png";
 import ReductionIcon from "../images/reduction (2).png";
@@ -15,6 +16,30 @@ const SamplePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pdfFile = location.state?.pdfFile;
+  const topK = location.state?.top_k;
+  const topics = location.state?.topics;
+
+  console.log("Received top_k:", topK);
+  console.log("Received topics:", topics);
+
+  const [summaryPDF, setSummaryPDF] = useState(null);
+
+  useEffect(() => {
+    const fetchSummaryPDF = async () => {
+      try {
+        const response = await axiosInstance.post("/langchain/summary/", {
+          top_k: topK,
+          topics: topics,
+        });
+
+        setSummaryPDF(response.data.summary_pdf_url);
+      } catch (error) {
+        console.error("요약 PDF를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchSummaryPDF();
+  }, [topK, topics]);
 
   const handleIconClick = () => {
     setShowPDFViewer(false);
@@ -61,15 +86,13 @@ const SamplePage = () => {
                 alt="Extension"
               />
             </IconWrapper>
-            {/* 
-          <Title>요약본 출력</Title>
-          <Subtitle>(PDF 뷰어 사용)</Subtitle>
-          */}
-            {/* <iframe
-              src="/compressed.tracemonkey-pldi-09.pdf"
-              title="PDF Viewer"
-              style={{ height: "100%", width: "100%" }}
-            /> */}
+            {summaryPDF && (
+              <iframe
+                src={summaryPDF}
+                title="Summary PDF Viewer"
+                style={{ height: "100%", width: "100%" }}
+              />
+            )}
           </SummaryBox>
         </MainContent>
         <SolveButton onClick={() => navigate("/mypage/summary")}>
