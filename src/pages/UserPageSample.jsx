@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import addIcon from "../images/add.png";
 import summaryIcon from "../images/mypage_summary.png";
@@ -8,17 +8,29 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 
-const UserPageSample = () => {
+const UserPageSample = ({ pdfUrl }) => {
   const navigate = useNavigate();
-  const [cards, setCards] = useState([
-    { id: 1, title: "웹퍼블리싱응용 Ch1", date: "2025.01.01" },
-    { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
-    { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
-    { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
-  ]);
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const storedCards = localStorage.getItem("cards");
+    if (storedCards) {
+      setCards(JSON.parse(storedCards)); // localStorage에서 카드 불러오기
+    }
+  }, []);
 
   const handleDelete = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
+    const updatedCards = cards.filter((card) => card.id !== id);
+    setCards(updatedCards);
+    localStorage.setItem("cards", JSON.stringify(updatedCards)); // 삭제 후 localStorage 업데이트
+  };
+
+  const handleCardClick = (id) => {
+    const selectedCard = cards.find((card) => card.id === id);
+    if (selectedCard) {
+      const selectedPdfUrl = selectedCard.pdfUrl; // 선택된 카드의 PDF URL 가져오기
+      window.open(selectedPdfUrl, "_blank"); // 새로운 창에서 PDF 열기
+    }
   };
 
   return (
@@ -26,7 +38,7 @@ const UserPageSample = () => {
       <Header />
       <Nav>
         <ExButton variant="filled" isActive={true}>
-          요약본
+          요약본 추가하기
         </ExButton>
         <ExButton
           variant="outlined"
@@ -45,25 +57,29 @@ const UserPageSample = () => {
           </AddIconWrapper>
           <CardText>요약본 만들기</CardText>
         </Card>
-        {cards.map((card) => (
-          <Card key={card.id}>
-            <DeleteButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(card.id);
-              }}
-            >
-              <img src={DeleteIcon} alt="삭제" />
-            </DeleteButton>
-            <IconWrapper>
-              <img src={summaryIcon} alt="요약본" />
-            </IconWrapper>
-            <CardText>
-              {card.title}
-              <DateText>{card.date}</DateText>
-            </CardText>
-          </Card>
-        ))}
+        {cards && cards.length > 0 ? (
+          cards.map((card) => (
+            <Card key={card.id} onClick={() => handleCardClick(card.id)}>
+              <DeleteButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(card.id);
+                }}
+              >
+                <img src={DeleteIcon} alt="삭제" />
+              </DeleteButton>
+              <IconWrapper>
+                <img src={summaryIcon} alt="요약본" />
+              </IconWrapper>
+              <CardText>
+                {card.title}
+                <DateText>{card.date}</DateText>
+              </CardText>
+            </Card>
+          ))
+        ) : (
+          <p>카드가 없습니다.</p>
+        )}
       </Content>
       <Footer />
     </Container>
