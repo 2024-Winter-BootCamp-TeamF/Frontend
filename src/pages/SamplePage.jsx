@@ -111,7 +111,7 @@ const SamplePage = () => {
                 title="Summary PDF Viewer"
                 style={{ height: "100%", width: "100%" }}
               />
-            )}
+            )*/}
           </SummaryBox>
         </MainContent>
         <ButtonContainer>
