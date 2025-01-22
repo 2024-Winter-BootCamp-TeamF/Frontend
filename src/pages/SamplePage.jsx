@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axiosInstance from "../axiosInstance";
-
-import ExtensionIcon from "../images/Extension (2).png";
-import ReductionIcon from "../images/reduction (2).png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import SolveButton from "../components/SolveButton";
-import SampleButton from "../components/SampleButton";
 import SampleButton2 from "../components/SampleButton2";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -25,15 +20,13 @@ const SamplePage = () => {
   useEffect(() => {
     const fetchSummaryPDF = async () => {
       try {
-        console.log("요청 데이터:", { top_k: topK, topics: topics });
-
         const response = await axiosInstance.post("/langchain/summary/", {
           top_k: topK, // 숫자
           topics: topics, // 문자열 배열
         });
 
         if (response.data.status === "success") {
-          setSummaryPDF(response.data.pdf_url); // 서버 응답이 올바른 경우 처리
+          setSummaryPDF(`${response.data.pdf_url}#toolbar=0`);
         } else {
           console.error(
             "API 호출 성공했지만 유효하지 않은 응답:",
@@ -50,16 +43,6 @@ const SamplePage = () => {
 
     fetchSummaryPDF();
   }, [topK, topics]);
-
-  const handleIconClick = () => {
-    setShowPDFViewer(false);
-    setIsExtensionActive(true);
-  };
-
-  const handleReductionClick = () => {
-    setShowPDFViewer(true); // PDFViewer 다시 보이도록 설정
-    setIsExtensionActive(false); // 아이콘을 원래 상태로 되돌림
-  };
 
   return (
     <Container>
@@ -119,7 +102,11 @@ const SamplePage = () => {
             <LightText>연습 문제까지 볼 시간이 없다.</LightText>
             <BoldText>요약본만 확인하기</BoldText>
           </SampleButton2>
-          <SampleButton2 onClick={() => navigate("/mypage/summary")}>
+          <SampleButton2
+            onClick={() =>
+              navigate("/createpractice", { state: { summaryPDF } })
+            }
+          >
             <LightText>연습 문제로 확실히 대비해볼까?</LightText>
             <BoldText>연습 문제 생성하기</BoldText>
           </SampleButton2>
