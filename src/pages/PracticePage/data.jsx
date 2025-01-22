@@ -7,21 +7,21 @@ export const problems = [
     type: "multiple_choice", // 객관식
     options: ["선택 1", "선택 2", "선택 3", "선택 4", "선택 5"],
     correctAnswer: 1, // 정답은 3번째 선택지 (인덱스는 0부터 시작)
-    is_correct: true, // 정답
+    is_correct: true, // 오답
   },
   {
     id: "2",
     title: "Q.2",
     content: "문제 2의 내용이 여기에 들어갑니다.",
     type: "short_answer", // 주관식
-    is_correct: false, // 오답
+    is_correct: true, // 오답
   },
   {
     id: "3",
     title: "Q.3",
     content: "문제 3의 내용이 여기에 들어갑니다.",
     type: "short_answer", // 주관식
-    is_correct: true, // 정답
+    is_correct: false, // 정답
   },
   {
     id: "4",
@@ -48,7 +48,7 @@ export const problems = [
     type: "multiple_choice", // 객관식
     options: ["선택 1", "선택 2", "선택 3", "선택 4", "선택 5"],
     correctAnswer: 5, // 정답은 3번째 선택지 (인덱스는 0부터 시작)
-    is_correct: false, // 오답
+    is_correct: true, // 오답
   },
   {
     id: "7",
@@ -75,7 +75,7 @@ export const problems = [
     type: "multiple_choice", // 객관식
     options: ["선택 1", "선택 2", "선택 3", "선택 4", "선택 5"],
     correctAnswer: 5, // 정답은 3번째 선택지 (인덱스는 0부터 시작)
-    is_correct: true, // 정답
+    is_correct: false, // 정답
   },
   {
     id: "10",
@@ -84,6 +84,6 @@ export const problems = [
     type: "multiple_choice", // 객관식
     options: ["선택 1", "선택 2", "선택 3", "선택 4", "선택 5"],
     correctAnswer: 5, // 정답은 3번째 선택지 (인덱스는 0부터 시작)
-    is_correct: false, // 오답
+    is_correct: true, // 오답
   },
 ];
