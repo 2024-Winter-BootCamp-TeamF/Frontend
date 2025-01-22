@@ -24,6 +24,7 @@ import AdditionalCompletePage from "./pages/AdditionalCompletePage";
 import CheckCompletePage from "./pages/CheckCompletePage";
 import PracticeCompletePage from "./pages/PracticeCompletePage";
 import GradingResults from "./pages/GradingResults";
+import CreatePracPage from "./pages/CreatePracPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
           <Route path="mypage/note" element={<UserPageNote />} />
           <Route path="/sample" element={<SamplePage />} />
           <Route path="/upload" element={<UploadPage />} />
+          <Route path="/createpractice" element={<CreatePracPage />} />
         </Routes>
       </ThemeProvider>
     </Router>
