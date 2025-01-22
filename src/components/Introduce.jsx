@@ -81,7 +81,16 @@ AI 오답노트를 생성해보세요!
               ? `${menuItems[selectedIndex].title} 관련 이미지`
               : "(이미지 생기면 추가 예정)"}
           </PlaceholderText>
-          <DotButton onClick={() => navigate("/login")}>
+          <DotButton
+            onClick={() => {
+              const token = localStorage.getItem("accessToken");
+              if (token) {
+                navigate("/upload");
+              } else {
+                navigate("/login");
+              }
+            }}
+          >
             <img src={circlesIcon} alt="로그인/회원가입" />
             <ButtonText className="button-text">서비스 시작하기!</ButtonText>
           </DotButton>
