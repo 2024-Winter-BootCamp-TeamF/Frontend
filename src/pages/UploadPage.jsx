@@ -427,11 +427,11 @@ const LoadingText = styled.p`
 `;
 
 const InputWrapper = styled.div`
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 
+  padding: 10px;
   label {
     font-size: 18px;
     color: #333;
@@ -444,7 +444,6 @@ const InputWrapper = styled.div`
     padding: 10px;
     border: 1px solid #5887f4;
     border-radius: 5px;
-    margin-bottom: 10px;
   }
 `;
 
@@ -465,30 +464,38 @@ const StyledSelect = styled.select`
 const StyledButton = styled.button`
   background-color: #5887f4;
   color: white;
-  border: none;
   border-radius: 5px;
-  padding: 10px 15px;
+  border: 2px solid #5887f4;
+
+  padding: 8px 13px;
   cursor: pointer;
   transition: background-color 0.3s;
   margin-left: 30px;
+  font-family: "HakgyoansimAllimjangTTF-R";
 
   &:hover {
-    background-color: #4a6fb4;
+    background-color: #fff;
+    color: #5887f4;
+    border: 2px solid #5887f4;
   }
 `;
 
 const StyledExButton = styled.button`
   background-color: #5887f4;
+  border: 2px solid #5887f4;
   color: white;
-  border: none;
   border-radius: 5px;
-  padding: 10px 15px;
+  padding: 13px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
   margin-top: 10px;
+  font-family: "HakgyoansimAllimjangTTF-R";
+  font-size: 18px;
 
   &:hover {
-    background-color: #4a6fb4;
+    background-color: #fff;
+    color: #5887f4;
+    border: 2px solid #5887f4;
   }
 `;
 
