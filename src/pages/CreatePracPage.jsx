@@ -13,8 +13,9 @@ function CreatePracPage() {
   const [pdfFile, setPdfFile] = useState(null);
   const [problemFiles, setProblemFiles] = useState([]);
   const [showPDFViewer, setShowPDFViewer] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showModal, setShowModal] = useState(false); // showModal 상태 추가
+
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -24,10 +25,6 @@ function CreatePracPage() {
   console.log("SummaryPDF:", summaryPDF);
 
   const onProblemDrop = useCallback((acceptedFiles) => {
-    // 드래그로 파일을 업로드했을 때 받아온 파일을 콘솔로 확인
-    console.log("문제 파일 드래그된 파일들:", acceptedFiles);
-
-    // 문제 파일을 상태에 추가
     setProblemFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
 
@@ -66,7 +63,7 @@ function CreatePracPage() {
       return;
     }
 
-    setIsLoading(true);
+    setIsUploading(true);
 
     try {
       const formData = new FormData();
@@ -98,21 +95,11 @@ function CreatePracPage() {
         alert(`Axios 설정 오류: ${error.message}`);
       }
     } finally {
-      setIsLoading(false);
+      setIsUploading(false);
     }
   };
 
   const handleCreate = async () => {
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-      console.error("No token found. Please log in.");
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    console.log("Authorization Header:", `Bearer ${token}`); // 여기에서 로그 출력
-
     try {
       const response = await fetch(
         "http://localhost:8000/api/question/create/",
@@ -120,7 +107,7 @@ function CreatePracPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
+            Authorization: `Token ${localStorage.getItem("accessToken")}`,
           },
           body: JSON.stringify({
             topics: Array.isArray(topics) ? topics : [topics],
@@ -128,21 +115,17 @@ function CreatePracPage() {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Server Error:", errorData);
-        throw new Error(
-          errorData.detail || "Failed to create practice questions"
-        );
-      }
-
-      const problemNames = topics.map((topic) => `${topic}_연습문제`);
+      if (!response.ok) throw new Error("API 호출 실패");
 
       const data = await response.json();
       console.log("API Response:", data);
-      navigate("/praccomplete", { state: { problems: data, problemNames, topics } });
+      setTimeout(() => {
+        console.log("Navigating to /praccomplete...");
+        navigate("/praccomplete", { state: { problems: data, topics } });
+      });
     } catch (error) {
       console.error("Error:", error.message);
+      alert("연습 문제 생성 중 오류가 발생했습니다.");
     }
   };
 
@@ -214,7 +197,7 @@ function CreatePracPage() {
       </MainContentWrapper>
       <Footer />
 
-      {isLoading && (
+      {isUploading && (
         <LoadingModal>
           <LoadingContent>
             <LoadingSpinner />
@@ -236,11 +219,11 @@ function CreatePracPage() {
             <ButtonContainer>
               <StyledExButton
                 onClick={() => {
-                  handleCreate();
                   setShowModal(false);
+                  handleCreate();
                   navigate("/praccomplete", {
                     state: {
-                      pdfFile: pdfFile, 
+                      pdfFile: pdfFile,
                     },
                   });
                 }}

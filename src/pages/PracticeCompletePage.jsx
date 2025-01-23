@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styled from "styled-components";
@@ -8,10 +9,30 @@ import { useNavigate } from "react-router-dom";
 
 const PracticeCompletePage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false); // 15초 후 로딩 종료
+    }, 15000);
+
+    return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+  }, []);
 
   const handleMyPageClick = () => {
     navigate("/mypage/practice");
   };
+
+  if (isLoading) {
+    return (
+      <LoadingModal>
+        <LoadingContent>
+          <LoadingSpinner />
+          <LoadingText>연습 문제를 생성 중입니다...</LoadingText>
+        </LoadingContent>
+      </LoadingModal>
+    );
+  }
 
   return (
     <CompletePageWrapper>
@@ -52,6 +73,50 @@ const PracticeCompletePage = () => {
     </CompletePageWrapper>
   );
 };
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px; /* spinner와 텍스트 사이 간격 */
+`;
+
+const LoadingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5887f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 24px;
+  margin: 0;
+`;
 
 const CompletePageWrapper = styled.div`
   width: 100%;
