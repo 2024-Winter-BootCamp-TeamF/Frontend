@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axiosInstance from "../axiosInstance";
+
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SampleButton2 from "../components/SampleButton2";
 import { useNavigate, useLocation } from "react-router-dom";
+import UserPageSample from "./UserPageSample";
 
 const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
@@ -16,6 +18,11 @@ const SamplePage = () => {
   const pdfFile = location.state?.pdfFile;
   const topK = location.state?.top_k;
   const topics = location.state?.topics;
+  const [cards, setCards] = useState(() => {
+    // localStorage에서 기존 카드 불러오기
+    const storedCards = localStorage.getItem("cards");
+    return storedCards ? JSON.parse(storedCards) : [];
+  });
 
   const handleTopicsNext = () => {
     const { topic } = location.state || {};
@@ -49,6 +56,27 @@ const SamplePage = () => {
     fetchSummaryPDF();
   }, [topK, topics]);
 
+  const handleCreateCard = () => {
+    const newCard = {
+      id: cards.length + 1, // 카드 ID 생성
+      title: "새로운 카드 제목", // 기본 제목
+      date: new Date().toLocaleDateString(), // 현재 날짜
+      pdfUrl: summaryPDF, // PDF URL
+    };
+
+    handleAddCard(newCard); // 새로운 카드 추가
+    navigate("/mypage/summary"); // 페이지 이동
+  };
+
+  const handleAddCard = (newCard) => {
+    setCards((prevCards) => {
+      const updatedCards = [...prevCards, newCard]; // 새로운 카드 추가
+      localStorage.setItem("cards", JSON.stringify(updatedCards)); // localStorage에 카드 저장
+      console.log("새로운 카드 추가:", newCard); // 콘솔에 카드 정보 출력
+      return updatedCards;
+    });
+  };
+
   return (
     <Container>
       <Header />
@@ -75,44 +103,31 @@ const SamplePage = () => {
 
           <SummaryBox isExtensionActive={isExtensionActive}>
             {summaryPDF ? (
-              <iframe
-                src={summaryPDF}
-                title="Summary PDF Viewer"
-                style={{ height: "100%", width: "100%" }}
-              />
+              (console.log("요약본 PDF URL:", summaryPDF), // 요약본 PDF URL을 콘솔에 출력
+              (
+                <iframe
+                  src={summaryPDF}
+                  title="Summary PDF Viewer"
+                  style={{ height: "100%", width: "100%" }}
+                />
+              ))
             ) : (
               <LoadingText>요약본을 불러오는 중입니다...</LoadingText>
             )}
-            {/* <IconWrapper
-              onClick={
-                isExtensionActive ? handleReductionClick : handleIconClick
-              }
-            >
-              <img
-                src={isExtensionActive ? ReductionIcon : ExtensionIcon}
-                alt="Extension"
-              />
-            </IconWrapper>
-            {summaryPDF && (
-              <iframe
-                src={summaryPDF}
-                title="Summary PDF Viewer"
-                style={{ height: "100%", width: "100%" }}
-              />
-            )*/}
           </SummaryBox>
         </MainContent>
         <ButtonContainer>
-          <SampleButton2 onClick={() => navigate("/mypage/summary")}>
+          <SampleButton2 onClick={handleCreateCard}>
             <LightText>연습 문제까지 볼 시간이 없다.</LightText>
             <BoldText>요약본만 확인하기</BoldText>
           </SampleButton2>
+
           <SampleButton2
             onClick={() => {
               navigate("/createpractice", { state: { summaryPDF } });
               handleTopicsNext();
-            }}
-          >
+              handleCreateCard();
+            }}>
             <LightText>연습 문제로 확실히 대비해볼까?</LightText>
             <BoldText>연습 문제 생성하기</BoldText>
           </SampleButton2>
@@ -127,6 +142,14 @@ const SamplePage = () => {
             <LoadingText>요약본을 생성하고 있습니다...</LoadingText>
           </LoadingContent>
         </LoadingModal>
+      )}
+
+      {summaryPDF && (
+        <UserPageSample
+          pdfUrl={summaryPDF}
+          initialCards={cards}
+          handleAddCard={handleAddCard}
+        />
       )}
     </Container>
   );

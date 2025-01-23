@@ -207,7 +207,7 @@ const UploadPage = () => {
                     navigate("/sample", {
                       state: {
                         pdfFile: lectureFiles[0],
-                        top_k: topK,
+                        top_k: parseInt(topK, 10),
                         topics: topics.filter((topic) => topic.trim() !== ""),
                       },
                     });
