@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addIcon from "../images/add.png";
 import ExIcon from "../images/mypage_practice.png";
@@ -7,19 +7,62 @@ import ExButton from "../components/ExButton";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { problems } from "./PracticePage/data";
 
 const UserPageEx = () => {
   const navigate = useNavigate();
-  const [cards, setCards] = useState([
-    { id: 1, title: "웹퍼블리싱응용 Ch1", date: "2025.01.01" },
-    { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
-    { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
-    { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
-  ]);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDelete = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
-  };
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
+        // 연습문제 조회 API 호출
+        const response = await fetch(
+          "http://localhost:8000/api/question/all-questions/",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(
+            error.message || "연습문제를 불러오는 데 실패했습니다."
+          );
+        }
+
+        const data = await response.json();
+
+        // 10문제씩 묶어서 상태에 저장
+        const groupedTemplates = [];
+        for (let i = 0; i < data.length; i += 10) {
+          groupedTemplates.push(data.slice(i, i + 10));
+        }
+
+        setQuestions(groupedTemplates);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        alert("연습문제를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   return (
     <Container>
@@ -45,27 +88,20 @@ const UserPageEx = () => {
           </AddIconWrapper>
           <CardText>연습문제 만들기</CardText>
         </Card>
-        {cards.map((card) => (
+        {questions.map((template, index) => (
           <Card
-            key={card.id}
-            onClick={(e) => {
-              e.stopPropagation();
+            key={index}
+            onClick={() => {
+              console.log("전달할 문제 템플릿:", template);
+              navigate("/practice", { state: { problems: template } });
             }}
           >
-            <DeleteButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(card.id);
-              }}
-            >
-              <img src={DeleteIcon} alt="삭제" />
-            </DeleteButton>
             <IconWrapper>
-              <img src={ExIcon} alt="요약본" />
+              <img src={ExIcon} alt="연습문제" />
             </IconWrapper>
             <CardText>
-              {card.title}
-              <DateText>{card.date}</DateText>
+              {`연습문제 ${index + 1}`}
+              <DateText>{new Date().toLocaleDateString()}</DateText>
             </CardText>
           </Card>
         ))}
@@ -101,20 +137,6 @@ const Content = styled.div`
   margin-bottom: 120px;
 `;
 
-const DeleteButton = styled.button`
-  position: absolute;
-  top: -10px; // 위쪽으로 이동
-  right: -10px; // 오른쪽으로 이동
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: none; // 기본적으로 숨김
-  img {
-    width: 25px;
-    height: 25px;
-  }
-`;
-
 const Card = styled.div`
   width: 185px;
   height: 195px;
@@ -133,10 +155,6 @@ const Card = styled.div`
 
   &:hover {
     transform: scale(1.05);
-  }
-
-  &:hover ${DeleteButton} {
-    display: block; // 마우스 오버 시 삭제 버튼 보이기
   }
 `;
 

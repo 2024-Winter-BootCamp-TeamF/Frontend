@@ -10,10 +10,30 @@ const PracticeCompletePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { problems } = location.state || {};
+  const { multiple_choices = [], subjectives = [] } =
+    location.state?.problems || {};
 
   const handlePracticeClick = () => {
-    navigate("/practice", { state: { problems } });
+    // multiple_choices와 subjectives를 병합
+    const combinedProblems = [
+      ...multiple_choices.map((item, index) => ({
+        id: `mc-${index + 1}`,
+        type: "multiple_choice",
+        question: item.question,
+        choices: item.choices,
+        correctAnswer: item.answer,
+      })),
+      ...subjectives.map((item, index) => ({
+        id: `sa-${multiple_choices.length + index + 1}`,
+        type: "short_answer",
+        question: item.question,
+        correctAnswer: item.answer,
+      })),
+    ];
+    console.log("병합된 문제 데이터:", combinedProblems);
+
+    // 병합된 데이터를 Practice 페이지로 전달
+    navigate("/practice", { state: { problems: combinedProblems } });
   };
 
   const handleMyPageClick = () => {

@@ -10,7 +10,7 @@ const COLORS = {
   BACKGROUND: "#ffffff",
 };
 
-const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
+const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -61,7 +61,7 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
           : COLORS.PRIMARY, // 기본 테두리 색상
       }}
     >
-      <Title>{problem.topic}</Title>
+      <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <ul>
         {problem.choices.map((choice, index) => (
@@ -83,12 +83,12 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
 };
 
 MultipleChoice.propTypes = {
+  number: PropTypes.number.isRequired, // number를 필수로 설정
   problem: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    topic: PropTypes.string.isRequired,
     question: PropTypes.string.isRequired,
     choices: PropTypes.arrayOf(PropTypes.string).isRequired,
-    answer: PropTypes.string.isRequired,
+    correctAnswer: PropTypes.string.isRequired,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
   onProblemSolved: PropTypes.func.isRequired,

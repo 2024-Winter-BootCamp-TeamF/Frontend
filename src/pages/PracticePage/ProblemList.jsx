@@ -23,7 +23,7 @@ const ProblemList = ({ problems, title = "문제 목록" }) => {
         <ProblemUl>
           {problems.map((problem) => (
             <ProblemLi key={problem.id}>
-              <ProblemTitle>{problem.topic}</ProblemTitle>
+              <ProblemTitle>{`Q.${problem.number}`}</ProblemTitle>
               {problem.isDoubleClicked ? (
                 <Icon
                   src={confusedIcon}
