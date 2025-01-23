@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addIcon from "../images/add.png";
 import ExIcon from "../images/mypage_practice.png";
@@ -10,16 +10,105 @@ import { useNavigate } from "react-router-dom";
 
 const UserPageEx = () => {
   const navigate = useNavigate();
-  const [cards, setCards] = useState([
-    { id: 1, title: "웹퍼블리싱응용 Ch1", date: "2025.01.01" },
-    { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
-    { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
-    { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
-  ]);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDelete = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
+  const handleDelete = async (template) => {
+    const confirmDelete = window.confirm(
+      "정말로 이 연습문제를 삭제하시겠습니까?"
+    );
+    if (!confirmDelete) {
+      console.log("삭제 작업이 취소되었습니다.");
+      return; // 확인하지 않으면 삭제 작업 중단
+    }
+
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const questionIds = template.map((question) => question.id);
+
+      const deleteRequests = questionIds.map((id) =>
+        fetch(`http://localhost:8000/api/question/questions/${id}/delete/`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+      );
+
+      const responses = await Promise.all(deleteRequests);
+
+      if (!responses.every((response) => response.ok)) {
+        throw new Error("일부 문제를 삭제하는 데 실패했습니다.");
+      }
+
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((t) => t !== template)
+      );
+
+      alert("연습 문제가 삭제 되었습니다.");
+    } catch (error) {
+      console.error("문제 삭제 중 오류 발생:", error);
+      alert("카드를 삭제하는 중 오류가 발생했습니다.");
+    }
   };
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
+        const response = await fetch(
+          "http://localhost:8000/api/question/all-questions/",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("연습문제를 불러오는 데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        const groupedTemplates = [];
+        for (let i = 0; i < data.length; i += 10) {
+          groupedTemplates.push(data.slice(i, i + 10));
+        }
+        setQuestions(groupedTemplates.reverse()); // 역순으로 정렬
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        alert("연습문제를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  const getFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    const yearMonthDay = `${date.getFullYear()}.${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    const hourMinute = `${String(date.getHours()).padStart(2, "0")}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`;
+    return { yearMonthDay, hourMinute };
+  };
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   return (
     <Container>
@@ -43,32 +132,39 @@ const UserPageEx = () => {
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
-          <CardText>연습문제 만들기</CardText>
+          <CardText>연습 문제 만들기</CardText>
         </Card>
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <DeleteButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(card.id);
+        {questions.map((template, index) => {
+          const formattedDate = getFormattedDate(template[0]?.created_at); // 날짜와 시간을 포맷팅한 객체
+          const topic = template[0]?.question_topic || "기본"; // 첫 번째 문제의 토픽 가져오기
+          return (
+            <Card
+              key={`topic_${index}`}
+              onClick={() => {
+                console.log("전달할 문제 템플릿:", template);
+                navigate("/practice", { state: { problems: template } });
               }}
             >
-              <img src={DeleteIcon} alt="삭제" />
-            </DeleteButton>
-            <IconWrapper>
-              <img src={ExIcon} alt="요약본" />
-            </IconWrapper>
-            <CardText>
-              {card.title}
-              <DateText>{card.date}</DateText>
-            </CardText>
-          </Card>
-        ))}
+              <DeleteButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(template);
+                }}
+              >
+                <img src={DeleteIcon} alt="삭제" />
+              </DeleteButton>
+              <IconWrapper>
+                <img src={ExIcon} alt="연습문제" />
+              </IconWrapper>
+              <CardText>
+                {`${topic}_연습 문제`}
+                <DateText>
+                  {formattedDate.yearMonthDay} {formattedDate.hourMinute}
+                </DateText>
+              </CardText>
+            </Card>
+          );
+        })}
       </Content>
       <Footer />
     </Container>
@@ -103,12 +199,12 @@ const Content = styled.div`
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -10px; // 위쪽으로 이동
-  right: -10px; // 오른쪽으로 이동
+  top: -10px;
+  right: -10px;
   background: transparent;
   border: none;
   cursor: pointer;
-  display: none; // 기본적으로 숨김
+  display: none;
   img {
     width: 25px;
     height: 25px;
@@ -136,7 +232,7 @@ const Card = styled.div`
   }
 
   &:hover ${DeleteButton} {
-    display: block; // 마우스 오버 시 삭제 버튼 보이기
+    display: block;
   }
 `;
 
@@ -177,6 +273,7 @@ const DateText = styled.div`
   margin-top: 5px;
   font-size: 12px;
   color: #888888;
+  text-align: center; /* 날짜와 시간을 가운데 정렬 */
 `;
 
 export default UserPageEx;

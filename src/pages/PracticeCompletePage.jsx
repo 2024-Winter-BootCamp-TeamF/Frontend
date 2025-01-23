@@ -1,24 +1,38 @@
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styled from "styled-components";
 import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PracticeCompletePage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
-  const { problems } = location.state || {};
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false); // 15초 후 로딩 종료
+    }, 15000);
 
-  const handlePracticeClick = () => {
-    navigate("/practice", { state: { problems } });
-  };
+    return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+  }, []);
 
   const handleMyPageClick = () => {
     navigate("/mypage/practice");
   };
+
+  if (isLoading) {
+    return (
+      <LoadingModal>
+        <LoadingContent>
+          <LoadingSpinner />
+          <LoadingText>연습 문제를 생성 중입니다...</LoadingText>
+        </LoadingContent>
+      </LoadingModal>
+    );
+  }
 
   return (
     <CompletePageWrapper>
@@ -50,11 +64,7 @@ const PracticeCompletePage = () => {
         </ContentContainer>
         <ButtonSection>
           <SolveButton
-            children={`지금 풀면 A+ 각.\n연습 문제 풀어보기`}
-            onClick={handlePracticeClick}
-          />
-          <SolveButton
-            children={`교수님 저는 아직 마음의 준비가 필요합니다....\n마이페이지로 이동하기`}
+            children={`마이페이지에서 생성된 연습 문제를 풀어보세요!\n마이페이지로 이동하기`}
             onClick={handleMyPageClick}
           />
         </ButtonSection>
@@ -63,6 +73,50 @@ const PracticeCompletePage = () => {
     </CompletePageWrapper>
   );
 };
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px; /* spinner와 텍스트 사이 간격 */
+`;
+
+const LoadingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5887f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 24px;
+  margin: 0;
+`;
 
 const CompletePageWrapper = styled.div`
   width: 100%;
@@ -119,6 +173,7 @@ const CommentBox = styled.div`
   min-height: 370px;
   width: 550px;
   padding: 15px;
+  margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
@@ -134,7 +189,6 @@ const Comment = styled.p`
 
 const ButtonSection = styled.div`
   display: flex;
-  gap: 100px;
   margin-top: 40px;
 `;
 

@@ -11,7 +11,7 @@ const COLORS = {
 };
 
 // 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
-const Subjective = ({ problem, readOnly, onProblemSolved }) => {
+const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [answer, setAnswer] = useState("");
 
@@ -58,7 +58,7 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
           : COLORS.PRIMARY, // 기본 테두리 색상
       }}
     >
-      <Title>{problem.topic}</Title>
+      <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <Input
         type="text"
@@ -72,6 +72,7 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
 };
 
 Subjective.propTypes = {
+  number: PropTypes.number.isRequired, // number를 필수로 설정
   problem: PropTypes.shape({
     id: PropTypes.string,
     topic: PropTypes.string,

@@ -9,11 +9,6 @@ import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const PROBLEM_TYPES = {
-  MULTIPLE_CHOICE: "multiple_choice",
-  SHORT_ANSWER: "short_answer",
-};
-
 const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [problems, setProblems] = useState([]);
   const navigate = useNavigate();
@@ -23,54 +18,64 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
   const [results, setResults] = useState([]);
 
+  // 문제 데이터를 location.state에서 받아와 상태에 저장
   useEffect(() => {
-    if (location.state && location.state.problems) {
-      const { multiple_choices, subjectives } = location.state.problems;
+    const receivedProblems = location.state?.problems;
 
-      // 문제 데이터를 하나의 배열로 병합하여 상태 저장
-      const formattedProblems = [
-        ...multiple_choices.map((item, index) => ({
-          id: `mc-${index + 1}`,
-          question_id: index + 1, // 채점 API에 넘길 ID
-          type: "multiple_choice",
-          topic: `Q.${index + 1}`, // 문제 번호
-          question: item.question,
-          correctAnswer: item.answer,
-          choices: item.choices,
-        })),
-        ...subjectives.map((item, index) => ({
-          id: `sa-${multiple_choices.length + index + 1}`, // 고유 ID 생성
-          question_id: multiple_choices.length + index + 1, // 채점 API에 넘길 ID
-          type: "short_answer",
-          topic: `Q.${multiple_choices.length + index + 1}`, // 문제 번호
-          question: item.question,
-          correctAnswer: item.answer,
-        })),
-      ];
+    if (Array.isArray(receivedProblems)) {
+      // 문제 번호 추가
+      const formattedProblems = receivedProblems.map((problem, index) => ({
+        ...problem,
+        number: index + 1, // 문제 번호 설정
+      }));
       setProblems(formattedProblems);
+      console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
+    } else {
+      console.error("problems 데이터가 올바르지 않습니다:", receivedProblems);
+      setProblems([]);
     }
   }, [location.state]);
 
+  // 문제 해결 상태 초기화
+  useEffect(() => {
+    setResults(
+      problems.map((problem) => ({
+        id: problem.id,
+        isCorrect: false,
+        selectedAnswer: null,
+      }))
+    );
+  }, [problems]);
+
   const renderProblem = (problem) => {
-    switch (problem.type) {
-      case "multiple_choice":
+    switch (problem.question_type) {
+      case "객관식":
         return (
           <MultipleChoice
             key={problem.id}
-            problem={problem}
-            problemNumber={problem.question_id} // 문제 번호 전달
+            number={problem.number} // 문제 번호 전달
+            problem={{
+              id: problem.id,
+              question: problem.question_text,
+              choices: problem.choices,
+              correctAnswer: problem.answer,
+            }}
             readOnly={readOnly}
-            onProblemSolved={handleProblemSolved}
+            onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
           />
         );
-      case "short_answer":
+      case "주관식":
         return (
           <Subjective
             key={problem.id}
-            problem={problem}
-            problemNumber={problem.question_id} // 문제 번호 전달
+            number={problem.number} // 문제 번호 전달
+            problem={{
+              id: problem.id,
+              question: problem.question_text,
+              correctAnswer: problem.answer,
+            }}
             readOnly={readOnly}
-            onProblemSolved={handleProblemSolved}
+            onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
           />
         );
       default:
@@ -78,17 +83,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     }
   };
 
-  useEffect(() => {
-    setResults(
-      problems.map((problem) => ({
-        id: problem.id,
-        number: problem.id,
-        isCorrect: false,
-        selectedAnswer: null,
-      }))
-    );
-  }, [problems]);
-
+  // 문제 해결 상태 업데이트
   const handleProblemSolved = (
     problemId,
     isSolved,
@@ -96,47 +91,35 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     selectedAnswer
   ) => {
     const correctAnswer = problems.find(
-      (p) => p.id === problemId
+      (problem) => problem.id === problemId
     ).correctAnswer;
+
     const isCorrect = selectedAnswer === correctAnswer;
 
-    console.log(
-      `문제 ID: ${problemId}, 선택한 답: ${selectedAnswer}, 정답 여부: ${isCorrect}`
-    );
-
     setSolvedProblems((prev) => {
-      const newSolved = new Set(prev);
+      const newSet = new Set(prev);
       if (isSolved) {
-        newSolved.add(problemId);
+        newSet.add(problemId);
       } else {
-        newSolved.delete(problemId);
+        newSet.delete(problemId);
       }
-      return newSolved;
+      return newSet;
     });
 
     setDoubleClickedProblems((prev) => {
-      const newDoubleClicked = new Set(prev);
+      const newSet = new Set(prev);
       if (isDoubleClicked) {
-        newDoubleClicked.add(problemId);
-        setSolvedProblems((prev) => {
-          const newSolved = new Set(prev);
-          newSolved.delete(problemId);
-          return newSolved;
-        });
+        newSet.add(problemId);
       } else {
-        newDoubleClicked.delete(problemId);
+        newSet.delete(problemId);
       }
-      return newDoubleClicked;
+      return newSet;
     });
 
     setResults((prev) =>
       prev.map((result) =>
         result.id === problemId
-          ? {
-              ...result,
-              isCorrect: isCorrect,
-              selectedAnswer: selectedAnswer,
-            }
+          ? { ...result, isCorrect, selectedAnswer }
           : result
       )
     );
@@ -144,6 +127,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     onProblemSolved(problemId, isSolved, isDoubleClicked, selectedAnswer);
   };
 
+  // 모든 문제를 해결했는지 확인
   const areAllProblemsAnswered = () => {
     return problems.every(
       (problem) =>
@@ -151,12 +135,13 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     );
   };
 
-  const handleButtonClick = (onProblemSolved) => {
+  // 채점 버튼 클릭 처리
+  const handleButtonClick = () => {
     if (!areAllProblemsAnswered()) {
       alert("모든 문제를 작성하세요.");
       return;
     }
-    onButtonClick(results, onProblemSolved);
+    onButtonClick(results, handleProblemSolved);
     navigate("/Checkcomplete");
   };
 
@@ -167,29 +152,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isCorrect:
       results.find((result) => result.id === problem.id)?.isCorrect || false,
   }));
-
-  // const renderProblem = (problem) => {
-  //   switch (problem.type) {
-  //     case PROBLEM_TYPES.MULTIPLE_CHOICE:
-  //       return (
-  //         <MultipleChoice
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     case PROBLEM_TYPES.SHORT_ANSWER:
-  //       return (
-  //         <Subjective
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   return (
     <PageWrapper>
@@ -209,9 +171,9 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
             </ProblemDetail>
             <ButtonWrapper>
               <SolveButton
-                onClick={() => handleButtonClick(handleProblemSolved)}
+                onClick={handleButtonClick}
                 children={"고생하셨습니다! 이제 채점해볼까요?\n채점하기"}
-              ></SolveButton>
+              />
             </ButtonWrapper>
           </ContentWrapper>
         </Container>
@@ -277,14 +239,6 @@ const ButtonWrapper = styled.div`
 `;
 
 ProblemContent.propTypes = {
-  problems: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-    })
-  ).isRequired,
   onButtonClick: PropTypes.func,
   readOnly: PropTypes.bool,
   onProblemSolved: PropTypes.func,
