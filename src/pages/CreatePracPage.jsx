@@ -102,44 +102,47 @@ function CreatePracPage() {
     }
   };
 
-const handleCreate = async () => {
-  const token = localStorage.getItem("accessToken");
+  const handleCreate = async () => {
+    const token = localStorage.getItem("accessToken");
 
-  if (!token) {
-    console.error("No token found. Please log in.");
-    alert("로그인이 필요합니다.");
-    return;
-  }
-
-  console.log("Authorization Header:", `Bearer ${token}`); // 여기에서 로그 출력
-
-  try {
-    const response = await fetch("http://localhost:8000/api/question/create/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify({
-        topics: Array.isArray(topics) ? topics : [topics],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Server Error:", errorData);
-      throw new Error(
-        errorData.detail || "Failed to create practice questions"
-      );
+    if (!token) {
+      console.error("No token found. Please log in.");
+      alert("로그인이 필요합니다.");
+      return;
     }
 
-    const data = await response.json();
-    console.log("API Response:", data);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-};
+    console.log("Authorization Header:", `Bearer ${token}`); // 여기에서 로그 출력
 
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/question/create/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify({
+            topics: Array.isArray(topics) ? topics : [topics],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server Error:", errorData);
+        throw new Error(
+          errorData.detail || "Failed to create practice questions"
+        );
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data);
+      navigate("/praccomplete", { state: { problems: data } });
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
 
   return (
     <Container>

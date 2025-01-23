@@ -58,12 +58,12 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
           : COLORS.PRIMARY, // 기본 테두리 색상
       }}
     >
-      <Title>{problem.title}</Title>
-      <Content>{problem.content}</Content>
+      <Title>{problem.topic}</Title>
+      <Content>{problem.question}</Content>
       <Input
         type="text"
         placeholder="답을 입력하세요"
-        value={readOnly ? problem.selectedAnswer : answer}
+        value={readOnly ? problem.answer : answer}
         onChange={handleAnswerChange}
         disabled={readOnly}
       />
@@ -73,9 +73,10 @@ const Subjective = ({ problem, readOnly, onProblemSolved }) => {
 
 Subjective.propTypes = {
   problem: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    selectedAnswer: PropTypes.string,
+    id: PropTypes.string,
+    topic: PropTypes.string,
+    question: PropTypes.string,
+    answer: PropTypes.string,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
   onProblemSolved: PropTypes.func.isRequired,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import MultipleChoice from "./MultipleChoice";
@@ -7,30 +7,87 @@ import ProblemList from "./ProblemList";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PROBLEM_TYPES = {
   MULTIPLE_CHOICE: "multiple_choice",
   SHORT_ANSWER: "short_answer",
 };
 
-const ProblemContent = ({
-  problems,
-  onButtonClick,
-  readOnly,
-  onProblemSolved,
-}) => {
+const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
+  const [problems, setProblems] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
-  const [results, setResults] = useState(
-    problems.map((problem) => ({
-      id: problem.id,
-      number: problem.id,
-      isCorrect: false,
-      selectedAnswer: null,
-    }))
-  );
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    if (location.state && location.state.problems) {
+      const { multiple_choices, subjectives } = location.state.problems;
+
+      // 문제 데이터를 하나의 배열로 병합하여 상태 저장
+      const formattedProblems = [
+        ...multiple_choices.map((item, index) => ({
+          id: `mc-${index + 1}`,
+          question_id: index + 1, // 채점 API에 넘길 ID
+          type: "multiple_choice",
+          topic: `Q.${index + 1}`, // 문제 번호
+          question: item.question,
+          correctAnswer: item.answer,
+          choices: item.choices,
+        })),
+        ...subjectives.map((item, index) => ({
+          id: `sa-${multiple_choices.length + index + 1}`, // 고유 ID 생성
+          question_id: multiple_choices.length + index + 1, // 채점 API에 넘길 ID
+          type: "short_answer",
+          topic: `Q.${multiple_choices.length + index + 1}`, // 문제 번호
+          question: item.question,
+          correctAnswer: item.answer,
+        })),
+      ];
+      setProblems(formattedProblems);
+    }
+  }, [location.state]);
+
+  const renderProblem = (problem) => {
+    switch (problem.type) {
+      case "multiple_choice":
+        return (
+          <MultipleChoice
+            key={problem.id}
+            problem={problem}
+            problemNumber={problem.question_id} // 문제 번호 전달
+            readOnly={readOnly}
+            onProblemSolved={handleProblemSolved}
+          />
+        );
+      case "short_answer":
+        return (
+          <Subjective
+            key={problem.id}
+            problem={problem}
+            problemNumber={problem.question_id} // 문제 번호 전달
+            readOnly={readOnly}
+            onProblemSolved={handleProblemSolved}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    setResults(
+      problems.map((problem) => ({
+        id: problem.id,
+        number: problem.id,
+        isCorrect: false,
+        selectedAnswer: null,
+      }))
+    );
+  }, [problems]);
 
   const handleProblemSolved = (
     problemId,
@@ -111,28 +168,28 @@ const ProblemContent = ({
       results.find((result) => result.id === problem.id)?.isCorrect || false,
   }));
 
-  const renderProblem = (problem) => {
-    switch (problem.type) {
-      case PROBLEM_TYPES.MULTIPLE_CHOICE:
-        return (
-          <MultipleChoice
-            problem={problem}
-            readOnly={readOnly}
-            onProblemSolved={handleProblemSolved}
-          />
-        );
-      case PROBLEM_TYPES.SHORT_ANSWER:
-        return (
-          <Subjective
-            problem={problem}
-            readOnly={readOnly}
-            onProblemSolved={handleProblemSolved}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // const renderProblem = (problem) => {
+  //   switch (problem.type) {
+  //     case PROBLEM_TYPES.MULTIPLE_CHOICE:
+  //       return (
+  //         <MultipleChoice
+  //           problem={problem}
+  //           readOnly={readOnly}
+  //           onProblemSolved={handleProblemSolved}
+  //         />
+  //       );
+  //     case PROBLEM_TYPES.SHORT_ANSWER:
+  //       return (
+  //         <Subjective
+  //           problem={problem}
+  //           readOnly={readOnly}
+  //           onProblemSolved={handleProblemSolved}
+  //         />
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   return (
     <PageWrapper>
