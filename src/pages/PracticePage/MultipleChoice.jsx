@@ -42,7 +42,7 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
       problem.id,
       isSolved, // isSolved는 선택 여부에 따라 true
       isDoubleClicked, // 현재 더블클릭 상태 유지
-      newSelectedOption // 선택한 정답 전달
+      problem.choices[newSelectedOption] // 선택한 정답 전달
     );
   };
 
@@ -61,20 +61,20 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
           : COLORS.PRIMARY, // 기본 테두리 색상
       }}
     >
-      <Title>{problem.title}</Title>
-      <Content>{problem.content}</Content>
+      <Title>{problem.topic}</Title>
+      <Content>{problem.question}</Content>
       <ul>
-        {problem.options.map((option, index) => (
+        {problem.choices.map((choice, index) => (
           <li key={index}>
             <input
               type="radio"
               name={problem.id}
-              id={`${problem.id}-option${index}`}
+              id={`${problem.id}-choice${index}`}
               onChange={() => handleOptionSelect(index)}
               checked={selectedOption === index}
               disabled={readOnly}
             />
-            <label htmlFor={`${problem.id}-option${index}`}>{option}</label>
+            <label htmlFor={`${problem.id}-choice-${index}`}>{choice}</label>
           </li>
         ))}
       </ul>
@@ -82,14 +82,13 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
   );
 };
 
-// Props 타입 정의
 MultipleChoice.propTypes = {
   problem: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(PropTypes.string).isRequired,
-    correctAnswer: PropTypes.number.isRequired,
+    topic: PropTypes.string.isRequired,
+    question: PropTypes.string.isRequired,
+    choices: PropTypes.arrayOf(PropTypes.string).isRequired,
+    answer: PropTypes.string.isRequired,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
   onProblemSolved: PropTypes.func.isRequired,

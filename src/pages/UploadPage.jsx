@@ -28,6 +28,10 @@ const UploadPage = () => {
     setLectureFiles(lectureFiles.filter((file) => file.name !== fileName));
   };
 
+  const handleTopicsNext = () => {
+    navigate(`/sample`, { state: { topics } });
+  };
+
   const {
     getRootProps: getLectureRootProps,
     getInputProps: getLectureInputProps,
@@ -198,6 +202,7 @@ const UploadPage = () => {
               <ButtonContainer>
                 <StyledExButton
                   onClick={() => {
+                    handleTopicsNext();
                     setShowModal(false);
                     navigate("/sample", {
                       state: {

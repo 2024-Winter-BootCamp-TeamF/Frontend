@@ -4,13 +4,16 @@ import styled from "styled-components";
 import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PracticeCompletePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { problems } = location.state || {};
 
   const handlePracticeClick = () => {
-    navigate("/practice");
+    navigate("/practice", { state: { problems } });
   };
 
   const handleMyPageClick = () => {

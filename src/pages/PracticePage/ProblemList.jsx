@@ -23,7 +23,7 @@ const ProblemList = ({ problems, title = "문제 목록" }) => {
         <ProblemUl>
           {problems.map((problem) => (
             <ProblemLi key={problem.id}>
-              <ProblemTitle>{problem.title}</ProblemTitle>
+              <ProblemTitle>{problem.topic}</ProblemTitle>
               {problem.isDoubleClicked ? (
                 <Icon
                   src={confusedIcon}
@@ -59,7 +59,7 @@ ProblemList.propTypes = {
   problems: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      topic: PropTypes.string.isRequired,
       isSolved: PropTypes.bool,
       isDoubleClicked: PropTypes.bool,
     })
