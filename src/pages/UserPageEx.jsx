@@ -14,6 +14,47 @@ const UserPageEx = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handleDelete = async (template) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      // 템플릿에 포함된 문제 ID 추출
+      const questionIds = template.map((question) => question.id);
+
+      // 각 문제 ID에 대해 DELETE 요청을 병렬로 처리
+      const deleteRequests = questionIds.map((id) =>
+        fetch(`http://localhost:8000/api/question/questions/${id}/delete/`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+      );
+
+      const responses = await Promise.all(deleteRequests);
+
+      // 모든 요청이 성공했는지 확인
+      const allSuccessful = responses.every((response) => response.ok);
+      if (!allSuccessful) {
+        throw new Error("일부 문제를 삭제하는 데 실패했습니다.");
+      }
+
+      // 삭제 성공 시 UI에서 해당 카드 제거
+      setQuestions(
+        (prevQuestions) => prevQuestions.filter((t) => t !== template) // 해당 템플릿 제거
+      );
+
+      alert("카드가 성공적으로 삭제되었습니다!");
+    } catch (error) {
+      console.error("문제 삭제 중 오류 발생:", error);
+      alert("카드를 삭제하는 중 오류가 발생했습니다.");
+    }
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -96,6 +137,14 @@ const UserPageEx = () => {
               navigate("/practice", { state: { problems: template } });
             }}
           >
+            <DeleteButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(template); // 삭제 요청
+              }}
+            >
+              <img src={DeleteIcon} alt="삭제" />
+            </DeleteButton>
             <IconWrapper>
               <img src={ExIcon} alt="연습문제" />
             </IconWrapper>
@@ -137,6 +186,20 @@ const Content = styled.div`
   margin-bottom: 120px;
 `;
 
+const DeleteButton = styled.button`
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: none;
+  img {
+    width: 25px;
+    height: 25px;
+  }
+`;
+
 const Card = styled.div`
   width: 185px;
   height: 195px;
@@ -155,6 +218,10 @@ const Card = styled.div`
 
   &:hover {
     transform: scale(1.05);
+  }
+
+  &:hover ${DeleteButton} {
+    display: block;
   }
 `;
 
