@@ -147,6 +147,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       return newDoubleClicked;
     });
 
+    // 문제 정보를 GradingResults로 전달
     onProblemSolved(
       problemId,
       isSolved,
