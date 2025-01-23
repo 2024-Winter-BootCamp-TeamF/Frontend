@@ -1,27 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import ProblemList from "../pages/PracticePage/ProblemList";
 import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
-import { problems } from "../pages/PracticePage/data";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
+import axiosInstance from "../axiosInstance";
 
-const GradingResults = ({ results = problems, onProblemSolved }) => {
-  console.log(JSON.stringify(results, null, 2));
+const GradingResults = () => {
+  const [results, setResults] = useState([]);
 
-  const handleProblemSolved = (
-    problemId,
-    isSolved,
-    isDoubleClicked,
-    selectedAnswer
-  ) => {
-    // 사용자가 푼 문제의 정보를 처리하는 로직 추가
-    console.log(
-      `문제 ID: ${problemId}, 해결 여부: ${isSolved}, 선택한 답안: ${selectedAnswer}`
-    );
-    // 추가적인 처리 로직을 여기에 작성할 수 있습니다.
+  // 컴포넌트가 마운트될 때 API 호출
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const response = await axiosInstance.get("/question/all-questions/");
+        const formattedResults = response.data.slice(-10).map((problem) => {
+          // 문제 ID와 질문 텍스트를 콘솔에 출력
+          console.log(
+            "문제 ID:",
+            problem.id,
+            "질문 텍스트:",
+            problem.question_text
+          );
+
+          // 채점 API 호출
+          handleProblemSolved(problem.id, "사용자가 선택한 답");
+
+          return {
+            problem_id: problem.id,
+            question: problem.question_text,
+            answer: problem.answer,
+            choices: problem.choices,
+            created_at: problem.created_at,
+            question_topic: problem.question_topic,
+            question_type: problem.question_type,
+          };
+        });
+        setResults(formattedResults);
+      } catch (error) {
+        console.error("데이터 가져오기 오류:", error);
+      }
+    };
+
+    fetchResults();
+  }, []);
+
+  const handleProblemSolved = async (problemId, selectedAnswer) => {
+    // 채점 API 호출
+    try {
+      const response = await axiosInstance.post("/question/submit-answer/", {
+        question_id: problemId, // 문제 ID를 여기에 지정
+        user_answer: selectedAnswer, // 사용자가 선택한 답안
+      });
+      console.log("채점 API 응답 메시지:", response.data);
+    } catch (error) {
+      console.error(
+        "API 호출 오류:",
+        error.response ? error.response.data : error
+      );
+    }
   };
 
   return (
@@ -35,8 +74,8 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
           <ContentWrapper>
             <ProblemDetail>
               {results.map((result) => (
-                <ProblemItem key={result.id}>
-                  {result.type === "multiple_choice" ? (
+                <ProblemItem key={result.problem_id}>
+                  {result.question_type === "객관식" ? (
                     <MultipleChoice
                       problem={{
                         ...result,

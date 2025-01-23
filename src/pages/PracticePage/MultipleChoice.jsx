@@ -14,6 +14,9 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // choices가 유효한 배열인지 확인
+  const choices = Array.isArray(problem.choices) ? problem.choices : [];
+
   const handleDoubleClick = (e) => {
     e.preventDefault();
     if (readOnly) return;
@@ -42,7 +45,7 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
       problem.id,
       isSolved, // isSolved는 선택 여부에 따라 true
       isDoubleClicked, // 현재 더블클릭 상태 유지
-      problem.choices[newSelectedOption] // 선택한 정답 전달
+      choices[newSelectedOption] // 선택한 정답 전달
     );
   };
 
@@ -64,7 +67,7 @@ const MultipleChoice = ({ problem, readOnly, onProblemSolved }) => {
       <Title>{problem.topic}</Title>
       <Content>{problem.question}</Content>
       <ul>
-        {problem.choices.map((choice, index) => (
+        {choices.map((choice, index) => (
           <li key={index}>
             <input
               type="radio"

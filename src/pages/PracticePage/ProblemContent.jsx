@@ -168,29 +168,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       results.find((result) => result.id === problem.id)?.isCorrect || false,
   }));
 
-  // const renderProblem = (problem) => {
-  //   switch (problem.type) {
-  //     case PROBLEM_TYPES.MULTIPLE_CHOICE:
-  //       return (
-  //         <MultipleChoice
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     case PROBLEM_TYPES.SHORT_ANSWER:
-  //       return (
-  //         <Subjective
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
-
   return (
     <PageWrapper>
       <Header />
