@@ -65,7 +65,6 @@ const SamplePage = () => {
     };
 
     handleAddCard(newCard); // 새로운 카드 추가
-    navigate("/mypage/summary"); // 페이지 이동
   };
 
   const handleAddCard = (newCard) => {
@@ -117,7 +116,12 @@ const SamplePage = () => {
           </SummaryBox>
         </MainContent>
         <ButtonContainer>
-          <SampleButton2 onClick={handleCreateCard}>
+          <SampleButton2
+            onClick={() => {
+              navigate("/mypage/summary");
+              handleCreateCard();
+            }}
+          >
             <LightText>연습 문제까지 볼 시간이 없다.</LightText>
             <BoldText>요약본만 확인하기</BoldText>
           </SampleButton2>
@@ -127,7 +131,8 @@ const SamplePage = () => {
               navigate("/createpractice", { state: { summaryPDF } });
               handleTopicsNext();
               handleCreateCard();
-            }}>
+            }}
+          >
             <LightText>연습 문제로 확실히 대비해볼까?</LightText>
             <BoldText>연습 문제 생성하기</BoldText>
           </SampleButton2>
