@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axiosInstance from "../axiosInstance";
-
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SampleButton2 from "../components/SampleButton2";
@@ -127,7 +126,8 @@ const SamplePage = () => {
               navigate("/createpractice", { state: { summaryPDF } });
               handleTopicsNext();
               handleCreateCard();
-            }}>
+            }}
+          >
             <LightText>연습 문제로 확실히 대비해볼까?</LightText>
             <BoldText>연습 문제 생성하기</BoldText>
           </SampleButton2>
@@ -144,7 +144,7 @@ const SamplePage = () => {
         </LoadingModal>
       )}
 
-      {summaryPDF && (
+      {summaryPDF && false && (
         <UserPageSample
           pdfUrl={summaryPDF}
           initialCards={cards}
