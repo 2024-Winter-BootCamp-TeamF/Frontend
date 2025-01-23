@@ -62,6 +62,7 @@ ProblemList.propTypes = {
       topic: PropTypes.string.isRequired,
       isSolved: PropTypes.bool,
       isDoubleClicked: PropTypes.bool,
+      is_correct: PropTypes.bool.isRequired,
     })
   ).isRequired,
   selectedProblemId: PropTypes.string,

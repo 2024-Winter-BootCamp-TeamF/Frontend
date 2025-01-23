@@ -93,16 +93,34 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     problemId,
     isSolved,
     isDoubleClicked,
-    selectedAnswer
+    selectedAnswer,
+    selectedIndex
   ) => {
-    const correctAnswer = problems.find(
-      (p) => p.id === problemId
-    ).correctAnswer;
+    const problem = problems.find((p) => p.id === problemId); // 문제 객체 가져오기
+    const correctAnswer = problem.correctAnswer;
     const isCorrect = selectedAnswer === correctAnswer;
 
     console.log(
       `문제 ID: ${problemId}, 선택한 답: ${selectedAnswer}, 정답 여부: ${isCorrect}`
     );
+
+    // 문제 정보를 localStorage에 저장
+    const updatedResults = results.map((result) =>
+      result.id === problemId
+        ? {
+            ...result,
+            isCorrect,
+            selectedAnswer,
+            selectedIndex,
+            type: problem.type,
+            question: problem.question,
+            choices: problem.choices || [],
+          }
+        : result
+    );
+
+    setResults(updatedResults);
+    localStorage.setItem("solvedProblems", JSON.stringify(updatedResults));
 
     setSolvedProblems((prev) => {
       const newSolved = new Set(prev);
@@ -129,19 +147,13 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       return newDoubleClicked;
     });
 
-    setResults((prev) =>
-      prev.map((result) =>
-        result.id === problemId
-          ? {
-              ...result,
-              isCorrect: isCorrect,
-              selectedAnswer: selectedAnswer,
-            }
-          : result
-      )
+    onProblemSolved(
+      problemId,
+      isSolved,
+      isDoubleClicked,
+      selectedAnswer,
+      selectedIndex
     );
-
-    onProblemSolved(problemId, isSolved, isDoubleClicked, selectedAnswer);
   };
 
   const areAllProblemsAnswered = () => {
@@ -167,29 +179,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isCorrect:
       results.find((result) => result.id === problem.id)?.isCorrect || false,
   }));
-
-  // const renderProblem = (problem) => {
-  //   switch (problem.type) {
-  //     case PROBLEM_TYPES.MULTIPLE_CHOICE:
-  //       return (
-  //         <MultipleChoice
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     case PROBLEM_TYPES.SHORT_ANSWER:
-  //       return (
-  //         <Subjective
-  //           problem={problem}
-  //           readOnly={readOnly}
-  //           onProblemSolved={handleProblemSolved}
-  //         />
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   return (
     <PageWrapper>

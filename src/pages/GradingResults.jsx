@@ -1,15 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import ProblemList from "../pages/PracticePage/ProblemList";
 import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
-import { problems } from "../pages/PracticePage/data";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
+import axiosInstance from "../axiosInstance";
 
-const GradingResults = ({ results = problems, onProblemSolved }) => {
-  console.log(JSON.stringify(results, null, 2));
+const GradingResults = () => {
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const response = await axiosInstance.get("/question/all-questions/");
+        setResults(response.data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, []);
+
+  const safeResults = results || [];
+
+  console.log("전달된 results:", safeResults);
 
   const handleProblemSolved = (
     problemId,
@@ -17,12 +38,25 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 사용자가 푼 문제의 정보를 처리하는 로직 추가
     console.log(
       `문제 ID: ${problemId}, 해결 여부: ${isSolved}, 선택한 답안: ${selectedAnswer}`
     );
-    // 추가적인 처리 로직을 여기에 작성할 수 있습니다.
   };
+
+  const submitAnswer = async (questionId, userAnswer) => {
+    try {
+      const response = await axiosInstance.post("/question/submit-answer", {
+        question_id: questionId,
+        user_answer: userAnswer,
+      });
+      console.log("답안 제출 성공:", response.data);
+    } catch (error) {
+      console.error("답안 제출 실패:", error.message);
+    }
+  };
+
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>오류 발생: {error}</div>;
 
   return (
     <PageWrapper>
@@ -30,35 +64,45 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList problems={results} title="정답 여부" />
+            <ProblemList
+              problems={safeResults.map((result) => ({
+                ...result,
+                is_correct: result.isCorrect,
+              }))}
+              title="정답 여부"
+            />
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
-              {results.map((result) => (
-                <ProblemItem key={result.id}>
-                  {result.type === "multiple_choice" ? (
-                    <MultipleChoice
-                      problem={{
-                        ...result,
-                        selectedOption: result.selectedAnswer || null,
-                        is_correct: result.is_correct,
-                      }}
-                      readOnly={true}
-                      onProblemSolved={handleProblemSolved}
-                    />
-                  ) : (
-                    <Subjective
-                      problem={{
-                        ...result,
-                        selectedAnswer: result.answer || "",
-                        is_correct: result.is_correct,
-                      }}
-                      readOnly={true}
-                      onProblemSolved={handleProblemSolved}
-                    />
-                  )}
-                </ProblemItem>
-              ))}
+              {safeResults.length === 0 ? (
+                <div>문제가 없습니다.</div>
+              ) : (
+                safeResults.map((result) => (
+                  <ProblemItem key={result.id}>
+                    {result.question_type === "객관식" ? (
+                      <MultipleChoice
+                        problem={{
+                          ...result,
+                          selectedOption:
+                            result.choices[result.selectedIndex] || null,
+                          is_correct: result.is_correct,
+                          options: result.choices || [],
+                        }}
+                        readOnly={true}
+                      />
+                    ) : (
+                      <Subjective
+                        problem={{
+                          ...result,
+                          selectedAnswer: result.user_answer || "",
+                          is_correct: result.is_correct,
+                        }}
+                        readOnly={true}
+                      />
+                    )}
+                  </ProblemItem>
+                ))
+              )}
               <ButtonWrapper>
                 <SolveButton>
                   틀린 문제는 복습하고 넘어가자!
