@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axiosInstance from "../axiosInstance";
-
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SampleButton2 from "../components/SampleButton2";
@@ -149,7 +148,7 @@ const SamplePage = () => {
         </LoadingModal>
       )}
 
-      {summaryPDF && (
+      {summaryPDF && false && (
         <UserPageSample
           pdfUrl={summaryPDF}
           initialCards={cards}
