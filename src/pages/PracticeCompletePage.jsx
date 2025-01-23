@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const PracticeCompletePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { problems, problemNames, topics } = location.state || {};
 
   const { multiple_choices = [], subjectives = [] } =
     location.state?.problems || {};
@@ -75,7 +76,7 @@ const PracticeCompletePage = () => {
           />
           <SolveButton
             children={`교수님 저는 아직 마음의 준비가 필요합니다....\n마이페이지로 이동하기`}
-            onClick={handleMyPageClick}
+            onClick={() => handleMyPageClick}
           />
         </ButtonSection>
       </CompleteInfoWrapper>

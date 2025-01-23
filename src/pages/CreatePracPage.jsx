@@ -136,9 +136,11 @@ function CreatePracPage() {
         );
       }
 
+      const problemNames = topics.map((topic) => `${topic}_연습문제`);
+
       const data = await response.json();
       console.log("API Response:", data);
-      navigate("/praccomplete", { state: { problems: data } });
+      navigate("/praccomplete", { state: { problems: data, problemNames, topics } });
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -238,7 +240,7 @@ function CreatePracPage() {
                   setShowModal(false);
                   navigate("/praccomplete", {
                     state: {
-                      pdfFile: pdfFile,
+                      pdfFile: pdfFile, 
                     },
                   });
                 }}

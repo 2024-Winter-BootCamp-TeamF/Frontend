@@ -6,11 +6,13 @@ import DeleteIcon from "../images/delete.png"; // 삭제 아이콘 추가
 import ExButton from "../components/ExButton";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
-import { problems } from "./PracticePage/data";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const UserPageEx = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const topics = location.state?.topics || []; // UploadPage에서 전달된 topics
+
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,10 +24,8 @@ const UserPageEx = () => {
     }
 
     try {
-      // 템플릿에 포함된 문제 ID 추출
       const questionIds = template.map((question) => question.id);
 
-      // 각 문제 ID에 대해 DELETE 요청을 병렬로 처리
       const deleteRequests = questionIds.map((id) =>
         fetch(`http://localhost:8000/api/question/questions/${id}/delete/`, {
           method: "DELETE",
@@ -37,15 +37,13 @@ const UserPageEx = () => {
 
       const responses = await Promise.all(deleteRequests);
 
-      // 모든 요청이 성공했는지 확인
       const allSuccessful = responses.every((response) => response.ok);
       if (!allSuccessful) {
         throw new Error("일부 문제를 삭제하는 데 실패했습니다.");
       }
 
-      // 삭제 성공 시 UI에서 해당 카드 제거
-      setQuestions(
-        (prevQuestions) => prevQuestions.filter((t) => t !== template) // 해당 템플릿 제거
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((t) => t !== template)
       );
 
       alert("카드가 성공적으로 삭제되었습니다!");
@@ -64,7 +62,6 @@ const UserPageEx = () => {
           return;
         }
 
-        // 연습문제 조회 API 호출
         const response = await fetch(
           "http://localhost:8000/api/question/all-questions/",
           {
@@ -84,7 +81,6 @@ const UserPageEx = () => {
 
         const data = await response.json();
 
-        // 10문제씩 묶어서 상태에 저장
         const groupedTemplates = [];
         for (let i = 0; i < data.length; i += 10) {
           groupedTemplates.push(data.slice(i, i + 10));
@@ -101,6 +97,16 @@ const UserPageEx = () => {
     fetchQuestions();
   }, []);
 
+  const getFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    const yearMonthDay = `${date.getFullYear()}.${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    const hourMinute = `${String(date.getHours()).padStart(2, "0")}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`;
+    return { yearMonthDay, hourMinute };
+  };
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -129,31 +135,37 @@ const UserPageEx = () => {
           </AddIconWrapper>
           <CardText>연습문제 만들기</CardText>
         </Card>
-        {questions.map((template, index) => (
-          <Card
-            key={index}
-            onClick={() => {
-              console.log("전달할 문제 템플릿:", template);
-              navigate("/practice", { state: { problems: template } });
-            }}
-          >
-            <DeleteButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(template); // 삭제 요청
+        {questions.map((template, index) => {
+          const formattedDate = getFormattedDate(template[0]?.created_at); // 날짜와 시간을 포맷팅한 객체
+          const topic = template[0]?.question_topic || "기본"; // 첫 번째 문제의 토픽 가져오기
+          return (
+            <Card
+              key={`topic_${index}`}
+              onClick={() => {
+                console.log("전달할 문제 템플릿:", template);
+                navigate("/practice", { state: { problems: template } });
               }}
             >
-              <img src={DeleteIcon} alt="삭제" />
-            </DeleteButton>
-            <IconWrapper>
-              <img src={ExIcon} alt="연습문제" />
-            </IconWrapper>
-            <CardText>
-              {`연습문제 ${index + 1}`}
-              <DateText>{new Date().toLocaleDateString()}</DateText>
-            </CardText>
-          </Card>
-        ))}
+              <DeleteButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(template);
+                }}
+              >
+                <img src={DeleteIcon} alt="삭제" />
+              </DeleteButton>
+              <IconWrapper>
+                <img src={ExIcon} alt="연습문제" />
+              </IconWrapper>
+              <CardText>
+                {`${topic}_연습문제`}
+                <DateText>
+                  {formattedDate.yearMonthDay} {formattedDate.hourMinute}
+                </DateText>
+              </CardText>
+            </Card>
+          );
+        })}
       </Content>
       <Footer />
     </Container>
@@ -259,9 +271,9 @@ const CardText = styled.div`
 `;
 
 const DateText = styled.div`
-  margin-top: 5px;
   font-size: 12px;
   color: #888888;
+  text-align: center; /* 날짜와 시간을 가운데 정렬 */
 `;
 
 export default UserPageEx;
