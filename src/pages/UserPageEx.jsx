@@ -86,7 +86,7 @@ const UserPageEx = () => {
           groupedTemplates.push(data.slice(i, i + 10));
         }
 
-        setQuestions(groupedTemplates);
+        setQuestions(groupedTemplates.reverse()); // 역순으로 정렬
         setLoading(false);
       } catch (error) {
         console.error("Error fetching questions:", error);
