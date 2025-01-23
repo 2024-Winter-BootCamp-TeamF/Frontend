@@ -6,17 +6,22 @@ import DeleteIcon from "../images/delete.png"; // 삭제 아이콘 추가
 import ExButton from "../components/ExButton";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const UserPageEx = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const topics = location.state?.topics || []; // UploadPage에서 전달된 topics
-
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const handleDelete = async (template) => {
+    const confirmDelete = window.confirm(
+      "정말로 이 연습문제를 삭제하시겠습니까?"
+    );
+    if (!confirmDelete) {
+      console.log("삭제 작업이 취소되었습니다.");
+      return; // 확인하지 않으면 삭제 작업 중단
+    }
+
     const token = localStorage.getItem("accessToken");
     if (!token) {
       alert("로그인이 필요합니다.");
@@ -37,8 +42,7 @@ const UserPageEx = () => {
 
       const responses = await Promise.all(deleteRequests);
 
-      const allSuccessful = responses.every((response) => response.ok);
-      if (!allSuccessful) {
+      if (!responses.every((response) => response.ok)) {
         throw new Error("일부 문제를 삭제하는 데 실패했습니다.");
       }
 
@@ -46,7 +50,7 @@ const UserPageEx = () => {
         prevQuestions.filter((t) => t !== template)
       );
 
-      alert("카드가 성공적으로 삭제되었습니다!");
+      alert("연습 문제가 삭제 되었습니다.");
     } catch (error) {
       console.error("문제 삭제 중 오류 발생:", error);
       alert("카드를 삭제하는 중 오류가 발생했습니다.");
@@ -73,19 +77,14 @@ const UserPageEx = () => {
         );
 
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(
-            error.message || "연습문제를 불러오는 데 실패했습니다."
-          );
+          throw new Error("연습문제를 불러오는 데 실패했습니다.");
         }
 
         const data = await response.json();
-
         const groupedTemplates = [];
         for (let i = 0; i < data.length; i += 10) {
           groupedTemplates.push(data.slice(i, i + 10));
         }
-
         setQuestions(groupedTemplates.reverse()); // 역순으로 정렬
         setLoading(false);
       } catch (error) {
@@ -133,7 +132,7 @@ const UserPageEx = () => {
           <AddIconWrapper>
             <img src={addIcon} alt="추가하기" />
           </AddIconWrapper>
-          <CardText>연습문제 만들기</CardText>
+          <CardText>연습 문제 만들기</CardText>
         </Card>
         {questions.map((template, index) => {
           const formattedDate = getFormattedDate(template[0]?.created_at); // 날짜와 시간을 포맷팅한 객체
@@ -158,7 +157,7 @@ const UserPageEx = () => {
                 <img src={ExIcon} alt="연습문제" />
               </IconWrapper>
               <CardText>
-                {`${topic}_연습문제`}
+                {`${topic}_연습 문제`}
                 <DateText>
                   {formattedDate.yearMonthDay} {formattedDate.hourMinute}
                 </DateText>
@@ -271,6 +270,7 @@ const CardText = styled.div`
 `;
 
 const DateText = styled.div`
+  margin-top: 5px;
   font-size: 12px;
   color: #888888;
   text-align: center; /* 날짜와 시간을 가운데 정렬 */
