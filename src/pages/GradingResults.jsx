@@ -32,7 +32,14 @@ const GradingResults = ({ onProblemSolved }) => {
 
     // results 상태 업데이트
     const updatedResults = results.map((result) =>
-      result.id === problemId ? { ...result, isSolved, selectedAnswer } : result
+      result.id === problemId
+        ? {
+            ...result,
+            isSolved,
+            selectedAnswer,
+            is_correct: selectedAnswer === result.answer,
+          }
+        : result
     );
     setResults(updatedResults);
   };

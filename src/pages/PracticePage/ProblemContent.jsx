@@ -115,6 +115,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
             type: problem.type,
             question: problem.question,
             choices: problem.choices || [],
+            is_correct: isCorrect,
           }
         : result
     );
