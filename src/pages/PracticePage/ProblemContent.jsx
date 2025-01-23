@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 import MultipleChoice from "./MultipleChoice";
 import Subjective from "./Subjective";
+import { useNavigate, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import ProblemList from "./ProblemList";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
-import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [problems, setProblems] = useState([]);
+  const [results, setResults] = useState([]);
+  const [solvedProblems, setSolvedProblems] = useState(new Set());
+  const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [solvedProblems, setSolvedProblems] = useState(new Set());
-  const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
-  const [results, setResults] = useState([]);
+  axios.defaults.baseURL = "http://localhost:8000"; // 서버 주소로 설정
 
   // 문제 데이터를 location.state에서 받아와 상태에 저장
   useEffect(() => {
@@ -27,6 +29,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       const formattedProblems = receivedProblems.map((problem, index) => ({
         ...problem,
         number: index + 1, // 문제 번호 설정
+        userAnswer: "",
       }));
       setProblems(formattedProblems);
       console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
@@ -90,11 +93,13 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    const correctAnswer = problems.find(
-      (problem) => problem.id === problemId
-    ).correctAnswer;
-
-    const isCorrect = selectedAnswer === correctAnswer;
+    setProblems((prevProblems) =>
+      prevProblems.map((problem) =>
+        problem.id === problemId
+          ? { ...problem, userAnswer: selectedAnswer } // userAnswer 업데이트
+          : problem
+      )
+    );
 
     setSolvedProblems((prev) => {
       const newSet = new Set(prev);
@@ -115,16 +120,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       }
       return newSet;
     });
-
-    setResults((prev) =>
-      prev.map((result) =>
-        result.id === problemId
-          ? { ...result, isCorrect, selectedAnswer }
-          : result
-      )
-    );
-
-    onProblemSolved(problemId, isSolved, isDoubleClicked, selectedAnswer);
   };
 
   // 모든 문제를 해결했는지 확인
@@ -135,14 +130,51 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     );
   };
 
+  // 채점 요청 API 호출
+  const submitAnswers = async () => {
+    const token = localStorage.getItem("accessToken"); // 인증 토큰 가져오기
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const responses = await Promise.all(
+        problems.map(async (problem) => {
+          const payload = {
+            question_id: problem.id,
+            user_answer: problem.userAnswer || "",
+          };
+
+          console.log("Payload:", payload); // 전송 데이터 로그
+
+          const { data } = await axios.post(
+            "/api/question/submit-answer/",
+            payload,
+            {
+              headers: {
+                Authorization: `Token ${token}`,
+              },
+            }
+          );
+          return data;
+        })
+      );
+
+      navigate("/grading-results", { state: { problems: responses } });
+    } catch (error) {
+      console.error("채점 중 오류 발생:", error);
+      alert("채점 요청 중 오류가 발생했습니다.");
+    }
+  };
+
   // 채점 버튼 클릭 처리
   const handleButtonClick = () => {
     if (!areAllProblemsAnswered()) {
       alert("모든 문제를 작성하세요.");
       return;
     }
-    onButtonClick(results, handleProblemSolved);
-    navigate("/Checkcomplete");
+    submitAnswers();
   };
 
   const problemsWithStatus = problems.map((problem) => ({

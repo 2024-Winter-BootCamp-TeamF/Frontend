@@ -4,57 +4,68 @@ import Header from "../components/Header";
 import ProblemList from "../pages/PracticePage/ProblemList";
 import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
-import { problems } from "../pages/PracticePage/data";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
+import { useLocation } from "react-router-dom";
 
-const GradingResults = ({ results = problems, onProblemSolved }) => {
-  console.log(JSON.stringify(results, null, 2));
+const GradingResults = () => {
+  const location = useLocation();
+  const problems = location.state?.problems || []; // 원래 템플릿 문제 데이터
+  const results = location.state?.results || []; // 채점 API 결과
 
-  const handleProblemSolved = (
-    problemId,
-    isSolved,
-    isDoubleClicked,
-    selectedAnswer
-  ) => {
-    // 사용자가 푼 문제의 정보를 처리하는 로직 추가
-    console.log(
-      `문제 ID: ${problemId}, 해결 여부: ${isSolved}, 선택한 답안: ${selectedAnswer}`
-    );
-    // 추가적인 처리 로직을 여기에 작성할 수 있습니다.
-  };
-
+  // 문제와 채점 결과 매칭
+  const updatedProblems = problems.map((problem) => {
+    const result = results.find((res) => res.question_id === problem.id); // 문제 ID 기준 매칭
+    return {
+      ...problem,
+      userAnswer: result?.user_answer || problem.userAnswer || "", // API 결과나 기존 데이터에서 사용자 답안 가져오기
+      isCorrect: result?.is_correct || false, // API 결과에서 정답 여부 가져오기
+    };
+  });
   return (
     <PageWrapper>
       <Header />
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList problems={results} title="정답 여부" />
+            <ProblemList
+              problems={updatedProblems.map((problem) => ({
+                id: problem.id,
+                isCorrect: problem.isCorrect,
+              }))}
+              title="정답 여부"
+            />
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
-              {results.map((result) => (
-                <ProblemItem key={result.id}>
-                  {result.type === "multiple_choice" ? (
+              {/* 문제 출력 */}
+              {updatedProblems.map((problem) => (
+                <ProblemItem
+                  key={problem.id}
+                  isCorrect={problem.isCorrect} // 정답 여부에 따라 스타일 변경
+                >
+                  {problem.question_type === "객관식" ? (
                     <MultipleChoice
                       problem={{
-                        ...result,
-                        selectedOption: result.selectedAnswer || null,
-                        is_correct: result.is_correct,
+                        id: problem.id,
+                        question: problem.question_text,
+                        choices: problem.choices || [], // 객관식 선택지
+                        selectedOption: (problem.choices || []).indexOf(
+                          problem.userAnswer
+                        ), // 사용자 답안 선택
+                        correctAnswer: problem.answer,
                       }}
                       readOnly={true}
-                      onProblemSolved={handleProblemSolved}
                     />
                   ) : (
                     <Subjective
                       problem={{
-                        ...result,
-                        selectedAnswer: result.answer || "",
-                        is_correct: result.is_correct,
+                        id: problem.id,
+                        question: problem.question_text,
+                        selectedAnswer: problem.userAnswer || "",
+                        correctAnswer: problem.answer,
                       }}
                       readOnly={true}
-                      onProblemSolved={handleProblemSolved}
                     />
                   )}
                 </ProblemItem>
@@ -75,12 +86,7 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
   );
 };
 
-const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  position: relative;
-`;
+const PageWrapper = styled.div``;
 
 const MainContent = styled.main`
   flex: 1;

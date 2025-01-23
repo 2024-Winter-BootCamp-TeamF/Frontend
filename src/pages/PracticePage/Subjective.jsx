@@ -32,14 +32,16 @@ const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
 
   const handleAnswerChange = (e) => {
     if (readOnly) return;
+
     const newAnswer = e.target.value;
     setAnswer(newAnswer);
 
+    // 부모 컴포넌트에 입력된 답 전달
     onProblemSolved(
       problem.id,
-      newAnswer.trim().length > 0, // isSolved
-      isDoubleClicked, // 현재 더블클릭 상태 유지
-      newAnswer // 입력한 답 전달
+      newAnswer.trim().length > 0, // 답변 여부
+      isDoubleClicked,
+      newAnswer // 입력된 답안 전달
     );
   };
 

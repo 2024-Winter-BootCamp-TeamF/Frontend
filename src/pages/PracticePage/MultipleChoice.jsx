@@ -35,14 +35,14 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
     const newSelectedOption = selectedOption === index ? null : index;
     setSelectedOption(newSelectedOption);
 
-    // 정답 여부 확인
-    const isSolved = newSelectedOption !== null; // 선택한 답안이 있을 경우 true
+    const isSolved = newSelectedOption !== null;
 
+    // 부모 컴포넌트에 선택된 답 전달
     onProblemSolved(
       problem.id,
-      isSolved, // isSolved는 선택 여부에 따라 true
-      isDoubleClicked, // 현재 더블클릭 상태 유지
-      problem.choices[newSelectedOption] // 선택한 정답 전달
+      isSolved,
+      isDoubleClicked,
+      problem.choices[newSelectedOption] || "" // 선택된 답안 전달
     );
   };
 
@@ -64,19 +64,24 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
       <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <ul>
-        {problem.choices.map((choice, index) => (
-          <li key={index}>
-            <input
-              type="radio"
-              name={problem.id}
-              id={`${problem.id}-choice${index}`}
-              onChange={() => handleOptionSelect(index)}
-              checked={selectedOption === index}
-              disabled={readOnly}
-            />
-            <label htmlFor={`${problem.id}-choice-${index}`}>{choice}</label>
-          </li>
-        ))}
+        {(problem.choices || []).map(
+          (
+            choice,
+            index // choices가 없으면 빈 배열로 처리
+          ) => (
+            <li key={index}>
+              <input
+                type="radio"
+                name={problem.id}
+                id={`${problem.id}-choice${index}`}
+                onChange={() => handleOptionSelect(index)}
+                checked={selectedOption === index}
+                disabled={readOnly}
+              />
+              <label htmlFor={`${problem.id}-choice-${index}`}>{choice}</label>
+            </li>
+          )
+        )}
       </ul>
     </MultipleChoiceContainer>
   );
