@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const GradingResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const problems = location.state?.problems || [];
   const results = location.state?.results || [];
 
@@ -30,12 +30,33 @@ const GradingResults = () => {
     }));
   };
 
-  console.log("location.state:", location.state);
-  console.log("problems from location.state:", problems);
-  console.log("results from location.state:", results);
+  const saveNote = () => {
+    const noteTitle = prompt("오답노트의 제목을 입력해주세요:");
+    if (!noteTitle) return;
+
+    const newNote = {
+      id: Date.now(),
+      title: noteTitle,
+      date: new Date().toISOString(),
+      problems, // 문제 데이터를 그대로 저장
+    };
+
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+    localStorage.setItem(
+      "wrongNotes",
+      JSON.stringify([...existingNotes, newNote])
+    );
+
+    alert("오답노트가 저장되었습니다!");
+  };
+
+  const handleSolveButtonClick = () => {
+    saveNote(); // 오답노트 저장 로직 실행
+    navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
+  };
 
   // 문제와 채점 결과 매칭
-    const updatedProblems = problems.map((problem) => {
+  const updatedProblems = problems.map((problem) => {
     const isCorrect =
       problem.is_correct !== undefined
         ? problem.is_correct
@@ -51,22 +72,6 @@ const GradingResults = () => {
       choices: problem.choices || [],
     };
   });
-
-  console.log(
-    "updatedProblems:",
-    updatedProblems.map((problem) => ({
-      id: problem.question_id,
-      number: problem.number,
-      isCorrect: problem.isCorrect,
-      userAnswer: problem.userAnswer,
-      choices: problem.choices,
-      question: problem.questionText,
-    }))
-  );
-
-  const handleSolveButtonClick = () => {
-    navigate("/note", { state: { problems: updatedProblems } });
-  };
 
   return (
     <PageWrapper>
@@ -99,38 +104,12 @@ const GradingResults = () => {
                     ? "SECONDARY"
                     : "PRIMARY";
                 } else if (isDoubleClicked) {
-                  problemColor = "SECONDARY";}
-                console.log("문제 렌더링 데이터:", {
-                  id: problem.question_id,
-                  question: problem.questionText,
-                  number: problem.number,
-                  choices: problem.choices,
-                  userAnswer: problem.userAnswer,
-                  correctAnswer: problem.correctAnswer,
-                });
+                  problemColor = "SECONDARY";
+                }
 
                 // 사용자 답안을 선택지에서 찾아 selectedOption 설정
                 const selectedOption = problem.choices.findIndex((choice) => {
                   return choice.trim() === (problem.userAnswer || "").trim();
-                });
-
-                if (problem.question_type === "객관식") {
-                  console.log("MultipleChoice에 전달되는 데이터:", {
-                    id: problem.question_id,
-                    question: problem.questionText,
-                    number: problem.number,
-                    userAnswer: problem.userAnswer,
-                    selectedOption,
-                    choices: problem.choices,
-                    correctAnswer: problem.correctAnswer,
-                  });
-                }
-                console.log("문제 상태:", {
-                  question_id: problem.question_id,
-                  isCorrect: problem.isCorrect,
-                  isDoubleClicked,
-                  problemColor,
-                  resultsLength: results.length,
                 });
 
                 return (
