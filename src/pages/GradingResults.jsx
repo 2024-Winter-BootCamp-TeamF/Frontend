@@ -111,7 +111,7 @@ const GradingResults = () => {
                           correctAnswer: problem.correctAnswer,
                         }}
                         number={problem.number} // 문제 번호 전달
-                        readOnly={false}
+                        readOnly={true}
                       />
                     ) : (
                       <Subjective
