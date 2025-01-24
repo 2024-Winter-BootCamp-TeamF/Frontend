@@ -6,10 +6,12 @@ import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GradingResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  
   const problems = location.state?.problems || [];
   const results = location.state?.results || [];
 
@@ -28,21 +30,43 @@ const GradingResults = () => {
     }));
   };
 
-  // 문제 데이터와 채점 결과를 결합
-  const updatedProblems = problems.map((problem) => {
-    // explanation이 null인지 여부로 정답/오답 판단
-    const isCorrect = problem.explanation === null;
+  console.log("location.state:", location.state);
+  console.log("problems from location.state:", problems);
+  console.log("results from location.state:", results);
+
+  // 문제와 채점 결과 매칭
+    const updatedProblems = problems.map((problem) => {
+    const isCorrect =
+      problem.is_correct !== undefined
+        ? problem.is_correct
+        : problem.explanation === null;
 
     return {
       ...problem,
       number: problem.number,
       userAnswer: problem.user_answer || "",
-      isCorrect, // 정답 여부 설정
+      isCorrect,
       questionText: problem.question_text || "질문 없음",
       correctAnswer: problem.correct_answer || "",
       choices: problem.choices || [],
     };
   });
+
+  console.log(
+    "updatedProblems:",
+    updatedProblems.map((problem) => ({
+      id: problem.question_id,
+      number: problem.number,
+      isCorrect: problem.isCorrect,
+      userAnswer: problem.userAnswer,
+      choices: problem.choices,
+      question: problem.questionText,
+    }))
+  );
+
+  const handleSolveButtonClick = () => {
+    navigate("/note", { state: { problems: updatedProblems } });
+  };
 
   return (
     <PageWrapper>
@@ -51,10 +75,12 @@ const GradingResults = () => {
         <Container>
           <SidebarWrapper>
             <ProblemList
-              problems={updatedProblems.map((problem) => ({
-                number: problem.number,
-                isCorrect: problem.isCorrect,
-              }))}
+              problems={updatedProblems.map((problem) => {
+                return {
+                  number: problem.number,
+                  isCorrect: problem.isCorrect,
+                };
+              })}
               title="정답 여부"
             />
           </SidebarWrapper>
@@ -73,7 +99,31 @@ const GradingResults = () => {
                     ? "SECONDARY"
                     : "PRIMARY";
                 } else if (isDoubleClicked) {
-                  problemColor = "SECONDARY";
+                  problemColor = "SECONDARY";}
+                console.log("문제 렌더링 데이터:", {
+                  id: problem.question_id,
+                  question: problem.questionText,
+                  number: problem.number,
+                  choices: problem.choices,
+                  userAnswer: problem.userAnswer,
+                  correctAnswer: problem.correctAnswer,
+                });
+
+                // 사용자 답안을 선택지에서 찾아 selectedOption 설정
+                const selectedOption = problem.choices.findIndex((choice) => {
+                  return choice.trim() === (problem.userAnswer || "").trim();
+                });
+
+                if (problem.question_type === "객관식") {
+                  console.log("MultipleChoice에 전달되는 데이터:", {
+                    id: problem.question_id,
+                    question: problem.questionText,
+                    number: problem.number,
+                    userAnswer: problem.userAnswer,
+                    selectedOption,
+                    choices: problem.choices,
+                    correctAnswer: problem.correctAnswer,
+                  });
                 }
                 console.log("문제 상태:", {
                   question_id: problem.question_id,
@@ -125,7 +175,7 @@ const GradingResults = () => {
                 );
               })}
               <ButtonWrapper>
-                <SolveButton>
+                <SolveButton onClick={handleSolveButtonClick}>
                   틀린 문제는 복습하고 넘어가자!
                   <br />
                   오답 노트 생성하기

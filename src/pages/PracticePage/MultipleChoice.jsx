@@ -20,15 +20,6 @@ const MultipleChoice = ({
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(problem.selectedOption);
 
-  console.log("MultipleChoice Props:", {
-    number,
-    problem,
-    selectedOption,
-    userAnswer: problem.userAnswer,
-    choices: problem.choices,
-    isWrong: problem.userAnswer !== problem.correctAnswer,
-  });
-
   const handleDoubleClick = (e) => {
     e.preventDefault();
     if (readOnly) return;
@@ -69,12 +60,6 @@ const MultipleChoice = ({
       isWrong={isGraded && problem.userAnswer !== problem.correctAnswer} // 채점 후 정답 여부 판단
       readOnly={readOnly}
     >
-      {/* 디버깅 코드 */}
-      {console.log("MultipleChoiceContainer Props:", {
-        isWrong: problem.userAnswer !== problem.correctAnswer,
-        userAnswer: problem.userAnswer,
-        correctAnswer: problem.correctAnswer,
-      })}
       <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <ul>
