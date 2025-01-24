@@ -15,7 +15,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install jest --save-dev' // 누락된 패키지 설치
+                sh 'npm install @testing-library/react --save-dev'
+                sh 'npm install jest --save-dev'
             }
         }
 
