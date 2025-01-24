@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NodeJS" // Jenkins에서 설정한 Node.js 이름
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -15,6 +11,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+                sh 'npm install @testing-library/jest-dom --save-dev' // 누락된 패키지 설치
             }
         }
 
@@ -37,3 +34,4 @@ pipeline {
         }
     }
 }
+
