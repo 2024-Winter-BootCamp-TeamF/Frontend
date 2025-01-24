@@ -25,11 +25,14 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     const receivedProblems = location.state?.problems;
 
     if (Array.isArray(receivedProblems)) {
+      console.log("Received Problems:", receivedProblems); // 문제 데이터 확인
+
       // 문제 번호 추가
       const formattedProblems = receivedProblems.map((problem, index) => ({
         ...problem,
         number: index + 1, // 문제 번호 설정
         userAnswer: "",
+        topic: problem.question_topic, // question_topic을 topic으로 매핑
       }));
       setProblems(formattedProblems);
       console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
@@ -168,9 +171,16 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         })
       );
 
+      const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
+      console.log("First Topic:", firstTopic); // 전달될 토픽 확인
+      console.log("Navigate로 전달되는 데이터:", {
+        problems: responses,
+        firstTopic,
+      });
+
       // 문제 데이터를 채점 결과 페이지로 전달
       navigate("/grading-results", {
-        state: { problems: responses },
+        state: { problems: responses, firstTopic },
       });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);

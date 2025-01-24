@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import NoteIcon from "../images/mypage_note.png";
 import DeleteIcon from "../images/delete.png";
@@ -7,17 +7,42 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 
+// 날짜 포맷팅 함수
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const yearMonthDay = `${date.getFullYear()}.${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  const hourMinute = `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}`;
+  return `${yearMonthDay} ${hourMinute}`;
+};
+
+const generateCardTitle = (note) => {
+  const topic = note.topics?.[0] || "기본"; // note 데이터에서 첫 번째 topic 가져오기
+  return `${topic}_오답노트`;
+};
+
 const UserPageNote = () => {
   const navigate = useNavigate();
-  const [notes, setNotes] = useState([
-    { id: 1, title: "웹퍼블리싱응용 Ch1", date: "2025.01.01" },
-    { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
-    { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
-    { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
-  ]);
+  const [notes, setNotes] = useState([]);
 
-  const handleDelete = (id) => {
-    setNotes(notes.filter((note) => note.id !== id));
+  useEffect(() => {
+    const savedNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+    const sortedNotes = savedNotes.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    setNotes(sortedNotes);
+  }, []);
+
+  // 삭제 로직
+  const handleDelete = (e, id) => {
+    e.stopPropagation(); // 이벤트 전파 중단
+    const updatedNotes = notes.filter((note) => note.id !== id); // 삭제 대상 제외
+    setNotes(updatedNotes); // 상태 업데이트
+    localStorage.setItem("wrongNotes", JSON.stringify(updatedNotes)); // localStorage 업데이트
+    alert("오답노트가 삭제되었습니다.");
   };
 
   return (
@@ -42,16 +67,21 @@ const UserPageNote = () => {
       </Nav>
       <Content>
         {notes.map((note) => (
-          <Card key={note.id}>
-            <DeleteButton onClick={() => handleDelete(note.id)}>
+          <Card
+            key={note.id}
+            onClick={() =>
+              navigate("/note", { state: { problems: note.problems } })
+            }
+          >
+            <DeleteButton onClick={(e) => handleDelete(e, note.id)}>
               <img src={DeleteIcon} alt="삭제" />
             </DeleteButton>
             <IconWrapper>
-              <img src={NoteIcon} alt="요약본" />
+              <img src={NoteIcon} alt="오답노트" />
             </IconWrapper>
             <CardText>
-              {note.title}
-              <DateText>{note.date}</DateText>
+              {generateCardTitle(note)}
+              <DateText>{formatDate(note.date)}</DateText>
             </CardText>
           </Card>
         ))}
@@ -152,4 +182,5 @@ const DateText = styled.div`
   margin-top: 5px;
   font-size: 12px;
   color: #888888;
+  text-align: center; /* 날짜와 시간을 가운데 정렬 */
 `;

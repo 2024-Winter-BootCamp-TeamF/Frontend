@@ -32,18 +32,8 @@ function WrongAnswer() {
     navigate("/AddComplete");
   };
 
-  const handleUserButtonClick = () => {
-    navigate("/mypage/summary");
-  };
-
-  const handleDownload = (explanation) => {
-    const blob = new Blob([explanation || "부가 설명이 없습니다."], {
-      type: "text/plain",
-    });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "explanation.txt";
-    link.click();
+  const handlePageButtonClick = () => {
+    navigate("/mypage/note");
   };
 
   return (
@@ -108,7 +98,7 @@ function WrongAnswer() {
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
-          onClick={handleUserButtonClick}
+          onClick={handlePageButtonClick}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
           }
