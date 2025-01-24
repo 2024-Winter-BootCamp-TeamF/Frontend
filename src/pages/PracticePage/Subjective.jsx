@@ -11,7 +11,13 @@ const COLORS = {
 };
 
 // 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
-const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
+const Subjective = ({
+  number,
+  problem,
+  readOnly,
+  onProblemSolved,
+  isGraded,
+}) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [answer, setAnswer] = useState("");
 
@@ -51,13 +57,13 @@ const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
       style={{
-        borderColor: window.location.href.includes("grading-results")
-          ? problem.is_correct
-            ? COLORS.PRIMARY
-            : COLORS.SECONDARY // 경로에 따라 테두리 색상 설정
+        borderColor: isGraded
+          ? problem.isCorrect
+            ? COLORS.PRIMARY // 채점 후 정답
+            : COLORS.SECONDARY // 채점 후 오답
           : isDoubleClicked
-          ? COLORS.SECONDARY // 더블클릭 시 색상
-          : COLORS.PRIMARY, // 기본 테두리 색상
+          ? COLORS.SECONDARY // 채점 전 더블클릭
+          : COLORS.PRIMARY, // 채점 전 기본
       }}
     >
       <Title>{`Q.${number}`}</Title>
