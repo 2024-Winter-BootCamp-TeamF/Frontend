@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
 import ProblemList from "../pages/PracticePage/ProblemList";
@@ -11,23 +11,46 @@ import { useLocation, useNavigate } from "react-router-dom";
 const GradingResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const problems = location.state?.problems || []; // 원래 템플릿 문제 데이터
-  const results = location.state?.results || []; // 채점 API 결과
+  
+  const problems = location.state?.problems || [];
+  const results = location.state?.results || [];
+
+  // 더블 클릭 활성화 상태를 관리하는 상태 변수
+  const [doubleClicked, setDoubleClicked] = useState(
+    problems.reduce((acc, problem) => {
+      acc[problem.question_id] = false; // 초기값: 모든 문제는 더블 클릭 비활성화
+      return acc;
+    }, {})
+  );
+
+  const handleDoubleClick = (questionId) => {
+    setDoubleClicked((prev) => ({
+      ...prev,
+      [questionId]: !prev[questionId], // 더블 클릭 상태 토글
+    }));
+  };
 
   console.log("location.state:", location.state);
   console.log("problems from location.state:", problems);
   console.log("results from location.state:", results);
 
   // 문제와 채점 결과 매칭
-  const updatedProblems = problems.map((problem) => ({
-    ...problem,
-    number: problem.number,
-    userAnswer: problem.user_answer || "", // 사용자 답안
-    isCorrect: problem.is_correct || false, // 정답 여부
-    questionText: problem.question_text || "질문 없음", // 질문 텍스트
-    correctAnswer: problem.correct_answer || "", // 정답
-    choices: problem.choices || [], // 객관식 선택지 (반환값에 없으면 기본값으로 처리)
-  }));
+    const updatedProblems = problems.map((problem) => {
+    const isCorrect =
+      problem.is_correct !== undefined
+        ? problem.is_correct
+        : problem.explanation === null;
+
+    return {
+      ...problem,
+      number: problem.number,
+      userAnswer: problem.user_answer || "",
+      isCorrect,
+      questionText: problem.question_text || "질문 없음",
+      correctAnswer: problem.correct_answer || "",
+      choices: problem.choices || [],
+    };
+  });
 
   console.log(
     "updatedProblems:",
@@ -63,8 +86,20 @@ const GradingResults = () => {
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
-              {/* 문제 출력 */}
               {updatedProblems.map((problem) => {
+                const isDoubleClicked = doubleClicked[problem.question_id];
+                const isGraded = problem.explanation !== undefined;
+
+                // 조건부 색상 설정
+                let problemColor = "PRIMARY";
+                if (isGraded) {
+                  problemColor = problem.isCorrect
+                    ? "PRIMARY"
+                    : isDoubleClicked
+                    ? "SECONDARY"
+                    : "PRIMARY";
+                } else if (isDoubleClicked) {
+                  problemColor = "SECONDARY";}
                 console.log("문제 렌더링 데이터:", {
                   id: problem.question_id,
                   question: problem.questionText,
@@ -90,11 +125,20 @@ const GradingResults = () => {
                     correctAnswer: problem.correctAnswer,
                   });
                 }
+                console.log("문제 상태:", {
+                  question_id: problem.question_id,
+                  isCorrect: problem.isCorrect,
+                  isDoubleClicked,
+                  problemColor,
+                  resultsLength: results.length,
+                });
 
                 return (
                   <ProblemItem
                     key={problem.question_id}
-                    isCorrect={problem.isCorrect} // 정답 여부에 따라 스타일 변경
+                    isCorrect={problem.isCorrect}
+                    problemColor={problemColor}
+                    onDoubleClick={() => handleDoubleClick(problem.question_id)}
                   >
                     {problem.question_type === "객관식" ? (
                       <MultipleChoice
@@ -102,12 +146,17 @@ const GradingResults = () => {
                           id: problem.question_id,
                           question: problem.questionText,
                           choices: problem.choices,
-                          selectedOption, // 사용자 답안 선택
+                          selectedOption: problem.choices.findIndex(
+                            (choice) =>
+                              choice.trim() ===
+                              (problem.userAnswer || "").trim()
+                          ),
                           userAnswer: problem.userAnswer,
                           correctAnswer: problem.correctAnswer,
                         }}
-                        number={problem.number} // 문제 번호 전달
+                        number={problem.number}
                         readOnly={true}
+                        isGraded={isGraded} // 채점 상태 추가 전달
                       />
                     ) : (
                       <Subjective
@@ -117,8 +166,9 @@ const GradingResults = () => {
                           correctAnswer: problem.correctAnswer,
                           userAnswer: problem.userAnswer,
                         }}
-                        number={problem.number} // 문제 번호 전달
+                        number={problem.number}
                         readOnly={true}
+                        isGraded={isGraded} // 채점 여부 전달
                       />
                     )}
                   </ProblemItem>
@@ -185,6 +235,10 @@ const ProblemDetail = styled.div`
 const ProblemItem = styled.div`
   display: flex;
   justify-content: center;
+  background-color: ${(props) =>
+    props.problemColor === "PRIMARY"
+      ? "#dff0d8"
+      : "#f2dede"}; // PRIMARY: 초록, SECONDARY: 빨강
 `;
 
 const ButtonWrapper = styled.div`
