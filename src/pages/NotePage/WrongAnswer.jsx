@@ -36,16 +36,6 @@ function WrongAnswer() {
     navigate("/mypage/summary");
   };
 
-  const handleDownload = (explanation) => {
-    const blob = new Blob([explanation || "부가 설명이 없습니다."], {
-      type: "text/plain",
-    });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "explanation.txt";
-    link.click();
-  };
-
   return (
     <WrongAnswerWrapper>
       <Header />
@@ -96,6 +86,8 @@ function WrongAnswer() {
               </QuizCard>
               <ExplanationCard key={`explanation-${response.question_id}`}>
                 <Title>해설</Title>
+                <div>정답: {response.correct_answer}</div>
+                <hr />
                 {response.explanation ? (
                   <ExplanationText>{response.explanation}</ExplanationText>
                 ) : (
@@ -170,28 +162,6 @@ const ExplanationCard = styled.div`
 const ExplanationText = styled.p`
   margin-top: 10px;
   font-size: 16px;
-`;
-
-const DownloadButton = styled.button`
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #5887f4;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  font-family: "HakgyoansimAllimjangTTF-R";
-  font-size: 16px;
-
-  &:hover {
-    background-color: #fff;
-    color: #5887f4;
-    border: 1px solid #5887f4;
-    transition: all 0.1s ease;
-  }
 `;
 
 const WrongAnswerWrapper = styled.div`

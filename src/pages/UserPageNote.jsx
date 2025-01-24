@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import NoteIcon from "../images/mypage_note.png";
 import DeleteIcon from "../images/delete.png";
@@ -9,15 +9,19 @@ import { useNavigate } from "react-router-dom";
 
 const UserPageNote = () => {
   const navigate = useNavigate();
-  const [notes, setNotes] = useState([
-    { id: 1, title: "웹퍼블리싱응용 Ch1", date: "2025.01.01" },
-    { id: 2, title: "컴퓨터구조 7장", date: "2025.01.04" },
-    { id: 3, title: "데이터베이스 2장", date: "2025.01.05" },
-    { id: 4, title: "웹퍼블리싱응용 Ch2", date: "2025.01.08" },
-  ]);
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const storedCards = localStorage.getItem("cards");
+    if (storedCards) {
+      setCards(JSON.parse(storedCards)); // localStorage에서 카드 불러오기
+    }
+  }, []);
 
   const handleDelete = (id) => {
-    setNotes(notes.filter((note) => note.id !== id));
+    const updatedCards = cards.filter((card) => card.id !== id);
+    setCards(updatedCards);
+    localStorage.setItem("cards", JSON.stringify(updatedCards)); // 삭제 후 localStorage 업데이트
   };
 
   return (
@@ -41,7 +45,7 @@ const UserPageNote = () => {
         </ExButton>
       </Nav>
       <Content>
-        {notes.map((note) => (
+        {cards.map((note) => (
           <Card key={note.id}>
             <DeleteButton onClick={() => handleDelete(note.id)}>
               <img src={DeleteIcon} alt="삭제" />
