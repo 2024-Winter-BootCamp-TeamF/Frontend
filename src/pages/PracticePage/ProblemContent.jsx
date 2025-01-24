@@ -94,10 +94,10 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     selectedAnswer
   ) => {
     // 디버깅용 로그
-    console.log("문제 ID:", problemId);
-    console.log("해결 여부 (isSolved):", isSolved);
-    console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
+    // console.log("문제 ID:", problemId);
+    // console.log("해결 여부 (isSolved):", isSolved);
+    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
+    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
 
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
