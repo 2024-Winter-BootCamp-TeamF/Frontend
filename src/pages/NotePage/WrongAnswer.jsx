@@ -72,7 +72,7 @@ function WrongAnswer() {
                                 <span key={index}>
                                   {index + 1}. {choice}
                                   {index < response.choices.length - 1
-                                    ? ", "
+                                    ? " "
                                     : ""}
                                 </span>
                               ))
@@ -101,11 +101,6 @@ function WrongAnswer() {
                 ) : (
                   <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
                 )}
-                <DownloadButton
-                  onClick={() => handleDownload(response.explanation)}
-                >
-                  부가 설명 다운로드
-                </DownloadButton>
               </ExplanationCard>
             </>
           )
