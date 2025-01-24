@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = "production" // Node.js 환경 설정
+    tools {
+        nodejs "NodeJS_16" // Jenkins에서 설정한 Node.js 이름
     }
 
     stages {
@@ -14,38 +14,26 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install' // 의존성 설치
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test' // 테스트 실행
+                sh 'npm test'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build' // 빌드 실행
+                sh 'npm run build'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh '''
-                # 빌드된 파일을 서버로 복사
-                scp -r build/* user@your-server:/var/www/html
-                '''
+                sh 'scp -r build/* user@your-server:/var/www/html'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build or deployment failed.'
         }
     }
 }
