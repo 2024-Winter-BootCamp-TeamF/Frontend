@@ -56,7 +56,10 @@ function WrongAnswer() {
               <QuizCard key={`problem-${response.question_id}`}>
                 <Question>
                   <Title>
-                    Q.{response.question_id < 10 ? 10 : response.question_id}
+                    Q.
+                    {response.question_id % 10 === 0
+                      ? 10
+                      : response.question_id % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
