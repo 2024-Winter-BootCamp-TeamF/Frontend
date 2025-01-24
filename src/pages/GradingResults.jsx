@@ -118,7 +118,7 @@ const GradingResults = () => {
                         }}
                         number={problem.number}
                         readOnly={true}
-                        isGraded={problem.explanation !== undefined} // 채점 여부 전달
+                        isGraded={isGraded} // 채점 여부 전달
                       />
                     )}
                   </ProblemItem>

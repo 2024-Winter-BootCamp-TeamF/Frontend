@@ -56,16 +56,10 @@ const Subjective = ({
       onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
-      style={{
-        borderColor: isGraded
-          ? problem.isCorrect
-            ? COLORS.PRIMARY // 채점 후 정답
-            : COLORS.SECONDARY // 채점 후 오답
-          : isDoubleClicked
-          ? COLORS.SECONDARY // 채점 전 더블클릭
-          : COLORS.PRIMARY, // 채점 전 기본
-      }}
+      isGraded={isGraded}
+      isWrong={isGraded && problem.userAnswer !== problem.correctAnswer} // 채점 후 정답 여부 판단
     >
+      {console.log("정답 확인:", problem.correctAnswer)} {/* 정답 콘솔 출력 */}
       <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <Input
@@ -95,7 +89,15 @@ const SubjectiveContainer = styled.div`
   width: 900px;
   height: auto;
   background-color: ${COLORS.BACKGROUND};
-  border: 3px solid ${COLORS.BORDER}; // 기본 테두리 색상
+  border: 3px solid
+    ${(props) =>
+      props.isGraded
+        ? props.isWrong
+          ? COLORS.SECONDARY // 채점 후 오답
+          : COLORS.PRIMARY // 채점 후 정답
+        : props.isDoubleClicked
+        ? COLORS.SECONDARY // 채점 전 더블클릭
+        : COLORS.PRIMARY}; // 채점 전 기본값
   padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 8px;

@@ -8,7 +8,6 @@ const COLORS = {
   SECONDARY: "#F24822",
   BORDER: "#E0E0E0",
   BACKGROUND: "#ffffff",
-  DISABLE: "#d3d3d3",
 };
 
 const MultipleChoice = ({
