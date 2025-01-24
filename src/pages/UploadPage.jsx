@@ -6,12 +6,17 @@ import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosInstance";
+import characater from "../images/character.png";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
   const [problemFiles, setProblemFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const [showFileCountModal, setShowFileCountModal] = useState(false);
+  const [fileCount, setFileCount] = useState(0);
+
   const [topK, setTopK] = useState(5);
   const [topics, setTopics] = useState([""]);
   const navigate = useNavigate();
@@ -37,12 +42,6 @@ const UploadPage = () => {
     getInputProps: getLectureInputProps,
     isDragActive: isLectureDragActive,
   } = useDropzone({ onDrop: onLectureDrop });
-
-  const {
-    getRootProps: getProblemRootProps,
-    getInputProps: getProblemInputProps,
-    isDragActive: isProblemDragActive,
-  } = useDropzone({ onDrop: onProblemDrop });
 
   const handleAddTopic = () => {
     if (topics.length < 3) {
@@ -77,7 +76,8 @@ const UploadPage = () => {
       });
       console.log(response.data);
 
-      setShowModal(true);
+      setFileCount(lectureFiles.length); // 업로드한 파일 개수 설정
+      setShowFileCountModal(true); // 파일 개수 확인 모달 띄우기
     } catch (error) {
       if (error.response) {
         console.error(
@@ -95,6 +95,31 @@ const UploadPage = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleConfirmFileCount = async () => {
+    const token = localStorage.getItem("accessToken"); // 인증 토큰 가져오기
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.request({
+        method: "POST",
+        url: "/celery/pinecone/",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("API 호출 성공:", response.data);
+      setShowFileCountModal(false); // 파일 개수 모달 숨기기
+      setShowModal(true); // 토픽 및 Top K 입력 모달 띄우기
+    } catch (error) {
+      console.error("API 호출 실패:", error);
+      alert("파일 처리 중 오류가 발생했습니다.");
+    } finally {
+      setShowFileCountModal(false);
     }
   };
 
@@ -160,6 +185,20 @@ const UploadPage = () => {
               <LoadingText>파일을 처리하고 있습니다...</LoadingText>
             </LoadingContent>
           </LoadingModal>
+        )}
+
+        {showFileCountModal && (
+          <Modal>
+            <FileModalContent>
+              <CharacterSection>
+                <img src={characater} alt="character" />
+              </CharacterSection>
+              <p>{fileCount}개 파일 업로드 성공!</p>
+              <ExButton variant="filled" onClick={handleConfirmFileCount}>
+                확인
+              </ExButton>
+            </FileModalContent>
+          </Modal>
         )}
 
         {showModal && (
@@ -376,6 +415,28 @@ const ModalContent = styled.div`
   border-radius: 10px;
   position: relative;
   min-width: 300px;
+`;
+
+const FileModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  font-size: 28px;
+  gap: 30px;
+  padding: 30px;
+  border-radius: 10px;
+  width: 50%;
+`;
+
+const CharacterSection = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  img {
+    width: 40%;
+  }
 `;
 
 const CloseButton = styled.button`
