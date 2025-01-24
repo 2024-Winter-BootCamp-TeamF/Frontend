@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import axiosInstance from "../../axiosInstance";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -7,82 +9,24 @@ import { useNavigate } from "react-router-dom";
 
 function WrongAnswer() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [responses, setResponses] = useState(location.state?.problems || []);
 
-  // State for storing API response data
-  const [responses, setResponses] = useState([]);
-
-  // Mock API call (replace with actual API integration)
+  // API 호출 (필요한 경우)
   useEffect(() => {
-    // Example response from the grading API
-    const mockApiResponse = [
-      {
-        question_id: 27,
-        question: "27번 문제 작성 예정",
-        question_type: "주관식",
-        user_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식.",
-        correct_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식입니다.",
-        is_correct: false,
-        explanation: null,
-      },
-      {
-        question_id: 28,
-        question: "28번 문제 작성 예정",
-        question_type: "객관식",
-        user_answer: 1,
-        correct_answer: 3,
-        is_correct: false,
-        explanation: "객관식 문제의 정답은 3번입니다.",
-      },
-      {
-        question_id: 27,
-        question: "27번 문제 작성 예정",
-        question_type: "주관식",
-        user_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식.",
-        correct_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식입니다.",
-        is_correct: false,
-        explanation: null,
-      },
-      {
-        question_id: 27,
-        question: "27번 문제 작성 예정",
-        question_type: "주관식",
-        user_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식.",
-        correct_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식입니다.",
-        is_correct: false,
-        explanation: null,
-      },
-      {
-        question_id: 27,
-        question: "27번 문제 작성 예정",
-        question_type: "주관식",
-        user_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식.",
-        correct_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식입니다.",
-        is_correct: false,
-        explanation: null,
-      },
-      {
-        question_id: 27,
-        question: "27번 문제 작성 예정",
-        question_type: "주관식",
-        user_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식.",
-        correct_answer:
-          "디지털 시스템에서 정보를 나타내기 위해 사용되는 코드로, 일정한 비트 패턴이 특정한 정보나 기호를 나타내는 방식입니다.",
-        is_correct: false,
-        explanation: null,
-      },
-    ];
+    const fetchWrongAnswers = async () => {
+      try {
+        const response = await axiosInstance.get("/question/submit-answer/");
+        setResponses(response.data); // API 응답 데이터 저장
+      } catch (error) {
+        console.error("오답 조회 데이터 가져오기 오류:", error);
+      }
+    };
 
-    setResponses(mockApiResponse);
-  }, []);
+    if (responses.length === 0) {
+      fetchWrongAnswers(); // 전달받은 데이터가 없을 경우 API 호출
+    }
+  }, [responses]);
 
   const handleAddButtonClick = () => {
     navigate("/AddComplete");
@@ -106,34 +50,61 @@ function WrongAnswer() {
     <WrongAnswerWrapper>
       <Header />
       <GridContainer>
-        {responses.map((response) => (
-          <>
-            <QuizCard key={`problem-${response.question_id}`}>
-              <Question>
-                <Title>Q.{response.question_id}</Title>
-                <QuestionText>{response.question}</QuestionText>
-                <AnswerText>
-                  {response.question_type === "객관식"
-                    ? `사용자가 선택한 답: ${response.user_answer}번`
-                    : `사용자가 입력한 답: ${response.user_answer}`}
-                </AnswerText>
-              </Question>
-            </QuizCard>
-            <ExplanationCard key={`explanation-${response.question_id}`}>
-              <Title>해설</Title>
-              {response.explanation ? (
-                <ExplanationText>{response.explanation}</ExplanationText>
-              ) : (
-                <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
-              )}
-              <DownloadButton
-                onClick={() => handleDownload(response.explanation)}
-              >
-                부가 설명 다운로드
-              </DownloadButton>
-            </ExplanationCard>
-          </>
-        ))}
+        {responses.map((response) =>
+          response.is_correct ? null : (
+            <>
+              <QuizCard key={`problem-${response.question_id}`}>
+                <Question>
+                  <Title>
+                    Q.
+                    {response.question_id % 10 === 0
+                      ? 10
+                      : response.question_id % 10}
+                  </Title>
+                  <QuestionText>{response.question_text}</QuestionText>
+                  <AnswerText>
+                    {response.question_type === "객관식" ? (
+                      <>
+                        <div>선택한 답: {response.user_answer}</div>
+                        <div style={{ marginTop: "10px" }}>
+                          {Array.isArray(response.choices)
+                            ? response.choices.map((choice, index) => (
+                                <span key={index}>
+                                  {index + 1}. {choice}
+                                  {index < response.choices.length - 1
+                                    ? " "
+                                    : ""}
+                                </span>
+                              ))
+                            : response.choices
+                                .split("")
+                                .map((choice, index) => (
+                                  <span key={index}>
+                                    {index + 1}. {choice}
+                                    {index < response.choices.length - 1
+                                      ? ", "
+                                      : ""}
+                                  </span>
+                                ))}
+                        </div>
+                      </>
+                    ) : (
+                      `사용자가 입력한 답: ${response.user_answer}`
+                    )}
+                  </AnswerText>
+                </Question>
+              </QuizCard>
+              <ExplanationCard key={`explanation-${response.question_id}`}>
+                <Title>해설</Title>
+                {response.explanation ? (
+                  <ExplanationText>{response.explanation}</ExplanationText>
+                ) : (
+                  <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
+                )}
+              </ExplanationCard>
+            </>
+          )
+        )}
       </GridContainer>
       <ButtonWrapper>
         <SolveButton

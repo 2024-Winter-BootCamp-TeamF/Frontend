@@ -6,10 +6,11 @@ import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GradingResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const problems = location.state?.problems || []; // 원래 템플릿 문제 데이터
   const results = location.state?.results || []; // 채점 API 결과
 
@@ -33,11 +34,16 @@ const GradingResults = () => {
     updatedProblems.map((problem) => ({
       id: problem.question_id,
       number: problem.number,
+      isCorrect: problem.isCorrect,
       userAnswer: problem.userAnswer,
       choices: problem.choices,
       question: problem.questionText,
     }))
   );
+
+  const handleSolveButtonClick = () => {
+    navigate("/note", { state: { problems: updatedProblems } });
+  };
 
   return (
     <PageWrapper>
@@ -47,10 +53,6 @@ const GradingResults = () => {
           <SidebarWrapper>
             <ProblemList
               problems={updatedProblems.map((problem) => {
-                console.log("ProblemList 전달 데이터:", {
-                  number: problem.number,
-                  isCorrect: problem.isCorrect,
-                });
                 return {
                   number: problem.number,
                   isCorrect: problem.isCorrect,
@@ -74,12 +76,6 @@ const GradingResults = () => {
 
                 // 사용자 답안을 선택지에서 찾아 selectedOption 설정
                 const selectedOption = problem.choices.findIndex((choice) => {
-                  console.log("선택지와 사용자 답 비교:", {
-                    choice,
-                    userAnswer: (problem.userAnswer || "").trim(),
-                    isMatch:
-                      choice.trim() === (problem.userAnswer || "").trim(),
-                  });
                   return choice.trim() === (problem.userAnswer || "").trim();
                 });
 
@@ -129,7 +125,7 @@ const GradingResults = () => {
                 );
               })}
               <ButtonWrapper>
-                <SolveButton>
+                <SolveButton onClick={handleSolveButtonClick}>
                   틀린 문제는 복습하고 넘어가자!
                   <br />
                   오답 노트 생성하기
