@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS_16" // Global Tool Configuration에서 설정한 이름
+    }
+
     stages {
         stage('Checkout') {
             steps {
