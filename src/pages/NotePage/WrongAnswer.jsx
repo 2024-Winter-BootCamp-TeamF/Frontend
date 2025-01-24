@@ -50,34 +50,63 @@ function WrongAnswer() {
     <WrongAnswerWrapper>
       <Header />
       <GridContainer>
-        {responses.map((response) => (
-          <>
-            <QuizCard key={`problem-${response.question_id}`}>
-              <Question>
-                <Title>Q.{response.question_id}</Title>
-                <QuestionText>{response.question}</QuestionText>
-                <AnswerText>
-                  {response.question_type === "객관식"
-                    ? `사용자가 선택한 답: ${response.user_answer}번`
-                    : `사용자가 입력한 답: ${response.user_answer}`}
-                </AnswerText>
-              </Question>
-            </QuizCard>
-            <ExplanationCard key={`explanation-${response.question_id}`}>
-              <Title>해설</Title>
-              {response.explanation ? (
-                <ExplanationText>{response.explanation}</ExplanationText>
-              ) : (
-                <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
-              )}
-              <DownloadButton
-                onClick={() => handleDownload(response.explanation)}
-              >
-                부가 설명 다운로드
-              </DownloadButton>
-            </ExplanationCard>
-          </>
-        ))}
+        {responses.map((response) =>
+          response.is_correct ? null : (
+            <>
+              <QuizCard key={`problem-${response.question_id}`}>
+                <Question>
+                  <Title>
+                    Q.{response.question_id < 10 ? 10 : response.question_id}
+                  </Title>
+                  <QuestionText>{response.question_text}</QuestionText>
+                  <AnswerText>
+                    {response.question_type === "객관식" ? (
+                      <>
+                        <div>선택한 답: {response.user_answer}</div>
+                        <div style={{ marginTop: "10px" }}>
+                          {Array.isArray(response.choices)
+                            ? response.choices.map((choice, index) => (
+                                <span key={index}>
+                                  {index + 1}. {choice}
+                                  {index < response.choices.length - 1
+                                    ? ", "
+                                    : ""}
+                                </span>
+                              ))
+                            : response.choices
+                                .split("")
+                                .map((choice, index) => (
+                                  <span key={index}>
+                                    {index + 1}. {choice}
+                                    {index < response.choices.length - 1
+                                      ? ", "
+                                      : ""}
+                                  </span>
+                                ))}
+                        </div>
+                      </>
+                    ) : (
+                      `사용자가 입력한 답: ${response.user_answer}`
+                    )}
+                  </AnswerText>
+                </Question>
+              </QuizCard>
+              <ExplanationCard key={`explanation-${response.question_id}`}>
+                <Title>해설</Title>
+                {response.explanation ? (
+                  <ExplanationText>{response.explanation}</ExplanationText>
+                ) : (
+                  <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
+                )}
+                <DownloadButton
+                  onClick={() => handleDownload(response.explanation)}
+                >
+                  부가 설명 다운로드
+                </DownloadButton>
+              </ExplanationCard>
+            </>
+          )
+        )}
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
