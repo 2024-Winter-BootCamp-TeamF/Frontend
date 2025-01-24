@@ -15,8 +15,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install @testing-library/react --save-dev'
-                sh 'npm install jest --save-dev'
             }
         }
 
