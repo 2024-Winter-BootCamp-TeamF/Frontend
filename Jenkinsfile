@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS_16" // Jenkins에서 설정한 Node.js 이름
+        nodejs "NodeJS" // Jenkins에서 설정한 Node.js 이름
     }
 
     stages {
