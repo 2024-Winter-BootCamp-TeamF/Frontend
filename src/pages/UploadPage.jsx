@@ -6,6 +6,7 @@ import ExButton from "../components/SampleButton";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosInstance";
+import characater from "../images/character.png";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
@@ -188,12 +189,15 @@ const UploadPage = () => {
 
         {showFileCountModal && (
           <Modal>
-            <ModalContent>
-              <p>총 {fileCount}개의 파일이 업로드되었습니다.</p>
+            <FileModalContent>
+              <CharacterSection>
+                <img src={characater} alt="character" />
+              </CharacterSection>
+              <p>{fileCount}개 파일 업로드 성공!</p>
               <ExButton variant="filled" onClick={handleConfirmFileCount}>
                 확인
               </ExButton>
-            </ModalContent>
+            </FileModalContent>
           </Modal>
         )}
 
@@ -411,6 +415,28 @@ const ModalContent = styled.div`
   border-radius: 10px;
   position: relative;
   min-width: 300px;
+`;
+
+const FileModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  font-size: 28px;
+  gap: 30px;
+  padding: 30px;
+  border-radius: 10px;
+  width: 50%;
+`;
+
+const CharacterSection = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  img {
+    width: 40%;
+  }
 `;
 
 const CloseButton = styled.button`
