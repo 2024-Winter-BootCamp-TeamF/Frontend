@@ -25,15 +25,16 @@ const UploadPage = () => {
     setLectureFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
 
-  const onProblemDrop = useCallback((acceptedFiles) => {
-    setProblemFiles((prev) => [...prev, ...acceptedFiles]);
-  }, []);
-
   const removeLectureFile = (fileName) => {
     setLectureFiles(lectureFiles.filter((file) => file.name !== fileName));
   };
 
   const handleTopicsNext = () => {
+    localStorage.setItem(
+      "topics",
+      JSON.stringify(topics.filter((topic) => topic.trim() !== ""))
+    );
+
     navigate(`/sample`, { state: { topics } });
   };
 

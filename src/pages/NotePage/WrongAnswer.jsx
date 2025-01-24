@@ -11,14 +11,6 @@ function WrongAnswer() {
   const navigate = useNavigate();
   const location = useLocation();
   const [responses, setResponses] = useState(location.state?.problems || []);
-  const [isSavedNote, setIsSavedNote] = useState(false); // 저장된 노트인지 확인하는 상태 추가
-
-  // 처음 로드될 때 상태 확인
-  useEffect(() => {
-    if (location.state?.isSavedNote) {
-      setIsSavedNote(true); // 저장된 노트에서 왔다면 저장 로직을 비활성화
-    }
-  }, [location.state]);
 
   // API 호출 (필요한 경우)
   useEffect(() => {
@@ -40,7 +32,7 @@ function WrongAnswer() {
     navigate("/AddComplete");
   };
 
-  const saveNote = () => {
+  const handlePageButtonClick = () => {
     navigate("/mypage/note");
   };
 
@@ -106,7 +98,7 @@ function WrongAnswer() {
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
-          onClick={saveNote}
+          onClick={handlePageButtonClick}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
           }

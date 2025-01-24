@@ -19,9 +19,9 @@ const formatDate = (dateString) => {
   return `${yearMonthDay} ${hourMinute}`;
 };
 
-// 제목 생성 함수
 const generateCardTitle = (note) => {
-  return note.title || "기본 오답노트";
+  const topic = note.topics?.[0] || "기본"; // note 데이터에서 첫 번째 topic 가져오기
+  return `${topic}_오답노트`;
 };
 
 const UserPageNote = () => {
@@ -80,7 +80,7 @@ const UserPageNote = () => {
               <img src={NoteIcon} alt="오답노트" />
             </IconWrapper>
             <CardText>
-              <Title>{generateCardTitle(note)}</Title>
+              {generateCardTitle(note)}
               <DateText>{formatDate(note.date)}</DateText>
             </CardText>
           </Card>
@@ -178,14 +178,9 @@ const CardText = styled.div`
   color: black;
 `;
 
-const Title = styled.div`
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
-`;
-
 const DateText = styled.div`
   margin-top: 5px;
   font-size: 12px;
   color: #888888;
+  text-align: center; /* 날짜와 시간을 가운데 정렬 */
 `;

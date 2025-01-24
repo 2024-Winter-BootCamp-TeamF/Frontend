@@ -24,7 +24,7 @@ const SamplePage = () => {
   });
 
   const handleTopicsNext = () => {
-    const { topic } = location.state || {};
+    const { topics } = location.state || {};
     navigate("/createpractice", { state: { topics, summaryPDF } });
   };
 

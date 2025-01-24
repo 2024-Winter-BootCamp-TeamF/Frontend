@@ -13,7 +13,7 @@ const GradingResults = () => {
   const navigate = useNavigate();
 
   const problems = location.state?.problems || [];
-  const results = location.state?.results || [];
+  const firstTopic = location.state?.firstTopic || ""; // 첫 번째 문제의 topic
 
   // 더블 클릭 활성화 상태를 관리하는 상태 변수
   const [doubleClicked, setDoubleClicked] = useState(
@@ -30,16 +30,19 @@ const GradingResults = () => {
     }));
   };
 
-  const saveNote = () => {
-    const noteTitle = prompt("오답노트의 제목을 입력해주세요:");
-    if (!noteTitle) return;
+  const saveNote = (topics, problems) => {
+    // topics 배열에서 첫 번째 값을 가져와 제목 생성
+    const noteTitle = `${firstTopic}_오답노트`;
 
     const newNote = {
       id: Date.now(),
       title: noteTitle,
       date: new Date().toISOString(),
-      problems, // 문제 데이터를 그대로 저장
+      topics,
+      problems,
     };
+
+    console.log("새로 저장되는 노트 데이터:", newNote);
 
     const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
     localStorage.setItem(
@@ -47,11 +50,14 @@ const GradingResults = () => {
       JSON.stringify([...existingNotes, newNote])
     );
 
-    alert("오답노트가 저장되었습니다!");
+    console.log(
+      "현재 저장된 모든 노트:",
+      JSON.parse(localStorage.getItem("wrongNotes"))
+    );
   };
 
   const handleSolveButtonClick = () => {
-    saveNote(); // 오답노트 저장 로직 실행
+    saveNote([firstTopic], problems); // 오답노트 저장 호출
     navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
   };
 

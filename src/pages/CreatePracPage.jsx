@@ -100,6 +100,11 @@ function CreatePracPage() {
   };
 
   const handleCreate = async () => {
+    console.log(
+      "생성 요청에 포함된 토픽:",
+      Array.isArray(topics) ? topics : [topics]
+    );
+
     try {
       const response = await fetch(
         "http://localhost:8000/api/question/create/",
