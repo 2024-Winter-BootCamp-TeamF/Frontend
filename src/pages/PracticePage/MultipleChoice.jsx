@@ -8,11 +8,27 @@ const COLORS = {
   SECONDARY: "#F24822",
   BORDER: "#E0E0E0",
   BACKGROUND: "#ffffff",
+  DISABLE: "#d3d3d3",
 };
 
-const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
+const MultipleChoice = ({
+  number,
+  problem,
+  readOnly,
+  onProblemSolved,
+  isGraded,
+}) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(problem.selectedOption);
+
+  console.log("MultipleChoice Props:", {
+    number,
+    problem,
+    selectedOption,
+    userAnswer: problem.userAnswer,
+    choices: problem.choices,
+    isWrong: problem.userAnswer !== problem.correctAnswer,
+  });
 
   const handleDoubleClick = (e) => {
     e.preventDefault();
@@ -25,7 +41,7 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
       problem.id,
       selectedOption !== null, // isSolved
       newDoubleClickState, // isDoubleClicked
-      selectedOption // 선택한 정답 전달
+      problem.choices[selectedOption] // 선택한 정답 전달
     );
   };
 
@@ -35,14 +51,14 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
     const newSelectedOption = selectedOption === index ? null : index;
     setSelectedOption(newSelectedOption);
 
-    // 정답 여부 확인
-    const isSolved = newSelectedOption !== null; // 선택한 답안이 있을 경우 true
+    const isSolved = newSelectedOption !== null;
 
+    // 부모 컴포넌트에 선택된 답 전달
     onProblemSolved(
       problem.id,
-      isSolved, // isSolved는 선택 여부에 따라 true
-      isDoubleClicked, // 현재 더블클릭 상태 유지
-      problem.choices[newSelectedOption] // 선택한 정답 전달
+      isSolved,
+      isDoubleClicked,
+      problem.choices[newSelectedOption] || "" // 선택된 답안 전달
     );
   };
 
@@ -50,55 +66,76 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
     <MultipleChoiceContainer
       onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
+      isGraded={isGraded}
+      isWrong={isGraded && problem.userAnswer !== problem.correctAnswer} // 채점 후 정답 여부 판단
       readOnly={readOnly}
-      style={{
-        borderColor: window.location.href.includes("grading-results")
-          ? problem.is_correct
-            ? COLORS.PRIMARY
-            : "#F24822" // 경로에 따라 테두리 색상 설정
-          : isDoubleClicked
-          ? COLORS.SECONDARY // 더블클릭 시 색상
-          : COLORS.PRIMARY, // 기본 테두리 색상
-      }}
     >
+      {/* 디버깅 코드 */}
+      {console.log("MultipleChoiceContainer Props:", {
+        isWrong: problem.userAnswer !== problem.correctAnswer,
+        userAnswer: problem.userAnswer,
+        correctAnswer: problem.correctAnswer,
+      })}
       <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       <ul>
-        {problem.choices.map((choice, index) => (
-          <li key={index}>
-            <input
-              type="radio"
-              name={problem.id}
-              id={`${problem.id}-choice${index}`}
-              onChange={() => handleOptionSelect(index)}
-              checked={selectedOption === index}
-              disabled={readOnly}
-            />
-            <label htmlFor={`${problem.id}-choice-${index}`}>{choice}</label>
-          </li>
-        ))}
+        {(problem.choices || []).map(
+          (
+            choice,
+            index // choices가 없으면 빈 배열로 처리
+          ) => (
+            <li key={index}>
+              <StyledRadio
+                type="radio"
+                name={`multiple-choice-${problem.id}`}
+                id={`choice-${problem.id}-${index}`}
+                onChange={() => handleOptionSelect(index)}
+                checked={selectedOption === index}
+                disabled={readOnly}
+                isWrong={
+                  isGraded &&
+                  problem.userAnswer === problem.choices[index] &&
+                  problem.userAnswer !== problem.correctAnswer // 사용자 답안이 틀린 경우
+                }
+                isSelected={selectedOption === index} // 선택 여부
+                isDoubleClicked={isDoubleClicked} // 더블클릭 여부 전달
+              />
+              <label htmlFor={`choice-${problem.id}-${index}`}>{choice}</label>
+            </li>
+          )
+        )}
       </ul>
     </MultipleChoiceContainer>
   );
 };
 
 MultipleChoice.propTypes = {
-  number: PropTypes.number.isRequired, // number를 필수로 설정
+  number: PropTypes.number.isRequired,
   problem: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     question: PropTypes.string.isRequired,
     choices: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedOption: PropTypes.number,
+    userAnswer: PropTypes.string.isRequired,
     correctAnswer: PropTypes.string.isRequired,
+    isCorrect: PropTypes.bool.isRequired,
   }).isRequired,
   readOnly: PropTypes.bool.isRequired,
-  onProblemSolved: PropTypes.func.isRequired,
 };
 
 const MultipleChoiceContainer = styled.div`
   width: 900px;
   height: auto;
   background-color: #ffffff;
-  border: 3px solid ${COLORS.BORDER}; // 기본 테두리 색상
+  border: 3px solid
+    ${(props) =>
+      props.isGraded
+        ? props.isWrong
+          ? COLORS.SECONDARY // 채점 후 오답
+          : COLORS.PRIMARY // 채점 후 정답
+        : props.isDoubleClicked
+        ? COLORS.SECONDARY // 채점 전 더블클릭
+        : COLORS.PRIMARY}; // 채점 전 기본값
   padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -116,35 +153,44 @@ const MultipleChoiceContainer = styled.div`
     gap: 15px;
     line-height: 45px;
   }
+`;
 
-  input[type="radio"] {
-    appearance: none;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    border: 3px solid ${COLORS.BORDER};
-    transition: border 0.3s ease-in-out;
-  }
+const StyledRadio = styled.input`
+  appearance: none;
+  border: 3px solid ${COLORS.BORDER};
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  transition: all 0.3s ease-in-out;
 
-  input[type="radio"]:checked {
+  &:checked {
     border: 0.5em solid
-      ${(props) => (props.isDoubleClicked ? COLORS.SECONDARY : COLORS.PRIMARY)};
+      ${(props) =>
+        props.isDoubleClicked
+          ? COLORS.SECONDARY // 더블클릭된 경우
+          : props.isWrong
+          ? COLORS.SECONDARY // 사용자 답안이 틀린 경우
+          : COLORS.PRIMARY}; // 기본 정답
+    background-color: #ffffff; /* 체크된 상태에서도 배경은 흰색 유지 */
   }
 
-  input[type="radio"]:focus-visible {
-    outline-offset: max(2px, 0.1em);
+  &:focus-visible {
+    outline-offset: max(2pxx, 0.1em);
   }
 
-  input[type="radio"]:hover {
-    box-shadow: 0 0 0 max(3px, 0.2em) #e2dfdf;
+  &:hover {
+    box-shadow: 0 0 0 max(3px, 0.2em) #e2dfdf; /* hover 시 음영 추가 */
     cursor: pointer;
   }
 
-  input[type="radio"]:disabled {
-    background-color: lightgray;
+  &:disabled {
+    background-color: ${(props) =>
+      props.checked
+        ? "#ffffff"
+        : "#d3d3d3"}; /* 체크된 버튼은 흰색, 나머지는 회색 */
     box-shadow: none;
-    opacity: 0.7;
     cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 

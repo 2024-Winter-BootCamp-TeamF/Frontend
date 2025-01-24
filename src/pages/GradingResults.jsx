@@ -4,25 +4,40 @@ import Header from "../components/Header";
 import ProblemList from "../pages/PracticePage/ProblemList";
 import MultipleChoice from "../pages/PracticePage/MultipleChoice";
 import Subjective from "../pages/PracticePage/Subjective";
-import { problems } from "../pages/PracticePage/data";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
+import { useLocation } from "react-router-dom";
 
-const GradingResults = ({ results = problems, onProblemSolved }) => {
-  console.log(JSON.stringify(results, null, 2));
+const GradingResults = () => {
+  const location = useLocation();
+  const problems = location.state?.problems || []; // 원래 템플릿 문제 데이터
+  const results = location.state?.results || []; // 채점 API 결과
 
-  const handleProblemSolved = (
-    problemId,
-    isSolved,
-    isDoubleClicked,
-    selectedAnswer
-  ) => {
-    // 사용자가 푼 문제의 정보를 처리하는 로직 추가
-    console.log(
-      `문제 ID: ${problemId}, 해결 여부: ${isSolved}, 선택한 답안: ${selectedAnswer}`
-    );
-    // 추가적인 처리 로직을 여기에 작성할 수 있습니다.
-  };
+  console.log("location.state:", location.state);
+  console.log("problems from location.state:", problems);
+  console.log("results from location.state:", results);
+
+  // 문제와 채점 결과 매칭
+  const updatedProblems = problems.map((problem) => ({
+    ...problem,
+    number: problem.number,
+    userAnswer: problem.user_answer || "", // 사용자 답안
+    isCorrect: problem.is_correct || false, // 정답 여부
+    questionText: problem.question_text || "질문 없음", // 질문 텍스트
+    correctAnswer: problem.correct_answer || "", // 정답
+    choices: problem.choices || [], // 객관식 선택지 (반환값에 없으면 기본값으로 처리)
+  }));
+
+  console.log(
+    "updatedProblems:",
+    updatedProblems.map((problem) => ({
+      id: problem.question_id,
+      number: problem.number,
+      userAnswer: problem.userAnswer,
+      choices: problem.choices,
+      question: problem.questionText,
+    }))
+  );
 
   return (
     <PageWrapper>
@@ -30,35 +45,89 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList problems={results} title="정답 여부" />
+            <ProblemList
+              problems={updatedProblems.map((problem) => {
+                console.log("ProblemList 전달 데이터:", {
+                  number: problem.number,
+                  isCorrect: problem.isCorrect,
+                });
+                return {
+                  number: problem.number,
+                  isCorrect: problem.isCorrect,
+                };
+              })}
+              title="정답 여부"
+            />
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
-              {results.map((result) => (
-                <ProblemItem key={result.id}>
-                  {result.type === "multiple_choice" ? (
-                    <MultipleChoice
-                      problem={{
-                        ...result,
-                        selectedOption: result.selectedAnswer || null,
-                        is_correct: result.is_correct,
-                      }}
-                      readOnly={true}
-                      onProblemSolved={handleProblemSolved}
-                    />
-                  ) : (
-                    <Subjective
-                      problem={{
-                        ...result,
-                        selectedAnswer: result.answer || "",
-                        is_correct: result.is_correct,
-                      }}
-                      readOnly={true}
-                      onProblemSolved={handleProblemSolved}
-                    />
-                  )}
-                </ProblemItem>
-              ))}
+              {/* 문제 출력 */}
+              {updatedProblems.map((problem) => {
+                console.log("문제 렌더링 데이터:", {
+                  id: problem.question_id,
+                  question: problem.questionText,
+                  number: problem.number,
+                  choices: problem.choices,
+                  userAnswer: problem.userAnswer,
+                  correctAnswer: problem.correctAnswer,
+                });
+
+                // 사용자 답안을 선택지에서 찾아 selectedOption 설정
+                const selectedOption = problem.choices.findIndex((choice) => {
+                  console.log("선택지와 사용자 답 비교:", {
+                    choice,
+                    userAnswer: (problem.userAnswer || "").trim(),
+                    isMatch:
+                      choice.trim() === (problem.userAnswer || "").trim(),
+                  });
+                  return choice.trim() === (problem.userAnswer || "").trim();
+                });
+
+                if (problem.question_type === "객관식") {
+                  console.log("MultipleChoice에 전달되는 데이터:", {
+                    id: problem.question_id,
+                    question: problem.questionText,
+                    number: problem.number,
+                    userAnswer: problem.userAnswer,
+                    selectedOption,
+                    choices: problem.choices,
+                    correctAnswer: problem.correctAnswer,
+                  });
+                }
+
+                return (
+                  <ProblemItem
+                    key={problem.question_id}
+                    isCorrect={problem.isCorrect} // 정답 여부에 따라 스타일 변경
+                  >
+                    {problem.question_type === "객관식" ? (
+                      <MultipleChoice
+                        problem={{
+                          id: problem.question_id,
+                          question: problem.questionText,
+                          choices: problem.choices,
+                          selectedOption, // 사용자 답안 선택
+                          userAnswer: problem.userAnswer,
+                          correctAnswer: problem.correctAnswer,
+                        }}
+                        number={problem.number} // 문제 번호 전달
+                        readOnly={true}
+                      />
+                    ) : (
+                      <Subjective
+                        problem={{
+                          id: problem.question_id,
+                          question: problem.questionText,
+                          correctAnswer: problem.correctAnswer,
+                          userAnswer: problem.userAnswer,
+                        }}
+                        number={problem.number} // 문제 번호 전달
+                        readOnly={true}
+                      />
+                    )}
+                  </ProblemItem>
+                );
+              })}
               <ButtonWrapper>
                 <SolveButton>
                   틀린 문제는 복습하고 넘어가자!
@@ -76,8 +145,6 @@ const GradingResults = ({ results = problems, onProblemSolved }) => {
 };
 
 const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   position: relative;
 `;
