@@ -65,7 +65,7 @@ const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
       <Input
         type="text"
         placeholder="답을 입력하세요"
-        value={readOnly ? problem.answer : answer}
+        value={readOnly ? problem.userAnswer : answer}
         onChange={handleAnswerChange}
         disabled={readOnly}
       />

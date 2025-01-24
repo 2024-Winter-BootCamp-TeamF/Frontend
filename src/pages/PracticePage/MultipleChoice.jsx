@@ -12,7 +12,15 @@ const COLORS = {
 
 const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(problem.selectedOption);
+
+  console.log("MultipleChoice Props:", {
+    number,
+    problem,
+    selectedOption,
+    userAnswer: problem.userAnswer,
+    choices: problem.choices,
+  });
 
   const handleDoubleClick = (e) => {
     e.preventDefault();
@@ -25,7 +33,7 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
       problem.id,
       selectedOption !== null, // isSolved
       newDoubleClickState, // isDoubleClicked
-      selectedOption // 선택한 정답 전달
+      problem.choices[selectedOption] // 선택한 정답 전달
     );
   };
 
@@ -72,13 +80,13 @@ const MultipleChoice = ({ number, problem, readOnly, onProblemSolved }) => {
             <li key={index}>
               <input
                 type="radio"
-                name={problem.id}
-                id={`${problem.id}-choice${index}`}
+                name={`multiple-choice-${problem.id}`}
+                id={`choice-${problem.id}-${index}`}
                 onChange={() => handleOptionSelect(index)}
-                checked={selectedOption === index}
-                disabled={readOnly}
+                checked={selectedOption === index} // 선택된 상태 유지
+                disabled={readOnly} // readOnly 상태 처리
               />
-              <label htmlFor={`${problem.id}-choice-${index}`}>{choice}</label>
+              <label htmlFor={`choice-${problem.id}-${index}`}>{choice}</label>
             </li>
           )
         )}
@@ -134,6 +142,11 @@ const MultipleChoiceContainer = styled.div`
   input[type="radio"]:checked {
     border: 0.5em solid
       ${(props) => (props.isDoubleClicked ? COLORS.SECONDARY : COLORS.PRIMARY)};
+  }
+
+  input[type="radio"]:checked:disabled {
+    background-color: ${COLORS.PRIMARY}; /* 선택된 상태 배경 */
+    border-color: blue; /* 선택된 상태 테두리 */
   }
 
   input[type="radio"]:focus-visible {

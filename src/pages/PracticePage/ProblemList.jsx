@@ -23,7 +23,8 @@ const ProblemList = ({ problems, title = "문제 목록" }) => {
         <ProblemUl>
           {problems.map((problem) => (
             <ProblemLi key={problem.id}>
-              <ProblemTitle>{`Q.${problem.number}`}</ProblemTitle>
+              {/* 문제 번호 렌더링 */}
+              <ProblemTitle>Q.{problem.number}</ProblemTitle>
               {problem.isDoubleClicked ? (
                 <Icon
                   src={confusedIcon}
@@ -41,9 +42,9 @@ const ProblemList = ({ problems, title = "문제 목록" }) => {
               )}
               {window.location.href.includes("grading-results") ? (
                 <Icon
-                  src={problem.is_correct ? correctIcon : wrongIcon}
-                  alt={problem.is_correct ? "정답" : "오답"}
-                  aria-label={problem.is_correct ? "정답 표시" : "오답 표시"}
+                  src={problem.isCorrect ? correctIcon : wrongIcon}
+                  alt={problem.isCorrect ? "정답" : "오답"}
+                  aria-label={problem.isCorrect ? "정답 표시" : "오답 표시"}
                   isVisible={true}
                 />
               ) : null}

@@ -93,14 +93,19 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
+    // 디버깅용 로그
+    console.log("문제 ID:", problemId);
+    console.log("해결 여부 (isSolved):", isSolved);
+    console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
+    console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
+
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.id === problemId
-          ? { ...problem, userAnswer: selectedAnswer } // userAnswer 업데이트
+          ? { ...problem, userAnswer: selectedAnswer }
           : problem
       )
     );
-
     setSolvedProblems((prev) => {
       const newSet = new Set(prev);
       if (isSolved) {
@@ -130,7 +135,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     );
   };
 
-  // 채점 요청 API 호출
   const submitAnswers = async () => {
     const token = localStorage.getItem("accessToken"); // 인증 토큰 가져오기
     if (!token) {
@@ -157,11 +161,17 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
               },
             }
           );
-          return data;
+          return {
+            ...problem, // 문제 데이터 포함
+            ...data, // API 응답 데이터 병합
+          };
         })
       );
 
-      navigate("/grading-results", { state: { problems: responses } });
+      // 문제 데이터를 채점 결과 페이지로 전달
+      navigate("/grading-results", {
+        state: { problems: responses },
+      });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);
       alert("채점 요청 중 오류가 발생했습니다.");
