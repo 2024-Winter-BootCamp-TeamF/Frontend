@@ -10,7 +10,6 @@ import characater from "../images/character.png";
 
 const UploadPage = () => {
   const [lectureFiles, setLectureFiles] = useState([]);
-  const [problemFiles, setProblemFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 

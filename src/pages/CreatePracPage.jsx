@@ -15,6 +15,8 @@ function CreatePracPage() {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [showModal, setShowModal] = useState(false); // showModal 상태 추가
+  const [showFileCountModal, setShowFileCountModal] = useState(false);
+  const [fileCount, setFileCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -77,8 +79,8 @@ function CreatePracPage() {
         data: formData,
       });
       console.log(response.data);
-
-      setShowModal(true);
+      setFileCount(problemFiles.length); // 업로드한 파일 개수 설정
+      setShowFileCountModal(true); // 파일 개수 확인 모달 띄우기
     } catch (error) {
       if (error.response) {
         console.error(
@@ -134,6 +136,31 @@ function CreatePracPage() {
     }
   };
 
+  const handleConfirmFileCount = async () => {
+    const token = localStorage.getItem("accessToken"); // 인증 토큰 가져오기
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.request({
+        method: "POST",
+        url: "/celery/pinecone/",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("API 호출 성공:", response.data);
+      setShowFileCountModal(false); // 파일 개수 모달 숨기기
+      setShowModal(true); // 토픽 및 Top K 입력 모달 띄우기
+    } catch (error) {
+      console.error("API 호출 실패:", error);
+      alert("파일 처리 중 오류가 발생했습니다.");
+    } finally {
+      setShowFileCountModal(false);
+    }
+  };
+
   return (
     <Container>
       <Header />
@@ -169,7 +196,7 @@ function CreatePracPage() {
             {problemFiles.length > 0 && (
               <FileList>
                 {problemFiles.map((file, index) => (
-                  <FileItem key={index}>
+                  <FileItem key={`problem-${file.name}-${index}`}>
                     <FileName>{file.name}</FileName>
                     <RemoveFileButton
                       onClick={(e) => {
@@ -210,6 +237,23 @@ function CreatePracPage() {
           </LoadingContent>
         </LoadingModal>
       )}
+      {showFileCountModal && (
+        <Modal>
+          <ModalContentWrapper>
+            <FileModalContent>
+              <CharacterWrapper>
+                <img src={character} alt="chracter" />
+              </CharacterWrapper>
+              <TextWrapper>{fileCount}개 파일 업로드 성공!</TextWrapper>
+            </FileModalContent>
+            <ButtonContainer>
+              <StyledExButton variant="filled" onClick={handleConfirmFileCount}>
+                다음
+              </StyledExButton>
+            </ButtonContainer>
+          </ModalContentWrapper>
+        </Modal>
+      )}
 
       {showModal && (
         <Modal>
@@ -219,7 +263,7 @@ function CreatePracPage() {
               <CharacterWrapper>
                 <img src={character} alt="chracter" />
               </CharacterWrapper>
-              <TextWrapper>파일 업로드가 완료되었습니다!</TextWrapper>
+              <TextWrapper>이제 문제를 만들어볼까요?</TextWrapper>
             </ModalContent>
             <ButtonContainer>
               <StyledExButton
@@ -444,6 +488,14 @@ const Modal = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+`;
+
+const FileModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 `;
 
 const ModalContentWrapper = styled.div`
