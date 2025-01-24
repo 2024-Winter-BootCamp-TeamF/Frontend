@@ -193,7 +193,7 @@ const UploadPage = () => {
               <CharacterSection>
                 <img src={characater} alt="character" />
               </CharacterSection>
-              <p>{fileCount}개 파일 업로드 성공!</p>
+              <p>총 {fileCount}개의 파일이 정상적으로 업로드되었습니다!</p>
               <ExButton variant="filled" onClick={handleConfirmFileCount}>
                 확인
               </ExButton>
