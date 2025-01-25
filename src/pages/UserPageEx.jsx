@@ -12,6 +12,22 @@ const UserPageEx = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 템플릿 데이터 불러오기
+    const storedTemplates = JSON.parse(localStorage.getItem("templates")) || [];
+    setTemplates(storedTemplates);
+  }, []);
+
+  const handleDeleteTemplate = (templateId) => {
+    const updatedTemplates = templates.filter(
+      (template) => template.templateId !== templateId
+    );
+    setTemplates(updatedTemplates);
+    localStorage.setItem("templates", JSON.stringify(updatedTemplates));
+    alert("추가 연습 문제 템플릿이 삭제되었습니다.");
+  };
 
   const handleDelete = async (template) => {
     const confirmDelete = window.confirm(
@@ -165,6 +181,34 @@ const UserPageEx = () => {
             </Card>
           );
         })}
+
+        {templates.map((template) => (
+          <Card
+            key={template.templateId}
+            onClick={() => {
+              console.log("추가 연습 문제 템플릿:", template);
+              navigate("/morepractice", {
+                state: { problems: template.questions },
+              });
+            }}
+          >
+            <DeleteButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteTemplate(template.templateId);
+              }}
+            >
+              <img src={DeleteIcon} alt="삭제" />
+            </DeleteButton>
+            <IconWrapper>
+              <img src={ExIcon} alt="추가 연습 문제" />
+            </IconWrapper>
+            <CardText>
+              {template.templateName}
+              <DateText>생성 날짜: {new Date().toLocaleDateString()}</DateText>
+            </CardText>
+          </Card>
+        ))}
       </Content>
       <Footer />
     </Container>
