@@ -20,10 +20,13 @@ const formatDate = (dateString) => {
 };
 
 const generateCardTitle = (note) => {
-  const topic = note.topics?.[0] || "기본"; // note 데이터에서 첫 번째 topic 가져오기
+  if (note.title) {
+    // 추가 오답노트의 이름 사용
+    return note.title;
+  }
+  const topic = note.topics?.[0] || "기본"; // 일반 오답노트의 첫 번째 topic 사용
   return `${topic}_오답노트`;
 };
-
 const UserPageNote = () => {
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
