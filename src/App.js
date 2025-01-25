@@ -10,6 +10,7 @@ import "./App.css";
 import UploadPage from "./pages/UploadPage";
 import ProblemContent from "./pages/PracticePage/ProblemContent";
 import WrongAnswer from "./pages/NotePage/WrongAnswer";
+import MoreWrongAnswer from "./pages/MorePracticePage/MoreWrongAnswer";
 import MoreProblemContent from "./pages/MorePracticePage/MoreProblemContent";
 
 // 마이페이지 관련 임포트
@@ -24,6 +25,7 @@ import AdditionalCompletePage from "./pages/AdditionalCompletePage";
 import CheckCompletePage from "./pages/CheckCompletePage";
 import PracticeCompletePage from "./pages/PracticeCompletePage";
 import GradingResults from "./pages/GradingResults";
+import MoreGradingResults from "./pages/MorePracticePage/MoreGradingResults";
 import CreatePracPage from "./pages/CreatePracPage";
 
 function App() {
@@ -34,9 +36,14 @@ function App() {
         <Routes>
           {/* 기존 라우트 */}
           <Route path="/grading-results" element={<GradingResults />} />
+          <Route
+            path="/more-grading-results"
+            element={<MoreGradingResults />}
+          />
           <Route path="/practice" element={<ProblemContent />} />
           <Route path="/morepractice" element={<MoreProblemContent />} />
           <Route path="/note" element={<WrongAnswer />} />
+          <Route path="/morenote" element={<MoreWrongAnswer />} />
 
           {/* 새로운 라우트 */}
 

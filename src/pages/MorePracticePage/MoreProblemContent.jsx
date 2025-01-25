@@ -181,7 +181,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       });
 
       // 문제 데이터를 채점 결과 페이지로 전달
-      navigate("/grading-results", {
+      navigate("/more-grading-results", {
         state: { problems: responses, firstTopic },
       });
     } catch (error) {

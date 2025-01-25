@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addIcon from "../images/add.png";
 import ExIcon from "../images/mypage_practice.png";
+import MoreExIcon from "../images/mypage_morepractice.png";
 import DeleteIcon from "../images/delete.png"; // 삭제 아이콘 추가
 import ExButton from "../components/ExButton";
 import Header from "../components/Header";
@@ -13,6 +14,7 @@ const UserPageEx = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
+  const [sortedTemplates, setSortedTemplates] = useState([]);
 
   useEffect(() => {
     // 로컬 스토리지에서 템플릿 데이터 불러오기
@@ -117,18 +119,41 @@ const UserPageEx = () => {
   }, []);
 
   const getFormattedDate = (dateString) => {
+    if (!dateString) return "날짜 없음"; // 날짜 데이터가 없을 경우 기본값
     const date = new Date(dateString);
-    const yearMonthDay = `${date.getFullYear()}.${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-    const hourMinute = `${String(date.getHours()).padStart(2, "0")}:${String(
-      date.getMinutes()
-    ).padStart(2, "0")}`;
-    return { yearMonthDay, hourMinute };
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // 월 2자리
+    const day = String(date.getDate()).padStart(2, "0"); // 일 2자리
+    const hour = String(date.getHours()).padStart(2, "0"); // 시 2자리
+    const minute = String(date.getMinutes()).padStart(2, "0"); // 분 2자리
+    return `${year}.${month}.${day} ${hour}:${minute}`;
   };
-  if (loading) {
-    return <p>로딩 중...</p>;
-  }
+
+  useEffect(() => {
+    const combineAndSortData = () => {
+      const generalTemplates = questions.map((template) => ({
+        type: "general",
+        title: `${template[0]?.question_topic || "기본"}_연습 문제`,
+        createdAt: new Date(template[0]?.created_at),
+        data: template,
+      }));
+
+      const additionalTemplates = templates.map((template) => ({
+        type: "additional",
+        title: template.title,
+        createdAt: new Date(template.id),
+        data: template.questions,
+      }));
+
+      const combinedData = [...generalTemplates, ...additionalTemplates].sort(
+        (a, b) => b.createdAt - a.createdAt
+      );
+
+      setSortedTemplates(combinedData);
+    };
+
+    combineAndSortData();
+  }, [questions, templates]);
 
   return (
     <Container>
@@ -154,62 +179,40 @@ const UserPageEx = () => {
           </AddIconWrapper>
           <CardText>연습 문제 만들기</CardText>
         </Card>
-        {questions.map((template, index) => {
-          const formattedDate = getFormattedDate(template[0]?.created_at); // 날짜와 시간을 포맷팅한 객체
-          const topic = template[0]?.question_topic || "기본"; // 첫 번째 문제의 토픽 가져오기
-          return (
-            <Card
-              key={`topic_${index}`}
-              onClick={() => {
-                console.log("전달할 문제 템플릿:", template);
-                navigate("/practice", { state: { problems: template } });
-              }}
-            >
-              <DeleteButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(template);
-                }}
-              >
-                <img src={DeleteIcon} alt="삭제" />
-              </DeleteButton>
-              <IconWrapper>
-                <img src={ExIcon} alt="연습문제" />
-              </IconWrapper>
-              <CardText>
-                {`${topic}_연습 문제`}
-                <DateText>
-                  {formattedDate.yearMonthDay} {formattedDate.hourMinute}
-                </DateText>
-              </CardText>
-            </Card>
-          );
-        })}
-
-        {templates.map((template) => (
+        {sortedTemplates.map((item, index) => (
           <Card
-            key={template.templateId}
+            key={index}
             onClick={() => {
-              console.log("추가 연습 문제 템플릿:", template);
-              navigate("/morepractice", {
-                state: { problems: template.questions },
-              });
+              if (item.type === "general") {
+                navigate("/practice", { state: { problems: item.data } });
+              } else if (item.type === "additional") {
+                navigate("/morepractice", { state: { problems: item.data } });
+              }
             }}
           >
             <DeleteButton
               onClick={(e) => {
                 e.stopPropagation();
-                handleDeleteTemplate(template.id);
+                if (item.type === "general") {
+                  handleDelete(item.data);
+                } else if (item.type === "additional") {
+                  handleDeleteTemplate(item.data.id);
+                }
               }}
             >
               <img src={DeleteIcon} alt="삭제" />
             </DeleteButton>
             <IconWrapper>
-              <img src={ExIcon} alt="추가 연습 문제" />
+              <img
+                src={item.type === "general" ? ExIcon : MoreExIcon} // 일반은 ExIcon, 추가는 MoreExIcon
+                alt={
+                  item.type === "general" ? "일반 연습 문제" : "추가 연습 문제"
+                }
+              />
             </IconWrapper>
             <CardText>
-              {template.title}
-              <DateText>생성 날짜: {new Date().toLocaleDateString()}</DateText>
+              {item.title}
+              <DateText>{getFormattedDate(item.createdAt)}</DateText>
             </CardText>
           </Card>
         ))}
