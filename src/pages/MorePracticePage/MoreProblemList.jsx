@@ -15,7 +15,7 @@ const SIZES = {
   TITLE: "24px",
 };
 
-const ProblemList = ({ problems, title = "문제 목록" }) => {
+const MoreProblemList = ({ problems, title = "문제 목록" }) => {
   return (
     <Container>
       <ProblemListContainer>
@@ -56,7 +56,7 @@ const ProblemList = ({ problems, title = "문제 목록" }) => {
   );
 };
 
-ProblemList.propTypes = {
+MoreProblemList.propTypes = {
   problems: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -136,4 +136,4 @@ const Icon = styled.img`
   transition: opacity 0.3s ease;
 `;
 
-export default ProblemList;
+export default MoreProblemList;

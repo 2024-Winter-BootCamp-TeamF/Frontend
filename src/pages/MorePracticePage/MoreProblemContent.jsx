@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MultipleChoice from "./MultipleChoice";
-import Subjective from "./Subjective";
+import MoreMultipleChoice from "./MoreMultipleChoice";
+import MoreSubjective from "./MoreSubjective";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import ProblemList from "./ProblemList";
+import MoreProblemList from "./MoreProblemList";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
 import axios from "axios";
 
-const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
+const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [problems, setProblems] = useState([]);
   const [results, setResults] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState(new Set());
@@ -57,7 +57,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     switch (problem.question_type) {
       case "객관식":
         return (
-          <MultipleChoice
+          <MoreMultipleChoice
             key={problem.id}
             number={problem.number} // 문제 번호 전달
             problem={{
@@ -72,7 +72,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         );
       case "주관식":
         return (
-          <Subjective
+          <MoreSubjective
             key={problem.id}
             number={problem.number} // 문제 번호 전달
             problem={{
@@ -211,7 +211,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList problems={problemsWithStatus} />
+            <MoreProblemList problems={problemsWithStatus} />
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
@@ -290,16 +290,16 @@ const ButtonWrapper = styled.div`
   margin: 50px;
 `;
 
-ProblemContent.propTypes = {
+MoreProblemContent.propTypes = {
   onButtonClick: PropTypes.func,
   readOnly: PropTypes.bool,
   onProblemSolved: PropTypes.func,
 };
 
-ProblemContent.defaultProps = {
+MoreProblemContent.defaultProps = {
   onButtonClick: () => {},
   readOnly: false,
   onProblemSolved: () => {},
 };
 
-export default ProblemContent;
+export default MoreProblemContent;

@@ -11,7 +11,7 @@ const COLORS = {
 };
 
 // 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
-const Subjective = ({
+const MoreSubjective = ({
   number,
   problem,
   readOnly,
@@ -73,7 +73,7 @@ const Subjective = ({
   );
 };
 
-Subjective.propTypes = {
+MoreSubjective.propTypes = {
   number: PropTypes.number.isRequired, // number를 필수로 설정
   problem: PropTypes.shape({
     id: PropTypes.string,
@@ -129,4 +129,4 @@ const Input = styled.input`
   }
 `;
 
-export default Subjective;
+export default MoreSubjective;

@@ -10,7 +10,7 @@ const COLORS = {
   BACKGROUND: "#ffffff",
 };
 
-const MultipleChoice = ({
+const MoreMultipleChoice = ({
   number,
   problem,
   readOnly,
@@ -93,7 +93,7 @@ const MultipleChoice = ({
   );
 };
 
-MultipleChoice.propTypes = {
+MoreMultipleChoice.propTypes = {
   number: PropTypes.number.isRequired,
   problem: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -189,4 +189,4 @@ const Content = styled.p`
   text-align: left;
 `;
 
-export default MultipleChoice;
+export default MoreMultipleChoice;
