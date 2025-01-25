@@ -138,17 +138,15 @@ const CharacterSection = styled.div`
 const AnimatedText = styled.span`
   display: inline-block;
   opacity: 0;
-  animation: fadeInUp 1s ease forwards;
+  animation: fadeIn 1s ease forwards;
   animation-delay: ${props => props.delay || '0s'};
 
-  @keyframes fadeInUp {
+  @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
     }
   }
 
