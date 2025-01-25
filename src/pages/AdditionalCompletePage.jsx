@@ -36,12 +36,8 @@ const AdditionalCompletePage = () => {
         </CommentSection>
         <ButtonSection>
           <SolveButton
-            onClick={handlePracticeClick}
-            children={`지금이라면 다 맞을 수 있어\n추가 연습 문제 풀어보기`}
-          />
-          <SolveButton
             onClick={handleMyPageClick}
-            children={`공부를 조금 더... 해볼까...?\n마이페이지로 이동하기`}
+            children={`마이페이지에서 생성된 추가 연습 문제를 풀어보세요!\n마이페이지로 이동하기`}
           />
         </ButtonSection>
       </CompleteInfoWrapper>

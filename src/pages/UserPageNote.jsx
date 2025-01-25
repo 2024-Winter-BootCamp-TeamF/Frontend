@@ -21,9 +21,9 @@ const formatDate = (dateString) => {
 };
 
 const generateCardTitle = (note) => {
-  if (note.title) {
+  if (note.name) {
     // 추가 오답노트의 이름 사용
-    return note.title;
+    return note.name;
   }
   const topic = note.topics?.[0] || "기본"; // 일반 오답노트의 첫 번째 topic 사용
   return `${topic}_오답노트`;

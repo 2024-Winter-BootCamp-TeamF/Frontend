@@ -73,7 +73,7 @@ const MoreGradingResults = () => {
       number: problem.number,
       userAnswer: problem.user_answer || "",
       isCorrect,
-      questionText: problem.question_text || "질문 없음",
+      questionText: problem.question || "질문 없음",
       correctAnswer: problem.correct_answer || "",
       choices: problem.choices || [],
     };
