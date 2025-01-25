@@ -36,7 +36,7 @@ const MoreGradingResults = () => {
 
     const newNote = {
       id: Date.now(),
-      title: noteTitle,
+      name: noteTitle,
       date: new Date().toISOString(),
       topics,
       problems,

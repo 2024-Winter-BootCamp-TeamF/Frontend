@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import NoteIcon from "../images/mypage_note.png";
+import MoreNoteIcon from "../images/mypage_morenote.png";
 import DeleteIcon from "../images/delete.png";
 import ExButton from "../components/ExButton";
 import Header from "../components/Header";
@@ -80,7 +81,10 @@ const UserPageNote = () => {
               <img src={DeleteIcon} alt="삭제" />
             </DeleteButton>
             <IconWrapper>
-              <img src={NoteIcon} alt="오답노트" />
+              <img
+                src={note.name ? MoreNoteIcon : NoteIcon} // 추가 오답노트는 MoreNoteIcon, 일반은 NoteIcon
+                alt={note.name ? "추가 오답노트" : "일반 오답노트"}
+              />{" "}
             </IconWrapper>
             <CardText>
               {generateCardTitle(note)}
