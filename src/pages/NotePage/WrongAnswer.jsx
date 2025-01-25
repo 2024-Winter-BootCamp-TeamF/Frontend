@@ -28,8 +28,39 @@ function WrongAnswer() {
     }
   }, [responses]);
 
-  const handleAddButtonClick = () => {
-    navigate("/AddComplete");
+  const handleAddButtonClick = async () => {
+    try {
+      // 로컬 스토리지에서 토큰 가져오기
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        alert("인증 토큰이 없습니다. 다시 로그인해주세요.");
+        navigate("/login"); // 로그인 페이지로 이동
+        return;
+      }
+
+      // API 호출
+      const response = await axiosInstance.post(
+        "/morequestion/create/",
+        {
+          incorrect_question_ids: responses
+            .filter((response) => !response.is_correct)
+            .map((response) => response.question_id),
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      console.log("추가 연습 문제 생성 완료:", response.data);
+      alert("추가 연습 문제가 생성되었습니다.");
+      navigate("/mypage/note"); // 성공 시 AddComplete 페이지로 이동
+    } catch (error) {
+      console.error("추가 연습 문제 생성 오류:", error);
+      alert("추가 연습 문제 생성에 실패했습니다.");
+    }
   };
 
   const handlePageButtonClick = () => {
@@ -160,28 +191,6 @@ const ExplanationCard = styled.div`
 const ExplanationText = styled.p`
   margin-top: 10px;
   font-size: 16px;
-`;
-
-const DownloadButton = styled.button`
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #5887f4;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  font-family: "HakgyoansimAllimjangTTF-R";
-  font-size: 16px;
-
-  &:hover {
-    background-color: #fff;
-    color: #5887f4;
-    border: 1px solid #5887f4;
-    transition: all 0.1s ease;
-  }
 `;
 
 const WrongAnswerWrapper = styled.div`

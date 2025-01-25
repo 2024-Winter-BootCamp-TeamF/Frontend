@@ -10,7 +10,6 @@ import "./App.css";
 import UploadPage from "./pages/UploadPage";
 import ProblemContent from "./pages/PracticePage/ProblemContent";
 import WrongAnswer from "./pages/NotePage/WrongAnswer";
-import { problems } from "./pages/PracticePage/data";
 
 // 마이페이지 관련 임포트
 import UserPageSample from "./pages/UserPageSample";
@@ -34,10 +33,7 @@ function App() {
         <Routes>
           {/* 기존 라우트 */}
           <Route path="/grading-results" element={<GradingResults />} />
-          <Route
-            path="/practice"
-            element={<ProblemContent problems={problems} />}
-          />
+          <Route path="/practice" element={<ProblemContent />} />
           <Route path="/note" element={<WrongAnswer />} />
 
           {/* 새로운 라우트 */}
@@ -48,11 +44,6 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/upload" element={<UploadPage />} />
-          <Route path="/users/:userId">
-            <Route path="summary" element={<UserPageSample />} />
-            <Route path="practice" element={<UserPageEx />} />
-            <Route path="notes" element={<UserPageNote />} />
-          </Route>
           <Route path="mypage/summary" element={<UserPageSample />} />
           <Route path="mypage/practice" element={<UserPageEx />} />
           <Route path="mypage/note" element={<UserPageNote />} />
