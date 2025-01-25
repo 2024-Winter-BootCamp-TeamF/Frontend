@@ -28,38 +28,53 @@ function WrongAnswer() {
     }
   }, [responses]);
 
-  const handleAddButtonClick = () => {
+  const handleAddButtonClick = async () => {
     try {
-      // 기존 템플릿 데이터를 로컬 스토리지에서 가져오기
-      const storedTemplates =
-        JSON.parse(localStorage.getItem("templates")) || [];
+      // 로컬 스토리지에서 토큰 가져오기
+      const token = localStorage.getItem("accessToken");
 
-      // 새로운 템플릿 데이터 생성
-      const newTemplate = {
-        templateId: `template_${Date.now()}`, // 고유 ID 생성
-        templateName: "내 추가 연습 문제 템플릿",
-        questions: responses
-          .filter((response) => !response.is_correct)
-          .map((response) => ({
-            questionId: response.question_id,
-            questionText: response.question_text,
-            userAnswer: response.user_answer,
-            correctAnswer: response.correct_answer,
-            explanation: response.explanation,
-          })),
+      if (!token) {
+        alert("인증 토큰이 없습니다. 다시 로그인해주세요.");
+        navigate("/login"); // 로그인 페이지로 이동
+        return;
+      }
+
+      // API 호출
+      const response = await axiosInstance.post(
+        "/morequestion/create/",
+        {
+          incorrect_question_ids: responses
+            .filter((response) => !response.is_correct)
+            .map((response) => response.question_id),
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      const generatedQuestions = response.data.generated_multiple_choices;
+
+      // 템플릿으로 변환 후 로컬스토리지에 저장
+      const template = {
+        id: new Date().toISOString(), // 고유 ID 생성
+        title: "추가 연습 문제", // 원하는 제목
+        questions: generatedQuestions,
       };
 
-      // 템플릿 데이터를 기존 데이터에 추가
-      const updatedTemplates = [...storedTemplates, newTemplate];
+      const existingTemplates =
+        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
+      localStorage.setItem(
+        "practiceTemplates",
+        JSON.stringify([...existingTemplates, template])
+      );
 
-      // 로컬 스토리지에 저장
-      localStorage.setItem("templates", JSON.stringify(updatedTemplates));
-
-      alert("추가 연습 문제 템플릿이 생성되었습니다.");
-      navigate("/mypage/note");
+      alert("추가 연습 문제가 생성되었습니다.");
+      navigate("/addcomplete"); // 성공 시 AddComplete 페이지로 이동
     } catch (error) {
-      console.error("템플릿 생성 오류:", error);
-      alert("템플릿 생성 중 오류가 발생했습니다.");
+      console.error("추가 연습 문제 생성 오류:", error);
+      alert("추가 연습 문제 생성에 실패했습니다.");
     }
   };
 
