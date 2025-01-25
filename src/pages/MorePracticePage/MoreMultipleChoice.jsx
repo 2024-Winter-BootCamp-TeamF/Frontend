@@ -31,7 +31,7 @@ const MoreMultipleChoice = ({
       problem.id,
       selectedOption !== null, // isSolved
       newDoubleClickState, // isDoubleClicked
-      problem.choices[selectedOption] // 선택한 정답 전달
+      problem.choices[problem.selectedOption] // 선택한 정답 전달
     );
   };
 

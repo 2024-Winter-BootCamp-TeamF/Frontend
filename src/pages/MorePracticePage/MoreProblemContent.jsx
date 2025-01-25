@@ -32,7 +32,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         ...problem,
         number: index + 1, // 문제 번호 설정
         userAnswer: "",
-        topic: problem.question_topic, // question_topic을 topic으로 매핑
+        topic: problem.topic || problem.question_topic || "기본", // topic 필드 처리
       }));
       setProblems(formattedProblems);
       console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
@@ -54,17 +54,18 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   }, [problems]);
 
   const renderProblem = (problem) => {
-    switch (problem.question_type) {
+    switch (problem.type) {
       case "객관식":
         return (
           <MoreMultipleChoice
-            key={problem.id}
+            key={problem.question_id}
             number={problem.number} // 문제 번호 전달
             problem={{
-              id: problem.id,
-              question: problem.question_text,
+              id: problem.question_id,
+              question: problem.question,
               choices: problem.choices,
               correctAnswer: problem.answer,
+              topic: problem.topic,
             }}
             readOnly={readOnly}
             onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
@@ -73,12 +74,13 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       case "주관식":
         return (
           <MoreSubjective
-            key={problem.id}
+            key={problem.question_id}
             number={problem.number} // 문제 번호 전달
             problem={{
-              id: problem.id,
-              question: problem.question_text,
+              id: problem.question_id,
+              question: problem.question,
               correctAnswer: problem.answer,
+              topic: problem.topic,
             }}
             readOnly={readOnly}
             onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
@@ -89,7 +91,6 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     }
   };
 
-  // 문제 해결 상태 업데이트
   const handleProblemSolved = (
     problemId,
     isSolved,
@@ -104,7 +105,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
 
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
-        problem.id === problemId
+        problem.question_id === problemId
           ? { ...problem, userAnswer: selectedAnswer }
           : problem
       )
@@ -134,7 +135,8 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const areAllProblemsAnswered = () => {
     return problems.every(
       (problem) =>
-        solvedProblems.has(problem.id) || doubleClickedProblems.has(problem.id)
+        solvedProblems.has(problem.question_id) ||
+        doubleClickedProblems.has(problem.id)
     );
   };
 
@@ -149,7 +151,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       const responses = await Promise.all(
         problems.map(async (problem) => {
           const payload = {
-            question_id: problem.id,
+            question_id: problem.question_id,
             user_answer: problem.userAnswer || "",
           };
 
@@ -199,10 +201,11 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
 
   const problemsWithStatus = problems.map((problem) => ({
     ...problem,
-    isSolved: solvedProblems.has(problem.id),
-    isDoubleClicked: doubleClickedProblems.has(problem.id),
+    isSolved: solvedProblems.has(problem.question_id),
+    isDoubleClicked: doubleClickedProblems.has(problem.question_id),
     isCorrect:
-      results.find((result) => result.id === problem.id)?.isCorrect || false,
+      results.find((result) => result.question_id === problem.question_id)
+        ?.isCorrect || false,
   }));
 
   return (
