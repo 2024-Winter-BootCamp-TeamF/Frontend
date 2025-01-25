@@ -12,7 +12,7 @@ const Header = ({ isMain }) => {
     const username = localStorage.getItem("username");
 
     if (isLoggedIn && username) {
-      navigate(`/users/${username}/summary`);
+      navigate(`/mypage/summary`);
     } else {
       navigate("/login");
     }

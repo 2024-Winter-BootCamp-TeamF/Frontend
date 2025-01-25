@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import NoteIcon from "../images/mypage_note.png";
+import MoreNoteIcon from "../images/mypage_morenote.png";
 import DeleteIcon from "../images/delete.png";
 import ExButton from "../components/ExButton";
 import Header from "../components/Header";
@@ -20,10 +21,13 @@ const formatDate = (dateString) => {
 };
 
 const generateCardTitle = (note) => {
-  const topic = note.topics?.[0] || "기본"; // note 데이터에서 첫 번째 topic 가져오기
+  if (note.name) {
+    // 추가 오답노트의 이름 사용
+    return note.name;
+  }
+  const topic = note.topics?.[0] || "기본"; // 일반 오답노트의 첫 번째 topic 사용
   return `${topic}_오답노트`;
 };
-
 const UserPageNote = () => {
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
@@ -77,7 +81,10 @@ const UserPageNote = () => {
               <img src={DeleteIcon} alt="삭제" />
             </DeleteButton>
             <IconWrapper>
-              <img src={NoteIcon} alt="오답노트" />
+              <img
+                src={note.name ? MoreNoteIcon : NoteIcon} // 추가 오답노트는 MoreNoteIcon, 일반은 NoteIcon
+                alt={note.name ? "추가 오답노트" : "일반 오답노트"}
+              />{" "}
             </IconWrapper>
             <CardText>
               {generateCardTitle(note)}
