@@ -16,7 +16,7 @@ const UserPageEx = () => {
   const [templates, setTemplates] = useState([]);
   const [sortedTemplates, setSortedTemplates] = useState([]);
 
-  useEffect(() => {
+  useEffect((id) => {
     // 로컬 스토리지에서 템플릿 데이터 불러오기
     const storedTemplates =
       JSON.parse(localStorage.getItem("practiceTemplates")) || [];
@@ -30,8 +30,10 @@ const UserPageEx = () => {
     if (!confirmDelete) return;
 
     const updatedTemplates = templates.filter((template) => template.id !== id);
+    console.log("삭제 후 템플릿들:", updatedTemplates);
+
     setTemplates(updatedTemplates);
-    localStorage.setItem("templates", JSON.stringify(updatedTemplates));
+    localStorage.setItem("practiceTemplates", JSON.stringify(updatedTemplates));
     alert("추가 연습 문제 템플릿이 삭제되었습니다.");
   };
 
@@ -143,6 +145,7 @@ const UserPageEx = () => {
         title: template.title,
         createdAt: new Date(template.id),
         data: template.questions,
+        id: template.id,
       }));
 
       const combinedData = [...generalTemplates, ...additionalTemplates].sort(
@@ -196,7 +199,7 @@ const UserPageEx = () => {
                 if (item.type === "general") {
                   handleDelete(item.data);
                 } else if (item.type === "additional") {
-                  handleDeleteTemplate(item.data.id);
+                  handleDeleteTemplate(item.id);
                 }
               }}
             >

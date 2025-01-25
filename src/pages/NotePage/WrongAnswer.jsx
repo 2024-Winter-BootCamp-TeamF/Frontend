@@ -11,6 +11,7 @@ function WrongAnswer() {
   const navigate = useNavigate();
   const location = useLocation();
   const [responses, setResponses] = useState(location.state?.problems || []);
+  
 
   // API 호출 (필요한 경우)
   useEffect(() => {
