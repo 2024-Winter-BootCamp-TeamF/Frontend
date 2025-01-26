@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Header from "../components/Header";
-import ProblemList from "../pages/PracticePage/ProblemList";
-import MultipleChoice from "../pages/PracticePage/MultipleChoice";
-import Subjective from "../pages/PracticePage/Subjective";
-import SolveButton from "../components/SolveButton";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import MoreProblemList from "../MorePracticePage/MoreProblemList";
+import MoreMultipleChoice from "../MorePracticePage/MoreMultipleChoice";
+import MoreSubjective from "../MorePracticePage/MoreSubjective";
+import SolveButton from "../../components/SolveButton";
+import Footer from "../../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const GradingResults = () => {
+const MoreGradingResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -32,11 +32,11 @@ const GradingResults = () => {
 
   const saveNote = (topics, problems) => {
     // topics 배열에서 첫 번째 값을 가져와 제목 생성
-    const noteTitle = `${firstTopic}_오답노트`;
+    const noteTitle = `${firstTopic}_추가 오답노트`;
 
     const newNote = {
       id: Date.now(),
-      title: noteTitle,
+      name: noteTitle,
       date: new Date().toISOString(),
       topics,
       problems,
@@ -58,7 +58,7 @@ const GradingResults = () => {
 
   const handleSolveButtonClick = () => {
     saveNote([firstTopic], problems); // 오답노트 저장 호출
-    navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
+    navigate("/morenote", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
   };
 
   // 문제와 채점 결과 매칭
@@ -73,7 +73,7 @@ const GradingResults = () => {
       number: problem.number,
       userAnswer: problem.user_answer || "",
       isCorrect,
-      questionText: problem.question_text || "질문 없음",
+      questionText: problem.question || "질문 없음",
       correctAnswer: problem.correct_answer || "",
       choices: problem.choices || [],
     };
@@ -85,7 +85,7 @@ const GradingResults = () => {
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList
+            <MoreProblemList
               problems={updatedProblems.map((problem) => {
                 return {
                   number: problem.number,
@@ -126,7 +126,7 @@ const GradingResults = () => {
                     onDoubleClick={() => handleDoubleClick(problem.question_id)}
                   >
                     {problem.question_type === "객관식" ? (
-                      <MultipleChoice
+                      <MoreMultipleChoice
                         problem={{
                           id: problem.question_id,
                           question: problem.questionText,
@@ -144,7 +144,7 @@ const GradingResults = () => {
                         isGraded={isGraded} // 채점 상태 추가 전달
                       />
                     ) : (
-                      <Subjective
+                      <MoreSubjective
                         problem={{
                           id: problem.question_id,
                           question: problem.questionText,
@@ -231,4 +231,4 @@ const ButtonWrapper = styled.div`
   margin-top: 20px;
 `;
 
-export default GradingResults;
+export default MoreGradingResults;

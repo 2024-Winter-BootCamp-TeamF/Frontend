@@ -12,10 +12,20 @@ const UserPageSample = ({ pdfUrl }) => {
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
 
+  // 시간 기준으로 역순 정렬
   useEffect(() => {
     const storedCards = localStorage.getItem("cards");
     if (storedCards) {
-      setCards(JSON.parse(storedCards)); // localStorage에서 카드 불러오기
+      const parsedCards = JSON.parse(storedCards);
+
+      // 시간 기준으로 역순 정렬
+      const sortedCards = parsedCards.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB - dateA; // 최신순 정렬
+      });
+
+      setCards(sortedCards); // 정렬된 데이터를 상태에 저장
     }
   }, []);
 
@@ -38,7 +48,7 @@ const UserPageSample = ({ pdfUrl }) => {
       <Header />
       <Nav>
         <ExButton variant="filled" isActive={true}>
-          요약본 추가하기
+          요약본
         </ExButton>
         <ExButton
           variant="outlined"
@@ -57,7 +67,8 @@ const UserPageSample = ({ pdfUrl }) => {
           </AddIconWrapper>
           <CardText>요약본 만들기</CardText>
         </Card>
-        {cards && cards.length > 0 ? (
+        {cards &&
+          cards.length > 0 &&
           cards.map((card) => (
             <Card key={card.id} onClick={() => handleCardClick(card.id)}>
               <DeleteButton
@@ -76,10 +87,7 @@ const UserPageSample = ({ pdfUrl }) => {
                 <DateText>{card.date}</DateText>
               </CardText>
             </Card>
-          ))
-        ) : (
-          <p>카드가 없습니다.</p>
-        )}
+          ))}
       </Content>
       <Footer />
     </Container>

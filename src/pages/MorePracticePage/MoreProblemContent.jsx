@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MultipleChoice from "./MultipleChoice";
-import Subjective from "./Subjective";
+import MoreMultipleChoice from "./MoreMultipleChoice";
+import MoreSubjective from "./MoreSubjective";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import ProblemList from "./ProblemList";
+import MoreProblemList from "./MoreProblemList";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
 import axios from "axios";
 
-const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
+const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [problems, setProblems] = useState([]);
   const [results, setResults] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState(new Set());
@@ -32,7 +32,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         ...problem,
         number: index + 1, // 문제 번호 설정
         userAnswer: "",
-        topic: problem.question_topic, // question_topic을 topic으로 매핑
+        topic: problem.topic || problem.question_topic || "기본", // topic 필드 처리
       }));
       setProblems(formattedProblems);
       console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
@@ -54,17 +54,18 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   }, [problems]);
 
   const renderProblem = (problem) => {
-    switch (problem.question_type) {
+    switch (problem.type) {
       case "객관식":
         return (
-          <MultipleChoice
-            key={problem.id}
+          <MoreMultipleChoice
+            key={problem.question_id}
             number={problem.number} // 문제 번호 전달
             problem={{
-              id: problem.id,
-              question: problem.question_text,
+              id: problem.question_id,
+              question: problem.question,
               choices: problem.choices,
               correctAnswer: problem.answer,
+              topic: problem.topic,
             }}
             readOnly={readOnly}
             onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
@@ -72,13 +73,14 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         );
       case "주관식":
         return (
-          <Subjective
-            key={problem.id}
+          <MoreSubjective
+            key={problem.question_id}
             number={problem.number} // 문제 번호 전달
             problem={{
-              id: problem.id,
-              question: problem.question_text,
+              id: problem.question_id,
+              question: problem.question,
               correctAnswer: problem.answer,
+              topic: problem.topic,
             }}
             readOnly={readOnly}
             onProblemSolved={handleProblemSolved} // 문제 해결 함수 전달
@@ -89,7 +91,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     }
   };
 
-  // 문제 해결 상태 업데이트
   const handleProblemSolved = (
     problemId,
     isSolved,
@@ -104,7 +105,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
 
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
-        problem.id === problemId
+        problem.question_id === problemId
           ? { ...problem, userAnswer: selectedAnswer }
           : problem
       )
@@ -134,7 +135,8 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const areAllProblemsAnswered = () => {
     return problems.every(
       (problem) =>
-        solvedProblems.has(problem.id) || doubleClickedProblems.has(problem.id)
+        solvedProblems.has(problem.question_id) ||
+        doubleClickedProblems.has(problem.id)
     );
   };
 
@@ -149,14 +151,14 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       const responses = await Promise.all(
         problems.map(async (problem) => {
           const payload = {
-            question_id: problem.id,
+            question_id: problem.question_id,
             user_answer: problem.userAnswer || "",
           };
 
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/question/submit-answer/",
+            "/api/morequestion/submit-answer/",
             payload,
             {
               headers: {
@@ -179,7 +181,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       });
 
       // 문제 데이터를 채점 결과 페이지로 전달
-      navigate("/grading-results", {
+      navigate("/more-grading-results", {
         state: { problems: responses, firstTopic },
       });
     } catch (error) {
@@ -199,10 +201,11 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
 
   const problemsWithStatus = problems.map((problem) => ({
     ...problem,
-    isSolved: solvedProblems.has(problem.id),
-    isDoubleClicked: doubleClickedProblems.has(problem.id),
+    isSolved: solvedProblems.has(problem.question_id),
+    isDoubleClicked: doubleClickedProblems.has(problem.question_id),
     isCorrect:
-      results.find((result) => result.id === problem.id)?.isCorrect || false,
+      results.find((result) => result.question_id === problem.question_id)
+        ?.isCorrect || false,
   }));
 
   return (
@@ -211,7 +214,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       <MainContent>
         <Container>
           <SidebarWrapper>
-            <ProblemList problems={problemsWithStatus} />
+            <MoreProblemList problems={problemsWithStatus} />
           </SidebarWrapper>
           <ContentWrapper>
             <ProblemDetail>
@@ -290,16 +293,16 @@ const ButtonWrapper = styled.div`
   margin: 50px;
 `;
 
-ProblemContent.propTypes = {
+MoreProblemContent.propTypes = {
   onButtonClick: PropTypes.func,
   readOnly: PropTypes.bool,
   onProblemSolved: PropTypes.func,
 };
 
-ProblemContent.defaultProps = {
+MoreProblemContent.defaultProps = {
   onButtonClick: () => {},
   readOnly: false,
   onProblemSolved: () => {},
 };
 
-export default ProblemContent;
+export default MoreProblemContent;

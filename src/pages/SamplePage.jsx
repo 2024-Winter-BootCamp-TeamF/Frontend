@@ -24,7 +24,7 @@ const SamplePage = () => {
   });
 
   const handleTopicsNext = () => {
-    const { topic } = location.state || {};
+    const { topics } = location.state || {};
     navigate("/createpractice", { state: { topics, summaryPDF } });
   };
 
@@ -56,11 +56,23 @@ const SamplePage = () => {
   }, [topK, topics]);
 
   const handleCreateCard = () => {
+    // 현재 날짜와 시간을 형식에 맞게 생성
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(
+      now.getHours()
+    ).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+    // topics를 기반으로 제목 구성
+    const topicsTitle = topics ? `${topics.join(", ")}_요약본` : "요약본";
+
     const newCard = {
       id: cards.length + 1, // 카드 ID 생성
-      title: "새로운 카드 제목", // 기본 제목
-      date: new Date().toLocaleDateString(), // 현재 날짜
+      title: `${topicsTitle}`, // topics 기반 제목 생성
+      date: formattedDate, // 생성된 날짜 및 시간
       pdfUrl: summaryPDF, // PDF URL
+      topics: topics || [], // topics 추가
     };
 
     handleAddCard(newCard); // 새로운 카드 추가
@@ -69,8 +81,16 @@ const SamplePage = () => {
   const handleAddCard = (newCard) => {
     setCards((prevCards) => {
       const updatedCards = [...prevCards, newCard]; // 새로운 카드 추가
+
+      // 시간 기준으로 역순 정렬
+      updatedCards.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB - dateA; // 최신순 정렬
+      });
+
       localStorage.setItem("cards", JSON.stringify(updatedCards)); // localStorage에 카드 저장
-      console.log("새로운 카드 추가:", newCard); // 콘솔에 카드 정보 출력
+
       return updatedCards;
     });
   };
