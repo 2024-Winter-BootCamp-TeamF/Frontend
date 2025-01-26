@@ -56,8 +56,13 @@ const GradingResults = () => {
     );
   };
 
+  const saveGradingResults = (problems) => {
+    localStorage.setItem("gradedProblems", JSON.stringify(problems));
+  };
+
   const handleSolveButtonClick = () => {
     saveNote([firstTopic], problems); // 오답노트 저장 호출
+    saveGradingResults(problems); // 채점 결과를 로컬 스토리지에 저장
     navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
   };
 
