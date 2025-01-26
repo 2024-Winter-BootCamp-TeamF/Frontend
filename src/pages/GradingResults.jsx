@@ -30,7 +30,7 @@ const GradingResults = () => {
     }));
   };
 
-  const saveNote = (topics, problems) => {
+  const saveNote = (topics, problems, confusedAnswers) => {
     // topics 배열에서 첫 번째 값을 가져와 제목 생성
     const noteTitle = `${firstTopic}_오답노트`;
 
@@ -40,6 +40,7 @@ const GradingResults = () => {
       date: new Date().toISOString(),
       topics,
       problems,
+      confusedAnswers, // 해설 정보 추가
     };
 
     console.log("새로 저장되는 노트 데이터:", newNote);
@@ -57,7 +58,7 @@ const GradingResults = () => {
   };
 
   const handleSolveButtonClick = () => {
-    saveNote([firstTopic], problems); // 오답노트 저장 호출
+    saveNote([firstTopic], problems, location.state?.confusedAnswers); // confusedAnswers 추가
     navigate("/note", {
       state: {
         problems: updatedProblems,
@@ -65,7 +66,6 @@ const GradingResults = () => {
       },
     }); // 저장 후 오답 노트 페이지로 이동
   };
-
   // 문제와 채점 결과 매칭
   const updatedProblems = problems.map((problem) => {
     const isCorrect =

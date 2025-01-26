@@ -14,7 +14,9 @@ function WrongAnswer() {
   const [doubleClickedProblems] = useState(
     location.state?.doubleClickedProblems || []
   );
-  const [confusedAnswers, setConfusedAnswers] = useState([]);
+  const [confusedAnswers, setConfusedAnswers] = useState(
+    location.state?.problems || []
+  );
 
   // API 호출 (필요한 경우)
   // 오답 API 호출
@@ -104,9 +106,9 @@ function WrongAnswer() {
                 <Question>
                   <Title>
                     Q.
-                    {(response.question_id + 8) % 10 === 0
+                    {(response.question_id + 1) % 10 === 0
                       ? 10
-                      : (response.question_id + 8) % 10}
+                      : (response.question_id + 1) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
