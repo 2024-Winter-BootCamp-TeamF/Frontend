@@ -166,7 +166,9 @@ function WrongAnswer() {
         <LoadingModal>
           <LoadingContent>
             <LoadingSpinner />
-            <LoadingText>추가 연습 문제를 생성 중입니다...</LoadingText>
+            <LoadingText>
+              추가 연습 문제를 생성 중입니다. 잠시만 기다려주세요...
+            </LoadingText>
           </LoadingContent>
         </LoadingModal>
       )}
