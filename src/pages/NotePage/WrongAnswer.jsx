@@ -104,9 +104,9 @@ function WrongAnswer() {
                 <Question>
                   <Title>
                     Q.
-                    {(response.question_id + 7) % 10 === 0
+                    {(response.question_id + 8) % 10 === 0
                       ? 10
-                      : (response.question_id + 7) % 10}
+                      : (response.question_id + 8) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
