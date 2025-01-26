@@ -20,10 +20,17 @@ function WrongAnswer() {
   useEffect(() => {
     const fetchWrongAnswers = async () => {
       try {
-        const response = await axiosInstance.get(
-          "/question/incorrect-answers/"
-        );
-        setResponses(response.data); // API 응답 데이터 저장
+        const endpoint =
+          doubleClickedProblems.length > 0
+            ? "/question/confused-answers/"
+            : "/question/incorrect-answers/";
+        const response = await axiosInstance.get(endpoint);
+
+        if (doubleClickedProblems.length > 0) {
+          setConfusedAnswers(response.data); // confusedAnswers에 데이터 저장
+        } else {
+          setResponses(response.data); // responses에 데이터 저장
+        }
       } catch (error) {
         console.error("오답 조회 데이터 가져오기 오류:", error);
       }
@@ -32,7 +39,7 @@ function WrongAnswer() {
     if (responses.length === 0) {
       fetchWrongAnswers(); // 전달받은 데이터가 없을 경우 API 호출
     }
-  }, [responses]);
+  }, [responses, doubleClickedProblems]);
 
   // 선택된 응답 정보가 있을 경우 상태 업데이트
   useEffect(() => {
@@ -103,9 +110,9 @@ function WrongAnswer() {
                 <Question>
                   <Title>
                     Q.
-                    {(response.question_id + 6) % 10 === 0
+                    {(response.question_id + 9) % 10 === 0
                       ? 10
-                      : (response.question_id + 6) % 10}
+                      : (response.question_id + 9) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
@@ -149,17 +156,18 @@ function WrongAnswer() {
                 <Title>해설</Title>
                 <div>정답: {response.correct_answer}</div>
                 <hr />
-                {response.isDoubleClicked ? (
-                  <ExplanationText>
-                    {confusedAnswers.find(
-                      (answer) => answer.question_id === response.question_id
-                    )?.explanation || "해설이 제공되지 않았습니다."}
-                  </ExplanationText>
-                ) : response.explanation ? (
-                  <ExplanationText>{response.explanation}</ExplanationText>
-                ) : (
-                  <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
-                )}
+                <ExplanationText>
+                  {response.explanation ? (
+                    <ExplanationText>{response.explanation}</ExplanationText>
+                  ) : response.isDoubleClicked ? (
+                    confusedAnswers.find((answer) => answer.id === response.id)
+                      ?.explanation || "해설이 제공되지 않았습니다."
+                  ) : (
+                    <ExplanationText>
+                      해설이 제공되지 않았습니다.
+                    </ExplanationText>
+                  )}
+                </ExplanationText>
               </ExplanationCard>
             </>
           )
