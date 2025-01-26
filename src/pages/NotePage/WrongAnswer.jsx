@@ -20,7 +20,9 @@ function WrongAnswer() {
   useEffect(() => {
     const fetchWrongAnswers = async () => {
       try {
-        const response = await axiosInstance.get("/question/submit-answer/");
+        const response = await axiosInstance.get(
+          "/question/incorrect-answers/"
+        );
         setResponses(response.data); // API 응답 데이터 저장
       } catch (error) {
         console.error("오답 조회 데이터 가져오기 오류:", error);
@@ -101,9 +103,9 @@ function WrongAnswer() {
                 <Question>
                   <Title>
                     Q.
-                    {(response.question_id + 3) % 10 === 0
+                    {(response.question_id + 6) % 10 === 0
                       ? 10
-                      : (response.question_id + 3) % 10}
+                      : (response.question_id + 6) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
@@ -147,7 +149,13 @@ function WrongAnswer() {
                 <Title>해설</Title>
                 <div>정답: {response.correct_answer}</div>
                 <hr />
-                {response.explanation ? (
+                {response.isDoubleClicked ? (
+                  <ExplanationText>
+                    {confusedAnswers.find(
+                      (answer) => answer.question_id === response.question_id
+                    )?.explanation || "해설이 제공되지 않았습니다."}
+                  </ExplanationText>
+                ) : response.explanation ? (
                   <ExplanationText>{response.explanation}</ExplanationText>
                 ) : (
                   <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
