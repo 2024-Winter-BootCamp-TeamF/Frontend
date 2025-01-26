@@ -81,6 +81,31 @@ const UserPageEx = () => {
     }
   };
 
+  const handleCardClick = (item) => {
+    if (item.type === "general") {
+      // GradedId 확인
+      const gradedData = JSON.parse(localStorage.getItem("gradedData")) || {};
+      const gradedId = Object.keys(gradedData).find((id) => {
+        // 채점된 문제와 템플릿을 비교
+        return (
+          gradedData[id]?.problems?.[0]?.templateId === item.data[0]?.templateId
+        );
+      });
+
+      if (gradedId) {
+        // 채점된 문제라면 결과 페이지로 이동
+        navigate("/grading-results", {
+          state: { problems: gradedData[gradedId].problems },
+        });
+      } else {
+        // 채점되지 않은 문제라면 문제 풀이 페이지로 이동
+        navigate("/practice", { state: { problems: item.data } });
+      }
+    } else if (item.type === "additional") {
+      navigate("/morepractice", { state: { problems: item.data } });
+    }
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -183,16 +208,7 @@ const UserPageEx = () => {
           <CardText>연습 문제 만들기</CardText>
         </Card>
         {sortedTemplates.map((item, index) => (
-          <Card
-            key={index}
-            onClick={() => {
-              if (item.type === "general") {
-                navigate("/practice", { state: { problems: item.data } });
-              } else if (item.type === "additional") {
-                navigate("/morepractice", { state: { problems: item.data } });
-              }
-            }}
-          >
+          <Card key={index} onClick={() => handleCardClick(item)}>
             <DeleteButton
               onClick={(e) => {
                 e.stopPropagation();

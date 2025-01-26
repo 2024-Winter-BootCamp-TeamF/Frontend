@@ -56,13 +56,36 @@ const GradingResults = () => {
     );
   };
 
-  const saveGradingResults = (problems) => {
-    localStorage.setItem("gradedProblems", JSON.stringify(problems));
+  const saveGradingResults = (problems, firstTopic) => {
+    // GradedId 생성
+    const GradedId = `graded_${Date.now()}`;
+
+    // 새로운 채점 데이터 생성
+    const gradedData = {
+      problems, // 채점된 문제 데이터
+      topic: firstTopic, // 첫 번째 문제의 토픽
+      date: new Date().toISOString(), // 저장 시점
+    };
+
+    // 기존 gradedData 불러오기
+    const existingGradedData =
+      JSON.parse(localStorage.getItem("gradedData")) || {};
+
+    // 새로운 데이터 추가
+    const updatedGradedData = {
+      ...existingGradedData,
+      [GradedId]: gradedData,
+    };
+
+    // LocalStorage에 저장
+    localStorage.setItem("gradedData", JSON.stringify(updatedGradedData));
+
+    console.log("Graded Results 저장 완료:", updatedGradedData);
   };
 
   const handleSolveButtonClick = () => {
     saveNote([firstTopic], problems); // 오답노트 저장 호출
-    saveGradingResults(problems); // 채점 결과를 로컬 스토리지에 저장
+    saveGradingResults(problems, firstTopic); // GradedId로 채점 결과 저장
     navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
   };
 
