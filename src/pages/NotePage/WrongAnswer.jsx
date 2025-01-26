@@ -11,13 +11,19 @@ function WrongAnswer() {
   const navigate = useNavigate();
   const location = useLocation();
   const [responses, setResponses] = useState(location.state?.problems || []);
-  
+  const [doubleClickedProblems] = useState(
+    location.state?.doubleClickedProblems || []
+  );
+  const [confusedAnswers, setConfusedAnswers] = useState([]);
 
   // API 호출 (필요한 경우)
+  // 오답 API 호출
   useEffect(() => {
     const fetchWrongAnswers = async () => {
       try {
-        const response = await axiosInstance.get("/question/submit-answer/");
+        const response = await axiosInstance.get(
+          "/question/incorrect-answers/"
+        );
         setResponses(response.data); // API 응답 데이터 저장
       } catch (error) {
         console.error("오답 조회 데이터 가져오기 오류:", error);
@@ -29,59 +35,57 @@ function WrongAnswer() {
     }
   }, [responses]);
 
-  const handleAddButtonClick = async () => {
-    try {
-      // 로컬 스토리지에서 토큰 가져오기
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        alert("인증 토큰이 없습니다. 다시 로그인해주세요.");
-        navigate("/login"); // 로그인 페이지로 이동
-        return;
-      }
-
-      // API 호출
-      const response = await axiosInstance.post(
-        "/morequestion/create/",
-        {
-          incorrect_question_ids: responses
-            .filter((response) => !response.is_correct)
-            .map((response) => response.question_id),
-        },
-        {
-          headers: {
-            Authorization: `Token ${token}`, // 헤더에 토큰 추가
-          },
-        }
-      );
-
-      const generatedQuestions = response.data.generated_multiple_choices;
-      const firstTopic = generatedQuestions[0]?.topic || "추가 연습 문제";
-
-      // 템플릿으로 변환 후 로컬스토리지에 저장
-      const template = {
-        id: new Date().toISOString(), // 고유 ID 생성
-        title: `${firstTopic}_추가 연습 문제`, // 첫 번째 문제의 topic 활용
-        questions: generatedQuestions,
-      };
-
-      const existingTemplates =
-        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
-      localStorage.setItem(
-        "practiceTemplates",
-        JSON.stringify([...existingTemplates, template])
-      );
-
-      alert("추가 연습 문제가 생성되었습니다.");
-      navigate("/addcomplete"); // 성공 시 AddComplete 페이지로 이동
-    } catch (error) {
-      console.error("추가 연습 문제 생성 오류:", error);
-      alert("추가 연습 문제 생성에 실패했습니다.");
+  // 선택된 응답 정보가 있을 경우 상태 업데이트
+  useEffect(() => {
+    if (location.state?.selectedResponse) {
+      setResponses([location.state.selectedResponse]); // 선택된 응답 정보로 상태 업데이트
     }
+  }, [location.state?.selectedResponse]);
+
+  // doubleClickedProblems를 사용하여 필요한 로직 추가
+  useEffect(() => {
+    if (doubleClickedProblems.length > 0) {
+      console.log("더블 클릭된 문제 번호:", doubleClickedProblems);
+      // 추가 로직을 여기에 작성
+    }
+  }, [doubleClickedProblems]);
+
+  // 더블 클릭된 문제에 대한 해설 가져오기
+  useEffect(() => {
+    const fetchConfusedAnswers = async () => {
+      if (doubleClickedProblems.length === 0) return; // 더블 클릭된 문제가 없으면 종료
+
+      try {
+        const answers = await Promise.all(
+          doubleClickedProblems.map(async (problemId) => {
+            const response = await axiosInstance.post(
+              "/question/confused-answers/",
+              {
+                question_id: problemId, // 요청 형식에 맞게 question_id 전달
+              }
+            );
+            console.log("API 응답:", response.data); // API 응답 메시지 출력
+            return response.data; // API 응답 데이터 반환
+          })
+        );
+        setConfusedAnswers(answers); // 해설 상태 업데이트
+      } catch (error) {
+        console.error(
+          "해설 가져오기 오류:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchConfusedAnswers(); // 함수 호출
+  }, [doubleClickedProblems]); // doubleClickedProblems가 변경될 때마다 호출
+
+  const handleAddButtonClick = () => {
+    navigate("/AddComplete");
   };
 
-  const handlePageButtonClick = () => {
-    navigate("/mypage/note");
+  const handleUserButtonClick = () => {
+    navigate("/mypage/summary");
   };
 
   return (
@@ -89,15 +93,20 @@ function WrongAnswer() {
       <Header />
       <GridContainer>
         {responses.map((response) =>
-          response.is_correct ? null : (
+          response.is_correct && !response.isDoubleClicked ? null : (
             <>
-              <QuizCard key={`problem-${response.question_id}`}>
+              <QuizCard
+                key={`problem-${response.question_id}`}
+                style={{
+                  borderColor: response.isDoubleClicked ? "#F24822" : "#5887f4", // 더블 클릭된 경우 주황색 테두리
+                }}
+              >
                 <Question>
                   <Title>
                     Q.
-                    {response.question_id % 10 === 0
+                    {(response.question_id + 7) % 10 === 0
                       ? 10
-                      : response.question_id % 10}
+                      : (response.question_id + 7) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
@@ -132,13 +141,29 @@ function WrongAnswer() {
                   </AnswerText>
                 </Question>
               </QuizCard>
-              <ExplanationCard key={`explanation-${response.question_id}`}>
+              <ExplanationCard
+                key={`explanation-${response.question_id}`}
+                style={{
+                  borderColor: response.isDoubleClicked ? "#F24822" : "#5887f4", // 더블 클릭된 경우 주황색 테두리
+                }}
+              >
                 <Title>해설</Title>
-                {response.explanation ? (
-                  <ExplanationText>{response.explanation}</ExplanationText>
-                ) : (
-                  <ExplanationText>해설이 제공되지 않았습니다.</ExplanationText>
-                )}
+                <div>정답: {response.correct_answer}</div>
+                <hr />
+                <ExplanationText>
+                  {response.explanation ? (
+                    <ExplanationText>{response.explanation}</ExplanationText>
+                  ) : response.isDoubleClicked ? (
+                    confusedAnswers.find(
+                      (answer) =>
+                        answer.question_text === response.question_text
+                    )?.explanation || "해설이 제공되지 않았습니다."
+                  ) : (
+                    <ExplanationText>
+                      해설이 제공되지 않았습니다.
+                    </ExplanationText>
+                  )}
+                </ExplanationText>
               </ExplanationCard>
             </>
           )
@@ -146,7 +171,7 @@ function WrongAnswer() {
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
-          onClick={handlePageButtonClick}
+          onClick={handleUserButtonClick}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
           }
