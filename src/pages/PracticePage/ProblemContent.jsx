@@ -93,12 +93,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 디버깅용 로그
-    // console.log("문제 ID:", problemId);
-    // console.log("해결 여부 (isSolved):", isSolved);
-    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
-
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.id === problemId
@@ -164,13 +158,17 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           return {
             ...problem, // 문제 데이터 포함
             ...data, // API 응답 데이터 병합
+            isDoubleClicked: doubleClickedProblems.has(problem.id), // isDoubleClicked 정보 추가
           };
         })
       );
 
       // 문제 데이터를 채점 결과 페이지로 전달
       navigate("/grading-results", {
-        state: { problems: responses },
+        state: {
+          problems: responses,
+          doubleClickedProblems: Array.from(doubleClickedProblems),
+        }, // doubleClickedProblems 전달
       });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);

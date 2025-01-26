@@ -42,7 +42,12 @@ const GradingResults = () => {
   );
 
   const handleSolveButtonClick = () => {
-    navigate("/note", { state: { problems: updatedProblems } });
+    navigate("/note", {
+      state: {
+        problems: updatedProblems,
+        doubleClickedProblems: location.state?.doubleClickedProblems || [], // doubleClickedProblems 추가
+      },
+    });
   };
 
   return (
@@ -65,31 +70,10 @@ const GradingResults = () => {
             <ProblemDetail>
               {/* 문제 출력 */}
               {updatedProblems.map((problem) => {
-                console.log("문제 렌더링 데이터:", {
-                  id: problem.question_id,
-                  question: problem.questionText,
-                  number: problem.number,
-                  choices: problem.choices,
-                  userAnswer: problem.userAnswer,
-                  correctAnswer: problem.correctAnswer,
-                });
-
                 // 사용자 답안을 선택지에서 찾아 selectedOption 설정
                 const selectedOption = problem.choices.findIndex((choice) => {
                   return choice.trim() === (problem.userAnswer || "").trim();
                 });
-
-                if (problem.question_type === "객관식") {
-                  console.log("MultipleChoice에 전달되는 데이터:", {
-                    id: problem.question_id,
-                    question: problem.questionText,
-                    number: problem.number,
-                    userAnswer: problem.userAnswer,
-                    selectedOption,
-                    choices: problem.choices,
-                    correctAnswer: problem.correctAnswer,
-                  });
-                }
 
                 return (
                   <ProblemItem

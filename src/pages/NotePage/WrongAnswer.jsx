@@ -11,6 +11,10 @@ function WrongAnswer() {
   const navigate = useNavigate();
   const location = useLocation();
   const [responses, setResponses] = useState(location.state?.problems || []);
+  const [doubleClickedProblems, setDoubleClickedProblems] = useState(
+    location.state?.doubleClickedProblems || []
+  );
+  const [confusedAnswers, setConfusedAnswers] = useState([]);
 
   // API 호출 (필요한 경우)
   useEffect(() => {
@@ -28,6 +32,51 @@ function WrongAnswer() {
     }
   }, [responses]);
 
+  // 선택된 응답 정보가 있을 경우 상태 업데이트
+  useEffect(() => {
+    if (location.state?.selectedResponse) {
+      setResponses([location.state.selectedResponse]); // 선택된 응답 정보로 상태 업데이트
+    }
+  }, [location.state?.selectedResponse]);
+
+  // doubleClickedProblems를 사용하여 필요한 로직 추가
+  useEffect(() => {
+    if (doubleClickedProblems.length > 0) {
+      console.log("더블 클릭된 문제 번호:", doubleClickedProblems);
+      // 추가 로직을 여기에 작성
+    }
+  }, [doubleClickedProblems]);
+
+  // 더블 클릭된 문제에 대한 해설 가져오기
+  useEffect(() => {
+    const fetchConfusedAnswers = async () => {
+      if (doubleClickedProblems.length === 0) return; // 더블 클릭된 문제가 없으면 종료
+
+      try {
+        const answers = await Promise.all(
+          doubleClickedProblems.map(async (problemId) => {
+            const response = await axiosInstance.post(
+              "/question/confused-answers/",
+              {
+                question_id: problemId, // 요청 형식에 맞게 question_id 전달
+              }
+            );
+            console.log("API 응답:", response.data); // API 응답 메시지 출력
+            return response.data; // API 응답 데이터 반환
+          })
+        );
+        setConfusedAnswers(answers); // 해설 상태 업데이트
+      } catch (error) {
+        console.error(
+          "해설 가져오기 오류:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchConfusedAnswers(); // 함수 호출
+  }, [doubleClickedProblems]); // doubleClickedProblems가 변경될 때마다 호출
+
   const handleAddButtonClick = () => {
     navigate("/AddComplete");
   };
@@ -41,15 +90,20 @@ function WrongAnswer() {
       <Header />
       <GridContainer>
         {responses.map((response) =>
-          response.is_correct ? null : (
+          response.is_correct && !response.isDoubleClicked ? null : (
             <>
-              <QuizCard key={`problem-${response.question_id}`}>
+              <QuizCard
+                key={`problem-${response.question_id}`}
+                style={{
+                  borderColor: response.isDoubleClicked ? "#F24822" : "#5887f4", // 더블 클릭된 경우 주황색 테두리
+                }}
+              >
                 <Question>
                   <Title>
                     Q.
-                    {response.question_id % 10 === 0
+                    {(response.question_id + 3) % 10 === 0
                       ? 10
-                      : response.question_id % 10}
+                      : (response.question_id + 3) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
@@ -84,7 +138,12 @@ function WrongAnswer() {
                   </AnswerText>
                 </Question>
               </QuizCard>
-              <ExplanationCard key={`explanation-${response.question_id}`}>
+              <ExplanationCard
+                key={`explanation-${response.question_id}`}
+                style={{
+                  borderColor: response.isDoubleClicked ? "#F24822" : "#5887f4", // 더블 클릭된 경우 주황색 테두리
+                }}
+              >
                 <Title>해설</Title>
                 <div>정답: {response.correct_answer}</div>
                 <hr />
