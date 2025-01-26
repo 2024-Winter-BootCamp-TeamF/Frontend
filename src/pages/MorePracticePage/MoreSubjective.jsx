@@ -12,7 +12,13 @@ const COLORS = {
 };
 
 // 컴포넌트 이름을 파일명과 일치하도록 Subjective로 변경
-const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
+const MoreSubjective = ({
+  number,
+  problem,
+  readOnly,
+  onProblemSolved,
+  isGraded,
+}) => {
   const [isDoubleClicked, setIsDoubleClicked] = useState(false);
   const [answer, setAnswer] = useState("");
 
@@ -51,16 +57,10 @@ const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
       onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       readOnly={readOnly}
-      style={{
-        borderColor: window.location.href.includes("grading-results")
-          ? problem.is_correct
-            ? COLORS.PRIMARY
-            : COLORS.SECONDARY // 경로에 따라 테두리 색상 설정
-          : isDoubleClicked
-          ? COLORS.SECONDARY // 더블클릭 시 색상
-          : COLORS.PRIMARY, // 기본 테두리 색상
-      }}
+      isGraded={isGraded}
+      isWrong={isGraded && problem.userAnswer !== problem.correctAnswer} // 채점 후 정답 여부 판단
     >
+      {console.log("정답 확인:", problem.correctAnswer)} {/* 정답 콘솔 출력 */}
       <Title>{`Q.${number}`}</Title>
       <Content>{problem.question}</Content>
       {isGraded ? (
@@ -91,7 +91,7 @@ const Subjective = ({ number, problem, readOnly, onProblemSolved }) => {
   );
 };
 
-Subjective.propTypes = {
+MoreSubjective.propTypes = {
   number: PropTypes.number.isRequired, // number를 필수로 설정
   problem: PropTypes.shape({
     id: PropTypes.string,
@@ -107,7 +107,15 @@ const SubjectiveContainer = styled.div`
   width: 900px;
   height: auto;
   background-color: ${COLORS.BACKGROUND};
-  border: 3px solid ${COLORS.BORDER}; // 기본 테두리 색상
+  border: 3px solid
+    ${(props) =>
+      props.isGraded
+        ? props.isWrong
+          ? COLORS.SECONDARY // 채점 후 오답
+          : COLORS.PRIMARY // 채점 후 정답
+        : props.isDoubleClicked
+        ? COLORS.SECONDARY // 채점 전 더블클릭
+        : COLORS.PRIMARY}; // 채점 전 기본값
   padding: 50px 50px 41px 50px;
   box-sizing: border-box;
   border-radius: 8px;
@@ -164,4 +172,4 @@ const Text = styled.span`
   font-size: 18px;
 `;
 
-export default Subjective;
+export default MoreSubjective;

@@ -9,10 +9,9 @@ const COLORS = {
   CORRECT: "#28a745", // 정답 강조 색상
   BORDER: "#E0E0E0",
   BACKGROUND: "#ffffff",
-  DISABLE: "#d3d3d3",
 };
 
-const MultipleChoice = ({
+const MoreMultipleChoice = ({
   number,
   problem,
   readOnly,
@@ -33,7 +32,7 @@ const MultipleChoice = ({
       problem.id,
       selectedOption !== null, // isSolved
       newDoubleClickState, // isDoubleClicked
-      problem.choices[selectedOption] // 선택한 정답 전달
+      problem.choices[problem.selectedOption] // 선택한 정답 전달
     );
   };
 
@@ -108,7 +107,7 @@ const MultipleChoice = ({
   );
 };
 
-MultipleChoice.propTypes = {
+MoreMultipleChoice.propTypes = {
   number: PropTypes.number.isRequired,
   problem: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -226,4 +225,4 @@ const Content = styled.p`
   text-align: left;
 `;
 
-export default MultipleChoice;
+export default MoreMultipleChoice;
