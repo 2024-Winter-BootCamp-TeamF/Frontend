@@ -46,57 +46,7 @@ pipeline {
                 }
             }
         }
-
-        stage('Set Image Tag') {
-            steps {
-                script {
-                    // 브랜치에 따라 이미지 태그 설정
-                    if (env.BRANCH_NAME == 'main') {
-                        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
-                    } else {
-                        IMAGE_TAG = "0.0.${BUILD_NUMBER}"
-                    }
-                    echo "Image tag set to: ${IMAGE_TAG}"
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Docker 이미지를 빌드
-                    sh "docker build -t ${repository}:${IMAGE_TAG} ." 
-                }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    // Docker Hub에 로그인
-                    sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
-                }
-            }
-        }
-
-        stage('Deploy Docker Image') {
-            steps {
-                script {
-                    // Docker Hub에 이미지를 푸시
-                    sh "docker push ${repository}:${IMAGE_TAG}"
-                }
-            }
-        }
-
-        stage('Clean Up Docker Images') {
-            steps {
-                script {
-                    // Docker 이미지를 로컬에서 제거
-                    sh "docker rmi ${repository}:${IMAGE_TAG}"
-                }
-            }
-        }
-    }
+        
 
     post {
         success {
