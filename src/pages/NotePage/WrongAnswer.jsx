@@ -11,7 +11,7 @@ function WrongAnswer() {
   const navigate = useNavigate();
   const location = useLocation();
   const [responses, setResponses] = useState(location.state?.problems || []);
-  
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   // API 호출 (필요한 경우)
   useEffect(() => {
@@ -39,6 +39,8 @@ function WrongAnswer() {
         navigate("/login"); // 로그인 페이지로 이동
         return;
       }
+
+      setIsLoading(true); // 로딩 시작
 
       // API 호출
       const response = await axiosInstance.post(
@@ -72,11 +74,12 @@ function WrongAnswer() {
         JSON.stringify([...existingTemplates, template])
       );
 
-      alert("추가 연습 문제가 생성되었습니다.");
       navigate("/addcomplete"); // 성공 시 AddComplete 페이지로 이동
     } catch (error) {
       console.error("추가 연습 문제 생성 오류:", error);
       alert("추가 연습 문제 생성에 실패했습니다.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -159,6 +162,16 @@ function WrongAnswer() {
         />
       </ButtonWrapper>
       <Footer />
+      {isLoading && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>
+              추가 연습 문제를 생성 중입니다. 잠시만 기다려주세요...
+            </LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
     </WrongAnswerWrapper>
   );
 }
@@ -224,6 +237,49 @@ const ButtonWrapper = styled.div`
   align-items: center;
   gap: 100px;
   padding: 70px;
+`;
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5887f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 24px;
 `;
 
 export default WrongAnswer;
