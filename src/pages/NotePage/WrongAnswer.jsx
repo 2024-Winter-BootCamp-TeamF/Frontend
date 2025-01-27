@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../axiosInstance";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
-import { useNavigate } from "react-router-dom";
 
 function WrongAnswer() {
   const navigate = useNavigate();
@@ -62,15 +61,30 @@ function WrongAnswer() {
           doubleClickedProblems.map(async (problemId) => {
             const response = await axiosInstance.post(
               "/question/confused-answers/",
-              {
-                question_id: problemId, // 요청 형식에 맞게 question_id 전달
-              }
+              { question_id: problemId }
             );
-            console.log("API 응답:", response.data); // API 응답 메시지 출력
-            return response.data; // API 응답 데이터 반환
+            console.log("API 응답:", response.data);
+            return response.data;
           })
         );
-        setConfusedAnswers(answers); // 해설 상태 업데이트
+        setConfusedAnswers(answers);
+
+        // responses의 explanation 업데이트
+        const updatedResponses = responses.map((response) => {
+          const confusedAnswer = answers.find(
+            (answer) => answer.question_text === response.question_text
+          );
+          if (response.explanation === null && confusedAnswer) {
+            return {
+              ...response,
+              explanation:
+                confusedAnswer.explanation || "해설이 제공되지 않았습니다.",
+            };
+          }
+          return response;
+        });
+
+        setResponses(updatedResponses); // 업데이트된 responses 상태 저장
       } catch (error) {
         console.error(
           "해설 가져오기 오류:",
@@ -79,15 +93,35 @@ function WrongAnswer() {
       }
     };
 
-    fetchConfusedAnswers(); // 함수 호출
-  }, [doubleClickedProblems]); // doubleClickedProblems가 변경될 때마다 호출
+    fetchConfusedAnswers();
+  }, [doubleClickedProblems]);
 
-  const handleAddButtonClick = () => {
-    navigate("/AddComplete");
+  const saveNote = (topics, problems, confusedAnswers) => {
+    const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
+    const newNote = {
+      id: Date.now(),
+      title: noteTitle,
+      date: new Date().toISOString(),
+      topics,
+      problems,
+      confusedAnswers,
+    };
+
+    console.log("새로 저장되는 노트 데이터:", newNote);
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+    localStorage.setItem(
+      "wrongNotes",
+      JSON.stringify([...existingNotes, newNote])
+    );
+    console.log(
+      "현재 저장된 모든 노트:",
+      JSON.parse(localStorage.getItem("wrongNotes"))
+    );
   };
 
   const handleUserButtonClick = () => {
-    navigate("/mypage/summary");
+    saveNote([location.state?.firstTopic], responses, confusedAnswers); // 새로운 노트 생성
+    navigate("/mypage/summary"); // 마이페이지로 이동
   };
 
   return (
@@ -106,9 +140,9 @@ function WrongAnswer() {
                 <Question>
                   <Title>
                     Q.
-                    {(response.question_id + 1) % 10 === 0
+                    {(response.question_id + 4) % 10 === 0
                       ? 10
-                      : (response.question_id + 1) % 10}
+                      : (response.question_id + 4) % 10}
                   </Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
@@ -176,12 +210,6 @@ function WrongAnswer() {
           onClick={handleUserButtonClick}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
-          }
-        />
-        <SolveButton
-          onClick={handleAddButtonClick}
-          children={
-            "한숨 쉴 시간에 한 문제라도 더 풀자.\n추가 연습 문제 생성하기"
           }
         />
       </ButtonWrapper>
