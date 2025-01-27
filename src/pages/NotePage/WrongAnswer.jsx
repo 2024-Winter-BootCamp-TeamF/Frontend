@@ -151,10 +151,25 @@ function WrongAnswer() {
       setIsNewNote(true); // 새로운 노트 생성 시 상태 업데이트
     } else {
       console.log("중복된 노트가 이미 존재합니다.");
+      setIsNewNote(false); // 중복된 노트가 있을 경우 상태를 false로 설정
     }
 
-    navigate("/mypage/note"); // 마이페이지로 이동
+    // 마이페이지로 이동
+    navigate("/mypage/note");
   };
+
+  // 컴포넌트가 처음 렌더링될 때 기존 노트가 있는지 확인
+  useEffect(() => {
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+    const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
+
+    // 기존 노트가 있는 경우 상태 업데이트
+    const isExistingNote = existingNotes.some(
+      (note) => note.title === noteTitle
+    );
+
+    setIsNewNote(!isExistingNote); // 기존 노트가 없으면 true, 있으면 false
+  }, []);
 
   return (
     <WrongAnswerWrapper>
