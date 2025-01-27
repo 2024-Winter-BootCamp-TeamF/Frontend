@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS"  // Jenkins에서 설정한 NodeJS의 이름과 일치해야 합니다.
+    }
+
     environment {
         repository = "jeonjong/teamf-frontend"  // Docker Hub ID와 Repository 이름
         DOCKERHUB_CREDENTIALS = credentials('Docker-hub') // Jenkins에 등록된 Docker Hub credentials 이름
