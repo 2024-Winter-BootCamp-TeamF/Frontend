@@ -16,13 +16,6 @@ const UserPageEx = () => {
   const [templates, setTemplates] = useState([]);
   const [sortedTemplates, setSortedTemplates] = useState([]);
 
-  useEffect((id) => {
-    // 로컬 스토리지에서 템플릿 데이터 불러오기
-    const storedTemplates =
-      JSON.parse(localStorage.getItem("practiceTemplates")) || [];
-    setTemplates(storedTemplates);
-  }, []);
-
   const handleDeleteTemplate = (id) => {
     const confirmDelete = window.confirm(
       "정말로 이 연습문제를 삭제하시겠습니까?"
@@ -105,6 +98,8 @@ const UserPageEx = () => {
         }
 
         const data = await response.json();
+        console.log("받아온 데이터:", data); // 데이터를 콘솔에서 확인
+
         const groupedTemplates = [];
         for (let i = 0; i < data.length; i += 10) {
           groupedTemplates.push(data.slice(i, i + 10));
@@ -151,12 +146,54 @@ const UserPageEx = () => {
       const combinedData = [...generalTemplates, ...additionalTemplates].sort(
         (a, b) => b.createdAt - a.createdAt
       );
-
+      console.log("Combined Templates:", combinedData); // 디버깅용 콘솔 출력
       setSortedTemplates(combinedData);
     };
 
     combineAndSortData();
   }, [questions, templates]);
+
+  const handleTemplateClick = (templateId) => {
+    // 클릭된 템플릿을 combinedData (sortedTemplates)에서 찾기
+    const clickedTemplate = sortedTemplates.find(
+      (template) => template.id === templateId
+    );
+
+    if (!clickedTemplate) {
+      console.error("해당 템플릿을 찾을 수 없습니다.");
+      return;
+    }
+    const allGraded = clickedTemplate.data.every(
+      (data) => data.is_answer === true
+    );
+
+    console.log("allGraded", clickedTemplate.data);
+
+    if (allGraded) {
+      // 채점 완료된 템플릿의 경우 결과 페이지로 이동
+      navigate("/more-grading-results", {
+        state: { problems: clickedTemplate.data },
+      });
+    } else {
+      // 채점되지 않은 템플릿의 경우 문제 풀이 페이지로 이동
+      navigate("/morepractice", {
+        state: {
+          problems: clickedTemplate.data,
+          templateId: clickedTemplate.id, // 템플릿 ID 전달
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchTemplates = () => {
+      const storedTemplates =
+        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
+      setTemplates(storedTemplates); // 상태 업데이트
+    };
+
+    fetchTemplates();
+  }, []);
 
   return (
     <Container>
@@ -183,16 +220,7 @@ const UserPageEx = () => {
           <CardText>연습 문제 만들기</CardText>
         </Card>
         {sortedTemplates.map((item, index) => (
-          <Card
-            key={index}
-            onClick={() => {
-              if (item.type === "general") {
-                navigate("/practice", { state: { problems: item.data } });
-              } else if (item.type === "additional") {
-                navigate("/morepractice", { state: { problems: item.data } });
-              }
-            }}
-          >
+          <Card key={index} onClick={() => handleTemplateClick(item.id)}>
             <DeleteButton
               onClick={(e) => {
                 e.stopPropagation();

@@ -58,13 +58,20 @@ function WrongAnswer() {
       );
 
       const generatedQuestions = response.data.generated_multiple_choices;
+
+      // 각 문제에 is_answer 필드 추가
+      const updatedQuestions = generatedQuestions.map((question) => ({
+        ...question,
+        is_answer: 0, // 기본값으로 0 (채점되지 않음)
+      }));
+
       const firstTopic = generatedQuestions[0]?.topic || "추가 연습 문제";
 
       // 템플릿으로 변환 후 로컬스토리지에 저장
       const template = {
         id: new Date().toISOString(), // 고유 ID 생성
         title: `${firstTopic}_추가 연습 문제`, // 첫 번째 문제의 topic 활용
-        questions: generatedQuestions,
+        questions: updatedQuestions,
       };
 
       const existingTemplates =
