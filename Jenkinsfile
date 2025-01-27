@@ -22,7 +22,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'npm install'  // 의존성 설치
+                    sh 'npm ci'  // 의존성 설치
                 }
             }
         }
