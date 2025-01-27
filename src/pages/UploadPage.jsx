@@ -71,7 +71,7 @@ const UploadPage = () => {
 
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/pdf/upload/",
+        url: "/pdf/upload",
         data: formData,
       });
       console.log(response.data);
@@ -107,7 +107,7 @@ const UploadPage = () => {
     try {
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/celery/pinecone/",
+        url: "/pinecone/upload",
         headers: {
           Authorization: `Bearer ${token}`,
         },

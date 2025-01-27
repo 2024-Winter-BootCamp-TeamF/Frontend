@@ -19,7 +19,7 @@ const LoginInputForm = ({
         password: userData.password,
       };
 
-      const response = await axios.post(`${API_BASE_URL}/signup/`, signUpData);
+      const response = await axios.post(`${API_BASE_URL}/signup`, signUpData);
       if (response.status === 201) {
         alert("회원가입이 완료되었습니다!");
         setCurrentType("SignIn");
@@ -56,7 +56,7 @@ const LoginInputForm = ({
         password: userData.password,
       };
 
-      const response = await axios.post(`${API_BASE_URL}/login/`, signInData);
+      const response = await axios.post(`${API_BASE_URL}/login`, signInData);
       if (response.status === 200) {
         const token = response.data.token;
         const username = signInData.username;
