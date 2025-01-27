@@ -356,7 +356,7 @@ const PDFViewer = styled.div`
 
 const UploadSection = styled.div`
   width: 100%;
-  height: 400px;
+  height: 100%;
   border: 2px dashed #5c85ff;
   border-radius: 10px;
   display: flex;
@@ -390,7 +390,7 @@ const UploadSubtitle = styled.p`
 
 const Divider = styled.div`
   width: 2px;
-  height: 400px;
+  height: 90%;
   background-color: #86abff;
   margin: 0 2rem;
 `;
