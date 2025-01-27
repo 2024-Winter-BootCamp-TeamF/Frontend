@@ -99,12 +99,6 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 디버깅용 로그
-    // console.log("문제 ID:", problemId);
-    // console.log("해결 여부 (isSolved):", isSolved);
-    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
-
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.question_id === problemId
@@ -162,7 +156,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/morequestion/submit-answer/",
+            "/api/morequestion/submit-answer",
             payload,
             {
               headers: {

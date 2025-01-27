@@ -56,7 +56,7 @@ const UserPageEx = () => {
       const questionIds = template.map((question) => question.id);
 
       const deleteRequests = questionIds.map((id) =>
-        fetch(`http://localhost:8000/api/question/questions/${id}/delete/`, {
+        fetch(`http://localhost:8000/api/question/questions/${id}/delete`, {
           method: "DELETE",
           headers: {
             Authorization: `Token ${token}`,
@@ -91,7 +91,7 @@ const UserPageEx = () => {
         }
 
         const response = await fetch(
-          "http://localhost:8000/api/question/all-questions/",
+          "http://localhost:8000/api/question/all-questions",
           {
             method: "GET",
             headers: {

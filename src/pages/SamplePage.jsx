@@ -33,7 +33,7 @@ const SamplePage = () => {
       setIsLoading(true); // 로딩 시작
 
       try {
-        const response = await axiosInstance.post("/langchain/summary/", {
+        const response = await axiosInstance.post("/langchain/summary", {
           top_k: topK, // 숫자
           topics: topics, // 문자열 배열
         });

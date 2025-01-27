@@ -54,19 +54,6 @@ const PracticeCompletePage = () => {
   );
 };
 
-const LoadingModal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
 const CompletePageWrapper = styled.div`
   width: 100%;
   min-height: 100vh; /* 화면 높이를 100%로 설정 */
