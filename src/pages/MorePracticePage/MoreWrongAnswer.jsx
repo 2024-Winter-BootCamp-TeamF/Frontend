@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function MoreWrongAnswer() {
   const navigate = useNavigate();
@@ -30,6 +31,34 @@ function MoreWrongAnswer() {
 
   const handlePageButtonClick = () => {
     navigate("/mypage/note");
+  };
+
+  const handleDataDelete = async () => {
+    try {
+      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const response = await axios.delete(
+        "http://localhost:8000/api/langchain/delete",
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      if (response.status === 202) {
+        console.log("데이터 삭제 성공");
+      } else {
+        console.log("데이터 삭제 실패");
+      }
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+      alert("API 호출 중 문제가 발생했습니다.");
+    }
   };
 
   return (
@@ -94,7 +123,10 @@ function MoreWrongAnswer() {
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
-          onClick={handlePageButtonClick}
+          onClick={() => {
+            handlePageButtonClick();
+            handleDataDelete();
+          }}
           children={"이제는 계속해서 복습하자!\n마이페이지로 이동하기"}
         />
       </ButtonWrapper>

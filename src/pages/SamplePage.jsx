@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import SampleButton2 from "../components/SampleButton2";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserPageSample from "./UserPageSample";
+import axios from "axios";
 
 const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
@@ -99,6 +100,34 @@ const SamplePage = () => {
     });
   };
 
+  const handleDataDelete = async () => {
+    try {
+      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const response = await axios.delete(
+        "http://localhost:8000/api/langchain/delete",
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      if (response.status === 202) {
+        alert("데이터가 성공적으로 삭제되었습니다.");
+      } else {
+        alert("데이터 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+      alert("API 호출 중 문제가 발생했습니다.");
+    }
+  };
+
   return (
     <Container>
       <Header />
@@ -145,6 +174,7 @@ const SamplePage = () => {
             onClick={() => {
               navigate("/mypage/summary");
               handleCreateCard();
+              handleDataDelete();
             }}
           >
             <LightText>연습 문제까지 볼 시간이 없다.</LightText>
