@@ -15,6 +15,8 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
   const [results, setResults] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState(new Set());
   const [doubleClickedProblems, setDoubleClickedProblems] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -97,12 +99,6 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 디버깅용 로그
-    // console.log("문제 ID:", problemId);
-    // console.log("해결 여부 (isSolved):", isSolved);
-    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
-
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.question_id === problemId
@@ -147,6 +143,8 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
       return;
     }
 
+    setIsLoading(true); // 로딩 시작
+
     try {
       const responses = await Promise.all(
         problems.map(async (problem) => {
@@ -158,7 +156,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/morequestion/submit-answer/",
+            "/api/morequestion/submit-answer",
             payload,
             {
               headers: {
@@ -166,15 +164,35 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
               },
             }
           );
-          return {
-            ...problem, // 문제 데이터 포함
-            ...data, // API 응답 데이터 병합
+          const mergedProblem = {
+            ...problem, // 기존 문제 데이터 유지
+            ...data, // API 응답 데이터 병합 (is_answer 포함)
           };
+          console.log("Merged Problem:", mergedProblem); // 병합 결과 확인
+          return mergedProblem;
         })
       );
 
+      console.log("Final Responses:", responses); // 최종 병합된 데이터 확인
+
+      // 로컬 스토리지 업데이트
+      const storedTemplates =
+        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
+      console.log("Stored Templates:", storedTemplates);
+
+      const updatedTemplates = storedTemplates.map((template) =>
+        String(template.id) === String(location.state?.templateId) // 템플릿 ID 비교
+          ? { ...template, questions: responses }
+          : template
+      );
+
+      localStorage.setItem(
+        "practiceTemplates",
+        JSON.stringify(updatedTemplates)
+      );
+      console.log("Updated practiceTemplates:", updatedTemplates);
+
       const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
-      console.log("First Topic:", firstTopic); // 전달될 토픽 확인
       console.log("Navigate로 전달되는 데이터:", {
         problems: responses,
         firstTopic,
@@ -187,6 +205,8 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     } catch (error) {
       console.error("채점 중 오류 발생:", error);
       alert("채점 요청 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -234,6 +254,14 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         </Container>
       </MainContent>
       <Footer />
+      {isLoading && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>채점 중입니다. 잠시만 기다려주세요...</LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
     </PageWrapper>
   );
 };
@@ -304,5 +332,48 @@ MoreProblemContent.defaultProps = {
   readOnly: false,
   onProblemSolved: () => {},
 };
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5887f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 24px;
+`;
 
 export default MoreProblemContent;

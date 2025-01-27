@@ -16,7 +16,7 @@ function MoreWrongAnswer() {
   useEffect(() => {
     const fetchWrongAnswers = async () => {
       try {
-        const response = await axiosInstance.get("/question/submit-answer/");
+        const response = await axiosInstance.get("/question/submit-answer");
         setResponses(response.data); // API 응답 데이터 저장
       } catch (error) {
         console.error("오답 조회 데이터 가져오기 오류:", error);

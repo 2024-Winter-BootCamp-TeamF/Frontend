@@ -18,6 +18,7 @@ function WrongAnswer() {
   );
   const [isNewNote, setIsNewNote] = useState(false); // 새로운 노트 상태 추가
   const [isApiCalled, setIsApiCalled] = useState(false); // API 호출 여부 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   // API 호출 (필요한 경우)
   // 오답 API 호출
@@ -94,7 +95,6 @@ function WrongAnswer() {
         );
       }
     };
-
     fetchConfusedAnswers();
   }, [doubleClickedProblems]);
 
@@ -115,11 +115,67 @@ function WrongAnswer() {
       setIsNewNote(true); // 새로운 노트 생성 시 상태 업데이트
     } else {
       console.log("중복된 노트가 이미 존재합니다.");
-      setIsNewNote(false); // 중복된 노트가 있을 경우 상태를 false로 설정
+      setIsNewNote(false);
     }
+  }; // 중복된 노트가 있을 경우 상태를 false로 설정
+  const handleAddButtonClick = async () => {
+    try {
+      // 로컬 스토리지에서 토큰 가져오기
+      const token = localStorage.getItem("accessToken");
 
-    // 마이페이지로 이동
-    navigate("/mypage/note");
+      if (!token) {
+        alert("인증 토큰이 없습니다. 다시 로그인해주세요.");
+        navigate("/login"); // 로그인 페이지로 이동
+        return;
+      }
+      setIsLoading(true); // 로딩 시작
+
+      // API 호출
+      const response = await axiosInstance.post(
+        "/morequestion/create",
+        {
+          incorrect_question_ids: responses
+            .filter((response) => !response.is_correct)
+            .map((response) => response.question_id),
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      const generatedQuestions = response.data.generated_multiple_choices;
+
+      // 각 문제에 is_answer 필드 추가
+      const updatedQuestions = generatedQuestions.map((question) => ({
+        ...question,
+        is_answer: 0, // 기본값으로 0 (채점되지 않음)
+      }));
+
+      const firstTopic = generatedQuestions[0]?.topic || "추가 연습 문제";
+
+      // 템플릿으로 변환 후 로컬스토리지에 저장
+      const template = {
+        id: new Date().toISOString(), // 고유 ID 생성
+        title: `${firstTopic}_추가 연습 문제`, // 첫 번째 문제의 topic 활용
+        questions: updatedQuestions,
+      };
+
+      const existingTemplates =
+        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
+      localStorage.setItem(
+        "practiceTemplates",
+        JSON.stringify([...existingTemplates, template])
+      );
+
+      navigate("/addcomplete"); // 성공 시 AddComplete 페이지로 이동
+    } catch (error) {
+      console.error("추가 연습 문제 생성 오류:", error);
+      alert("추가 연습 문제 생성에 실패했습니다.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
   };
 
   // 컴포넌트가 처음 렌더링될 때 기존 노트가 있는지 확인
@@ -246,20 +302,35 @@ function WrongAnswer() {
       </GridContainer>
       <ButtonWrapper>
         <SolveButton
-          onClick={handleUserButtonClick}
+          onClick={() => {
+            navigate("/mypage/note"); // 마이페이지/노트로 이동
+            handleUserButtonClick(); // 추가 함수 실행
+          }}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
           }
         />
         <SolveButton
           onClick={() => {
-            navigate("/practice"); // /practice 경로로 이동
+            handleAddButtonClick(); // 추가 연습 문제 생성
+            handleUserButtonClick(); // 추가 함수 실행
           }}
-          disabled={!isApiCalled} // API 호출이 완료된 경우에만 활성화
-          children={"지금이라면 다 맞을 수 있어.\n추가 연습 문제 풀어보기"}
+          children={
+            "한숨 쉴 시간에 한 문제라도 더 풀자.\n추가 연습 문제 생성하기"
+          }
         />
       </ButtonWrapper>
       <Footer />
+      {isLoading && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>
+              추가 연습 문제를 생성 중입니다. 잠시만 기다려주세요...
+            </LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
     </WrongAnswerWrapper>
   );
 }
@@ -326,6 +397,49 @@ const ButtonWrapper = styled.div`
   align-items: center;
   gap: 100px;
   padding: 70px;
+`;
+
+const LoadingModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5887f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: #333;
+  font-size: 24px;
 `;
 
 export default WrongAnswer;

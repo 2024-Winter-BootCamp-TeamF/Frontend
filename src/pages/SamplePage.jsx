@@ -11,7 +11,7 @@ const SamplePage = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(true);
   const [isExtensionActive, setIsExtensionActive] = useState(false);
   const [summaryPDF, setSummaryPDF] = useState(null);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const navigate = useNavigate();
   const location = useLocation();
   const pdfFile = location.state?.pdfFile;
@@ -30,8 +30,10 @@ const SamplePage = () => {
 
   useEffect(() => {
     const fetchSummaryPDF = async () => {
+      setIsLoading(true); // 로딩 시작
+
       try {
-        const response = await axiosInstance.post("/langchain/summary/", {
+        const response = await axiosInstance.post("/langchain/summary", {
           top_k: topK, // 숫자
           topics: topics, // 문자열 배열
         });
@@ -49,6 +51,8 @@ const SamplePage = () => {
           "요약 PDF를 가져오는 중 오류 발생:",
           error.response?.data || error.message
         );
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     };
 
@@ -120,17 +124,19 @@ const SamplePage = () => {
           )}
 
           <SummaryBox isExtensionActive={isExtensionActive}>
-            {summaryPDF ? (
-              (console.log("요약본 PDF URL:", summaryPDF), // 요약본 PDF URL을 콘솔에 출력
-              (
-                <iframe
-                  src={summaryPDF}
-                  title="Summary PDF Viewer"
-                  style={{ height: "100%", width: "100%" }}
-                />
-              ))
+            {isLoading ? (
+              <LoadingContent>
+                <LoadingSpinner />
+                <LoadingText>요약본을 불러오는 중입니다...</LoadingText>
+              </LoadingContent>
+            ) : summaryPDF ? (
+              <iframe
+                src={summaryPDF}
+                title="Summary PDF Viewer"
+                style={{ height: "100%", width: "100%" }}
+              />
             ) : (
-              <LoadingText>요약본을 불러오는 중입니다...</LoadingText>
+              <LoadingText>요약본을 불러오는 데 실패했습니다.</LoadingText>
             )}
           </SummaryBox>
         </MainContent>
@@ -158,16 +164,6 @@ const SamplePage = () => {
         </ButtonContainer>
       </MainContentWrapper>
       <Footer />
-
-      {isLoading && (
-        <LoadingModal>
-          <LoadingContent>
-            <LoadingSpinner />
-            <LoadingText>요약본을 생성하고 있습니다...</LoadingText>
-          </LoadingContent>
-        </LoadingModal>
-      )}
-
       {summaryPDF && false && (
         <UserPageSample
           pdfUrl={summaryPDF}
@@ -246,23 +242,6 @@ const SummaryBox = styled.div`
   }
 `;
 
-const IconWrapper = styled.div`
-  position: absolute;
-  left: -65px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer; // 커서를 포인터로 변경
-  img {
-    width: 45px;
-    height: 45px;
-    transition: transform 0.2s; // 부드러운 애니메이션 추가
-  }
-
-  &:hover img {
-    transform: scale(1.1); // 마우스 오버 시 이미지 크기 증가
-  }
-`;
-
 const Divider = styled.div`
   width: 2px;
   height: calc(100% - 10px);
@@ -272,26 +251,11 @@ const Divider = styled.div`
   opacity: ${(props) => (props.hide ? 0 : 1)};
 `;
 
-const LoadingModal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
 const LoadingContent = styled.div`
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 `;
 
 const LoadingSpinner = styled.div`
@@ -314,6 +278,7 @@ const LoadingSpinner = styled.div`
 const LoadingText = styled.p`
   color: #333;
   font-size: 18px;
+  text-align: center;
   margin: 0;
 `;
 

@@ -13,7 +13,8 @@ function CreatePracPage() {
   const [pdfFile, setPdfFile] = useState(null);
   const [problemFiles, setProblemFiles] = useState([]);
   const [showPDFViewer, setShowPDFViewer] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isFileUploading, setIsFileUploading] = useState(false); // 파일 업로드 로딩 상태
+  const [isProblemCreating, setIsProblemCreating] = useState(false); // 문제 생성 로딩 상태
   const [showModal, setShowModal] = useState(false); // showModal 상태 추가
   const [showFileCountModal, setShowFileCountModal] = useState(false);
   const [fileCount, setFileCount] = useState(0);
@@ -29,21 +30,6 @@ function CreatePracPage() {
   const onProblemDrop = useCallback((acceptedFiles) => {
     setProblemFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
-
-  const onPDFDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      setPdfFile(acceptedFiles[0]);
-    }
-  }, []);
-
-  const { getRootProps: getPDFRootProps, getInputProps: getPDFInputProps } =
-    useDropzone({
-      onDrop: onPDFDrop,
-      accept: {
-        "application/pdf": [".pdf"],
-      },
-      multiple: false,
-    });
 
   const {
     getRootProps: getProblemRootProps,
@@ -65,7 +51,7 @@ function CreatePracPage() {
       return;
     }
 
-    setIsUploading(true);
+    setIsFileUploading(true); // 파일 업로드 로딩 시작
 
     try {
       const formData = new FormData();
@@ -75,7 +61,7 @@ function CreatePracPage() {
 
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/pdf/upload/",
+        url: "/pdf/upload",
         data: formData,
       });
       console.log(response.data);
@@ -97,7 +83,7 @@ function CreatePracPage() {
         alert(`Axios 설정 오류: ${error.message}`);
       }
     } finally {
-      setIsUploading(false);
+      setIsFileUploading(false); // 파일 업로드 로딩 종료
     }
   };
 
@@ -107,9 +93,11 @@ function CreatePracPage() {
       Array.isArray(topics) ? topics : [topics]
     );
 
+    setIsProblemCreating(true); // 문제 생성 로딩 시작
+
     try {
       const response = await fetch(
-        "http://localhost:8000/api/question/create/",
+        "http://localhost:8000/api/question/create",
         {
           method: "POST",
           headers: {
@@ -125,14 +113,20 @@ function CreatePracPage() {
       if (!response.ok) throw new Error("API 호출 실패");
 
       const data = await response.json();
+
       console.log("API Response:", data);
-      setTimeout(() => {
-        console.log("Navigating to /praccomplete...");
-        navigate("/praccomplete", { state: { problems: data, topics } });
+      navigate("/praccomplete", {
+        state: {
+          problems: data,
+          topics,
+          pdfFile,
+        },
       });
     } catch (error) {
       console.error("Error:", error.message);
       alert("연습 문제 생성 중 오류가 발생했습니다.");
+    } finally {
+      setIsProblemCreating(false); // 로딩 종료
     }
   };
 
@@ -145,7 +139,7 @@ function CreatePracPage() {
     try {
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/celery/pinecone/",
+        url: "/pinecone/upload",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -229,7 +223,7 @@ function CreatePracPage() {
       </MainContentWrapper>
       <Footer />
 
-      {isUploading && (
+      {isFileUploading && (
         <LoadingModal>
           <LoadingContent>
             <LoadingSpinner />
@@ -237,6 +231,18 @@ function CreatePracPage() {
           </LoadingContent>
         </LoadingModal>
       )}
+
+      {isProblemCreating && (
+        <LoadingModal>
+          <LoadingContent>
+            <LoadingSpinner />
+            <LoadingText>
+              문제를 생성 중입니다. 잠시만 기다려주세요...
+            </LoadingText>
+          </LoadingContent>
+        </LoadingModal>
+      )}
+
       {showFileCountModal && (
         <Modal>
           <ModalContentWrapper>
@@ -270,11 +276,6 @@ function CreatePracPage() {
                 onClick={() => {
                   setShowModal(false);
                   handleCreate();
-                  navigate("/praccomplete", {
-                    state: {
-                      pdfFile: pdfFile,
-                    },
-                  });
                 }}
               >
                 연습 문제 생성하기

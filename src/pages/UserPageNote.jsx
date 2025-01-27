@@ -74,7 +74,9 @@ const UserPageNote = () => {
           <Card
             key={note.id}
             onClick={() =>
-              navigate("/note", { state: { problems: note.problems } })
+              note.name
+                ? navigate("/morenote", { state: { problems: note.problems } })
+                : navigate("/note", { state: { problems: note.problems } })
             }
           >
             <DeleteButton onClick={(e) => handleDelete(e, note.id)}>
