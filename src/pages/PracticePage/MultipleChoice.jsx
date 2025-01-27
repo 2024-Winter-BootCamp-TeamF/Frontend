@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 const COLORS = {
   PRIMARY: "#5887f4",
   SECONDARY: "#F24822",
+  CORRECT: "#28a745", // 정답 강조 색상
   BORDER: "#E0E0E0",
   BACKGROUND: "#ffffff",
 };
@@ -67,26 +68,39 @@ const MultipleChoice = ({
           (
             choice,
             index // choices가 없으면 빈 배열로 처리
-          ) => (
-            <li key={index}>
-              <StyledRadio
-                type="radio"
-                name={`multiple-choice-${problem.id}`}
-                id={`choice-${problem.id}-${index}`}
-                onChange={() => handleOptionSelect(index)}
-                checked={selectedOption === index}
-                disabled={readOnly}
-                isWrong={
-                  isGraded &&
-                  problem.userAnswer === problem.choices[index] &&
-                  problem.userAnswer !== problem.correctAnswer // 사용자 답안이 틀린 경우
-                }
-                isSelected={selectedOption === index} // 선택 여부
-                isDoubleClicked={isDoubleClicked} // 더블클릭 여부 전달
-              />
-              <label htmlFor={`choice-${problem.id}-${index}`}>{choice}</label>
-            </li>
-          )
+          ) => {
+            const isCorrect =
+              choice.trim() === (problem.correctAnswer || "").trim();
+            const isUserAnswer =
+              choice.trim() === (problem.userAnswer || "").trim();
+            return (
+              <li key={index}>
+                <StyledRadio
+                  type="radio"
+                  name={`multiple-choice-${problem.id}`}
+                  id={`choice-${problem.id}-${index}`}
+                  onChange={() => handleOptionSelect(index)}
+                  checked={selectedOption === index}
+                  disabled={readOnly}
+                  isWrong={
+                    isGraded &&
+                    problem.userAnswer === problem.choices[index] &&
+                    problem.userAnswer !== problem.correctAnswer // 사용자 답안이 틀린 경우
+                  }
+                  isSelected={selectedOption === index} // 선택 여부
+                  isDoubleClicked={isDoubleClicked} // 더블클릭 여부 전달
+                />
+                <StyledLabel
+                  htmlFor={`choice-${problem.id}-${index}`}
+                  isCorrect={isCorrect}
+                  isUserAnswer={isUserAnswer}
+                  isGraded={isGraded}
+                >
+                  {choice}
+                </StyledLabel>
+              </li>
+            );
+          }
         )}
       </ul>
     </MultipleChoiceContainer>
@@ -176,6 +190,28 @@ const StyledRadio = styled.input`
     cursor: not-allowed;
     opacity: 0.7;
   }
+`;
+
+const StyledLabel = styled.label`
+  font-size: 18px;
+  color: ${(props) =>
+    props.isGraded
+      ? props.isCorrect
+        ? COLORS.CORRECT // 채점 후 정답 초록색
+        : props.isUserAnswer
+        ? COLORS.SECONDARY // 채점 후 사용자 답안 빨간색
+        : "black"
+      : "black"}; // 채점 전에는 기본 색상 유지
+  background-color: ${(props) =>
+    props.isGraded
+      ? props.isCorrect
+        ? "#eaffea" // 채점 후 정답 배경색
+        : props.isUserAnswer
+        ? "#ffecec" // 채점 후 사용자 답안 배경색
+        : "transparent"
+      : "transparent"}; // 채점 전에는 배경색 없음
+  padding: 0 10px;
+  border-radius: 5px;
 `;
 
 const Title = styled.h3`

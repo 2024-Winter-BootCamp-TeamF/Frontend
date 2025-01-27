@@ -6,6 +6,8 @@ import homeIcon from "../images/mypage.png";
 import circlesIcon from "../images/circles.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SamplePageEx from "../images/SamplePageEx.png";
+import MyPageEx from "../images/MyPageEx.png";
 
 const Introduce = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -20,6 +22,7 @@ const Introduce = () => {
 정리되어 었지 않아서,
 읽기 힘들었던 강의 자료를
 AI를 통해 요약해보세요!`,
+      image: SamplePageEx
     },
     {
       title: "연습 문제 생성",
@@ -29,6 +32,7 @@ AI를 통해 요약해보세요!`,
 함께 업로드 해보세요!
 실전과 유사한 문제로
 학습을 진행할 수 있어요!`,
+      image: SamplePageEx
     },
     {
       title: "오답 노트 제공",
@@ -39,6 +43,7 @@ AI 오답노트를 생성해보세요!
 오답과 헷갈리는 문제의 
 해설과 추가 개념들을 
 쉽게 확인할 수 있어요!`,
+      image: SamplePageEx
     },
     {
       title: "마이페이지",
@@ -47,8 +52,8 @@ AI 오답노트를 생성해보세요!
       content: `지금까지 만든 생성물은
 마이페이지에 저장 가능!
 마이페이지에서 간편하게
-확인하고 복습해보세요!
-`,
+확인하고 복습해보세요!`,
+      image: MyPageEx
     },
   ];
 
@@ -76,11 +81,16 @@ AI 오답노트를 생성해보세요!
           ))}
         </MenuSection>
         <ContentSection>
-          <PlaceholderText>
-            {selectedIndex !== null
-              ? `${menuItems[selectedIndex].title} 관련 이미지`
-              : "(이미지 생기면 추가 예정)"}
-          </PlaceholderText>
+          {selectedIndex !== null ? (
+            <ImageWrapper>
+              <StyledImage 
+                src={menuItems[selectedIndex].image} 
+                alt={`${menuItems[selectedIndex].title} 이미지`}
+              />
+            </ImageWrapper>
+          ) : (
+            <PlaceholderText>메뉴를 선택해주세요</PlaceholderText>
+          )}
           <DotButton
             onClick={() => {
               const token = localStorage.getItem("accessToken");
@@ -188,7 +198,7 @@ const IconWrapper = styled.div`
 
 const ContentSection = styled.div`
   background-color: #fff;
-  width: 70%;
+  width: 80%;
   border: 5px solid #5887f4;
   border-radius: 20px;
   display: flex;
@@ -198,8 +208,8 @@ const ContentSection = styled.div`
 `;
 
 const PlaceholderText = styled.div`
-  color: #999;
-  font-size: 16px;
+  color: black;
+  font-size: 22px;
 `;
 
 const ItemContent = styled.div`
@@ -246,6 +256,28 @@ const ButtonText = styled.span`
   opacity: 1;
   color: #5887f4;
   font-family: "HakgyoansimAllimjangTTF-R";
+`;
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+`;
+
+const StyledImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 export default Introduce;
