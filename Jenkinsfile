@@ -22,8 +22,19 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'npm ci'  // 의존성 설치
+                    // 의존성 설치 (npm ci) 후 'web-vitals' 패키지 설치
+                    sh 'npm ci'  
                     sh 'npm install web-vitals --save'
+                }
+            }
+        }
+
+        stage('Run Linter (Optional)') {
+            steps {
+                script {
+                    // ESLint 실행하여 경고를 실패로 처리하지 않도록 설정
+                    // 필요시 경고를 무시하거나 `npm run lint || true` 로 실패 방지
+                    sh 'npm run lint || true'
                 }
             }
         }
