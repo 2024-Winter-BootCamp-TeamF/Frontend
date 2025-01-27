@@ -57,7 +57,7 @@ const BannerContent = styled.div`
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 70px 40px 50px 70px;
+  padding: 70px 90px 50px 70px;
 
   @media screen and (max-width: 1024px) {
     padding: 50px 30px 40px 50px;
@@ -92,7 +92,7 @@ const LogoWrapper = styled.div`
 const SubTitle = styled.p`
   font-size: 25px;
   color: #5887f4;
-  margin: 10px 0 0 0;
+  margin: 10px 0 70px 0;
   padding-bottom: 100px;
 
   @media screen and (max-width: 1024px) {
