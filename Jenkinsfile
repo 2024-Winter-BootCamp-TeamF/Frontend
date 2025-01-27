@@ -23,6 +23,7 @@ pipeline {
             steps {
                 script {
                     sh 'npm ci'  // 의존성 설치
+                    sh 'npm install web-vitals --save'
                 }
             }
         }
