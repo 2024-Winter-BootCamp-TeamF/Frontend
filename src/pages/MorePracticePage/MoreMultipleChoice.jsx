@@ -55,7 +55,6 @@ const MoreMultipleChoice = ({
 
   return (
     <MultipleChoiceContainer
-      onDoubleClick={handleDoubleClick}
       isDoubleClicked={isDoubleClicked}
       isGraded={isGraded}
       isWrong={isGraded && problem.userAnswer !== problem.correctAnswer} // 채점 후 정답 여부 판단
