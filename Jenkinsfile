@@ -1,39 +1,95 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NodeJS" // Global Tool Configuration에서 설정한 이름
+    environment {
+        repository = "jeonjong/teamf-frontend"  // Docker Hub ID와 Repository 이름
+        DOCKERHUB_CREDENTIALS = credentials('Docker-hub') // Jenkins에 등록된 Docker Hub credentials 이름
+        IMAGE_TAG = "" // Docker 이미지 태그
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/2024-Winter-BootCamp-TeamF/Frontend.git'
+                cleanWs() // 워크스페이스 청소
+                git branch: 'main', url: "https://github.com/2024-Winter-BootCamp-TeamF/Frontend.git"
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                script {
+                    sh 'npm install'  // 의존성 설치
+                }
             }
         }
 
-        stage('Test') {
+        stage('Build React App') {
             steps {
-                sh 'npm test'
+                script {
+                    sh 'npm run build'  // React 앱 빌드
+                }
             }
         }
 
-        stage('Build') {
+        stage('Set Image Tag') {
             steps {
-                sh 'npm run build'
+                script {
+                    // 브랜치에 따라 이미지 태그 설정
+                    if (env.BRANCH_NAME == 'main') {
+                        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
+                    } else {
+                        IMAGE_TAG = "0.0.${BUILD_NUMBER}"
+                    }
+                    echo "Image tag set to: ${IMAGE_TAG}"
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                sh 'scp -r build/* user@your-server:/var/www/html'
+                script {
+                    // Docker 이미지를 빌드
+                    sh "docker build -t ${repository}:${IMAGE_TAG} ." 
+                }
             }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    // Docker Hub에 로그인
+                    sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                }
+            }
+        }
+
+        stage('Deploy Docker Image') {
+            steps {
+                script {
+                    // Docker Hub에 이미지를 푸시
+                    sh "docker push ${repository}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Clean Up Docker Images') {
+            steps {
+                script {
+                    // Docker 이미지를 로컬에서 제거
+                    sh "docker rmi ${repository}:${IMAGE_TAG}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+            slackSend message: "Frontend build deployed successfully - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        failure {
+            echo 'Build or deployment failed.'
+            slackSend failOnError: true, message: "Frontend build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
