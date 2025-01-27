@@ -197,7 +197,6 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         JSON.stringify(updatedTemplates)
       );
       console.log("Updated practiceTemplates:", updatedTemplates);
-      alert("채점 결과가 저장되었습니다.");
 
       const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
       console.log("Navigate로 전달되는 데이터:", {
