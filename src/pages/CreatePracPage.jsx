@@ -187,7 +187,7 @@ function CreatePracPage() {
 
           <PreviewSection {...getProblemRootProps()}>
             <input {...getProblemInputProps()} />
-            <UploadTitle>기출 문제 업로드</UploadTitle>
+            <UploadTitle>문제 유형 업로드</UploadTitle>
             <UploadSubtitle>
               {isProblemDragActive
                 ? "파일을 여기에 놓으세요"
@@ -210,10 +210,22 @@ function CreatePracPage() {
                 ))}
               </FileList>
             )}
+            <InstructionSection>
+              <InstructionList>
+                <li>
+                  문제 유형을 업로드 한 후, "파일 업로드" 버튼을 눌러주세요.
+                </li>
+                <li>
+                  업로드 할 문제 유형이 없다면 "연습 문제 생성" 버튼을
+                  눌러주세요.
+                </li>
+              </InstructionList>
+            </InstructionSection>
           </PreviewSection>
         </MainContent>
         <ButtonWrapper>
           <SampleButton onClick={handleUpload}>파일 업로드</SampleButton>
+          <SampleButton onClick={handleCreate}>연습 문제 생성</SampleButton>
         </ButtonWrapper>
       </MainContentWrapper>
       <Footer />
@@ -426,7 +438,9 @@ const InstructionList = styled.ul`
 `;
 
 const ButtonWrapper = styled.div`
+  display: flex;
   padding: 40px 30px 30px 30px;
+  gap: 100px;
 `;
 
 const LoadingModal = styled.div`
