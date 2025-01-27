@@ -16,6 +16,7 @@ function WrongAnswer() {
   const [confusedAnswers, setConfusedAnswers] = useState(
     location.state?.problems || []
   );
+  const [isNewNote, setIsNewNote] = useState(false); // 새로운 노트 상태 추가
 
   // API 호출 (필요한 경우)
   // 오답 API 호출
@@ -98,6 +99,21 @@ function WrongAnswer() {
 
   const saveNote = (topics, problems, confusedAnswers) => {
     const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+
+    // 중복 노트 확인
+    const isDuplicate = existingNotes.some(
+      (note) =>
+        note.title === noteTitle &&
+        JSON.stringify(note.problems) === JSON.stringify(problems) &&
+        JSON.stringify(note.confusedAnswers) === JSON.stringify(confusedAnswers)
+    );
+
+    if (isDuplicate) {
+      console.log("중복된 노트가 이미 존재합니다.");
+      return; // 중복된 노트가 있으면 저장하지 않음
+    }
+
     const newNote = {
       id: Date.now(),
       title: noteTitle,
@@ -108,7 +124,6 @@ function WrongAnswer() {
     };
 
     console.log("새로 저장되는 노트 데이터:", newNote);
-    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
     localStorage.setItem(
       "wrongNotes",
       JSON.stringify([...existingNotes, newNote])
@@ -120,8 +135,25 @@ function WrongAnswer() {
   };
 
   const handleUserButtonClick = () => {
-    saveNote([location.state?.firstTopic], responses, confusedAnswers); // 새로운 노트 생성
-    navigate("/mypage/summary"); // 마이페이지로 이동
+    const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+
+    // 중복 노트 확인
+    const isDuplicate = existingNotes.some(
+      (note) =>
+        note.title === noteTitle &&
+        JSON.stringify(note.problems) === JSON.stringify(responses) &&
+        JSON.stringify(note.confusedAnswers) === JSON.stringify(confusedAnswers)
+    );
+
+    if (!isDuplicate) {
+      saveNote([location.state?.firstTopic], responses, confusedAnswers); // 새로운 노트 생성
+      setIsNewNote(true); // 새로운 노트 생성 시 상태 업데이트
+    } else {
+      console.log("중복된 노트가 이미 존재합니다.");
+    }
+
+    navigate("/mypage/note"); // 마이페이지로 이동
   };
 
   return (
@@ -138,38 +170,26 @@ function WrongAnswer() {
                 }}
               >
                 <Question>
-                  <Title>
-                    Q.
-                    {(response.question_id + 4) % 10 === 0
-                      ? 10
-                      : (response.question_id + 4) % 10}
-                  </Title>
+                  <Title>문제</Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
                     {response.question_type === "객관식" ? (
                       <>
-                        <div>선택한 답: {response.user_answer}</div>
-                        <div style={{ marginTop: "10px" }}>
-                          {Array.isArray(response.choices)
-                            ? response.choices.map((choice, index) => (
-                                <span key={index}>
-                                  {index + 1}. {choice}
-                                  {index < response.choices.length - 1
-                                    ? " "
-                                    : ""}
-                                </span>
-                              ))
-                            : response.choices
-                                .split("")
-                                .map((choice, index) => (
-                                  <span key={index}>
-                                    {index + 1}. {choice}
-                                    {index < response.choices.length - 1
-                                      ? ", "
-                                      : ""}
-                                  </span>
-                                ))}
+                        <div style={{ marginBottom: "20px" }}>
+                          선택한 답: {response.user_answer}
                         </div>
+
+                        {Array.isArray(response.choices)
+                          ? response.choices.map((choice, index) => (
+                              <div key={index} style={{ marginLeft: "20px" }}>
+                                {index + 1}. {choice}
+                              </div>
+                            ))
+                          : response.choices.split("").map((choice, index) => (
+                              <div key={index} style={{ marginLeft: "10px" }}>
+                                {index + 1}. {choice}
+                              </div>
+                            ))}
                       </>
                     ) : (
                       `사용자가 입력한 답: ${response.user_answer}`
@@ -211,6 +231,13 @@ function WrongAnswer() {
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
           }
+        />
+        <SolveButton
+          onClick={() => {
+            /* 추가 연습 문제 풀어보기 로직 */
+          }}
+          disabled={!isNewNote} // 새로운 노트가 생성된 경우에만 활성화
+          children={"지금이라면 다 맞을 수 있어.\n추가 연습 문제 풀어보기"}
         />
       </ButtonWrapper>
       <Footer />
