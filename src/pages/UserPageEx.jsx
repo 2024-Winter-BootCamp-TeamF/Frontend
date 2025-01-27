@@ -49,7 +49,7 @@ const UserPageEx = () => {
       const questionIds = template.map((question) => question.id);
 
       const deleteRequests = questionIds.map((id) =>
-        fetch(`http://localhost:8000/api/question/questions/${id}/delete/`, {
+        fetch(`http://localhost:8000/api/question/questions/${id}/delete`, {
           method: "DELETE",
           headers: {
             Authorization: `Token ${token}`,
@@ -84,7 +84,7 @@ const UserPageEx = () => {
         }
 
         const response = await fetch(
-          "http://localhost:8000/api/question/all-questions/",
+          "http://localhost:8000/api/question/all-questions",
           {
             method: "GET",
             headers: {
@@ -133,6 +133,7 @@ const UserPageEx = () => {
         title: `${template[0]?.question_topic || "기본"}_연습 문제`,
         createdAt: new Date(template[0]?.created_at),
         data: template,
+        id: template[0]?.id || `general-${Date.now()}`, // API에서 ID 가져오기, 없으면 생성
       }));
 
       const additionalTemplates = templates.map((template) => ({
@@ -154,7 +155,7 @@ const UserPageEx = () => {
   }, [questions, templates]);
 
   const handleTemplateClick = (templateId) => {
-    // 클릭된 템플릿을 combinedData (sortedTemplates)에서 찾기
+    // 클릭된 템플릿을 sortedTemplates에서 찾기
     const clickedTemplate = sortedTemplates.find(
       (template) => template.id === templateId
     );
@@ -163,25 +164,65 @@ const UserPageEx = () => {
       console.error("해당 템플릿을 찾을 수 없습니다.");
       return;
     }
+
+    // 모든 문제의 is_answer 값이 true인지 확인
     const allGraded = clickedTemplate.data.every(
       (data) => data.is_answer === true
     );
 
-    console.log("allGraded", clickedTemplate.data);
+    const type = clickedTemplate.type;
 
-    if (allGraded) {
-      // 채점 완료된 템플릿의 경우 결과 페이지로 이동
-      navigate("/more-grading-results", {
-        state: { problems: clickedTemplate.data },
-      });
-    } else {
-      // 채점되지 않은 템플릿의 경우 문제 풀이 페이지로 이동
-      navigate("/morepractice", {
+    console.log("Clicked Template:", clickedTemplate);
+    console.log("All Graded:", allGraded);
+
+    // 타입별로 동작 수행
+    if (type === "general") {
+      navigate("/practice", {
         state: {
           problems: clickedTemplate.data,
-          templateId: clickedTemplate.id, // 템플릿 ID 전달
+          templateId: clickedTemplate.id,
         },
       });
+      if (allGraded) {
+        // 일반 연습 문제: 채점 완료된 경우 결과 페이지로 이동
+        const storedResults =
+          JSON.parse(localStorage.getItem("gradingResults")) || {};
+        const templateResults = storedResults[templateId];
+        if (templateResults) {
+          navigate("/grading-results", {
+            state: { problems: templateResults, templateId },
+          });
+        } else {
+          console.error("채점 결과가 로컬 스토리지에 없습니다.");
+          alert("채점 결과를 찾을 수 없습니다.");
+        }
+      } else {
+        // 일반 연습 문제: 채점되지 않은 경우 문제 풀이 페이지로 이동
+        navigate("/practice", {
+          state: {
+            problems: clickedTemplate.data,
+            templateId: clickedTemplate.id,
+          },
+        });
+      }
+    } else if (type === "additional") {
+      if (allGraded) {
+        // 추가 연습 문제: 채점 완료된 경우 결과 페이지로 이동
+        navigate("/more-grading-results", {
+          state: { problems: clickedTemplate.data },
+        });
+      } else {
+        // 추가 연습 문제: 채점되지 않은 경우 문제 풀이 페이지로 이동
+        navigate("/morepractice", {
+          state: {
+            problems: clickedTemplate.data,
+            templateId: clickedTemplate.id,
+          },
+        });
+      }
+    } else {
+      console.error("알 수 없는 템플릿 타입:", type);
+      alert("템플릿 타입이 올바르지 않습니다.");
     }
   };
 

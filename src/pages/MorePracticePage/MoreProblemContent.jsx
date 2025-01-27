@@ -162,7 +162,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/morequestion/submit-answer/",
+            "/api/morequestion/submit-answer",
             payload,
             {
               headers: {

@@ -67,7 +67,7 @@ function CreatePracPage() {
 
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/pdf/upload/",
+        url: "/pdf/upload",
         data: formData,
       });
       console.log(response.data);
@@ -103,7 +103,7 @@ function CreatePracPage() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/question/create/",
+        "http://localhost:8000/api/question/create",
         {
           method: "POST",
           headers: {
@@ -145,7 +145,7 @@ function CreatePracPage() {
     try {
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/celery/pinecone/",
+        url: "/pinecone/upload",
         headers: {
           Authorization: `Bearer ${token}`,
         },
