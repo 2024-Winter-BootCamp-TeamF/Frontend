@@ -207,11 +207,11 @@ function CreatePracPage() {
             <InstructionSection>
               <InstructionList>
                 <li>
-                  파일명에 "문제", "기말고사", "중간고사" 등의 키워드를
-                  포함시켜주세요.
+                  문제 유형을 업로드 한 후, "파일 업로드" 버튼을 눌러주세요.
                 </li>
                 <li>
-                  키워드를 포함시키면 더욱 실전같은 문제를 만들 수 있습니다.
+                  업로드 할 문제 유형이 없다면 "연습 문제 생성" 버튼을
+                  눌러주세요.
                 </li>
               </InstructionList>
             </InstructionSection>
@@ -219,6 +219,7 @@ function CreatePracPage() {
         </MainContent>
         <ButtonWrapper>
           <SampleButton onClick={handleUpload}>파일 업로드</SampleButton>
+          <SampleButton onClick={handleCreate}>연습 문제 생성</SampleButton>
         </ButtonWrapper>
       </MainContentWrapper>
       <Footer />
@@ -350,7 +351,7 @@ const PDFViewer = styled.div`
 
 const UploadSection = styled.div`
   width: 100%;
-  height: 400px;
+  height: 100%;
   border: 2px dashed #5c85ff;
   border-radius: 10px;
   display: flex;
@@ -384,7 +385,7 @@ const UploadSubtitle = styled.p`
 
 const Divider = styled.div`
   width: 2px;
-  height: 400px;
+  height: 90%;
   background-color: #86abff;
   margin: 0 2rem;
 `;
@@ -431,7 +432,9 @@ const InstructionList = styled.ul`
 `;
 
 const ButtonWrapper = styled.div`
+  display: flex;
   padding: 40px 30px 30px 30px;
+  gap: 100px;
 `;
 
 const LoadingModal = styled.div`

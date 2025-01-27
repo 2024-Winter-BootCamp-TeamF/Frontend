@@ -154,22 +154,24 @@ const GradingSection = styled.div`
 `;
 
 const AnswerWrapper = styled.div`
-  display: flex;
   gap: 5px;
   align-items: center;
   background-color: ${(props) =>
     props.isCorrect ? "#eaffea" : "#ffecec"}; // 정답 초록색, 오답 빨간색
   padding: 10px;
   border-radius: 4px;
+  line-height: 25px;
 `;
 
 const Label = styled.span`
   font-weight: 700;
   font-size: 18px;
+  width: fit-content;
 `;
 
 const Text = styled.span`
   font-size: 18px;
+  width: fit-content;
 `;
 
 export default Subjective;

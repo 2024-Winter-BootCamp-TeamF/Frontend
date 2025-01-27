@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styled from "styled-components";
@@ -6,12 +5,41 @@ import character from "../images/character.png";
 import sub_background from "../images/sub_background.png";
 import SolveButton from "../components/SolveButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PracticeCompletePage = () => {
   const navigate = useNavigate();
 
   const handleMyPageClick = () => {
     navigate("/mypage/practice");
+  };
+
+  const handleDataDelete = async () => {
+    try {
+      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const response = await axios.delete(
+        "http://localhost:8000/api/langchain/delete",
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      if (response.status === 202) {
+        console.log("데이터 삭제 성공");
+      } else {
+        console.log("데이터 삭제 실패");
+      }
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+      alert("API 호출 중 문제가 발생했습니다.");
+    }
   };
 
   return (
@@ -45,7 +73,10 @@ const PracticeCompletePage = () => {
         <ButtonSection>
           <SolveButton
             children={`마이페이지에서 생성된 연습 문제를 풀어보세요!\n마이페이지로 이동하기`}
-            onClick={handleMyPageClick}
+            onClick={() => {
+              handleMyPageClick();
+              handleDataDelete();
+            }}
           />
         </ButtonSection>
       </CompleteInfoWrapper>

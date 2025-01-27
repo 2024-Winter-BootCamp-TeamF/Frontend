@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SolveButton from "../../components/SolveButton";
+import axios from "axios";
 
 function WrongAnswer() {
   const navigate = useNavigate();
@@ -231,6 +232,34 @@ function WrongAnswer() {
     fetchData(); // 컴포넌트가 마운트될 때 API 호출
   }, []);
 
+  const handleDataDelete = async () => {
+    try {
+      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const response = await axios.delete(
+        "http://localhost:8000/api/langchain/delete",
+        {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        }
+      );
+
+      if (response.status === 202) {
+        console.log("데이터 삭제 성공");
+      } else {
+        console.log("데이터 삭제 실패");
+      }
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+      alert("API 호출 중 문제가 발생했습니다.");
+    }
+  };
+
   return (
     <WrongAnswerWrapper>
       <Header />
@@ -305,6 +334,7 @@ function WrongAnswer() {
           onClick={() => {
             navigate("/mypage/note"); // 마이페이지/노트로 이동
             handleUserButtonClick(); // 추가 함수 실행
+            handleDataDelete();
           }}
           children={
             "많이 틀렸어도 기죽지 말자! 앞으로도 화이팅!\n마이페이지로 이동하기"
