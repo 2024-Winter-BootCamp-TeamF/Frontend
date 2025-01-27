@@ -9,10 +9,6 @@ import { useNavigate } from "react-router-dom";
 const AdditionalCompletePage = () => {
   const navigate = useNavigate();
 
-  const handlePracticeClick = () => {
-    navigate("/practice");
-  };
-
   const handleMyPageClick = () => {
     navigate("/mypage/practice");
   };

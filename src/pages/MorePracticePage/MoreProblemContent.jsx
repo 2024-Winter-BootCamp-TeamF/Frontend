@@ -99,12 +99,6 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 디버깅용 로그
-    // console.log("문제 ID:", problemId);
-    // console.log("해결 여부 (isSolved):", isSolved);
-    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
-
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.question_id === problemId
@@ -162,7 +156,7 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/morequestion/submit-answer/",
+            "/api/morequestion/submit-answer",
             payload,
             {
               headers: {
@@ -170,15 +164,35 @@ const MoreProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
               },
             }
           );
-          return {
-            ...problem, // 문제 데이터 포함
-            ...data, // API 응답 데이터 병합
+          const mergedProblem = {
+            ...problem, // 기존 문제 데이터 유지
+            ...data, // API 응답 데이터 병합 (is_answer 포함)
           };
+          console.log("Merged Problem:", mergedProblem); // 병합 결과 확인
+          return mergedProblem;
         })
       );
 
+      console.log("Final Responses:", responses); // 최종 병합된 데이터 확인
+
+      // 로컬 스토리지 업데이트
+      const storedTemplates =
+        JSON.parse(localStorage.getItem("practiceTemplates")) || [];
+      console.log("Stored Templates:", storedTemplates);
+
+      const updatedTemplates = storedTemplates.map((template) =>
+        String(template.id) === String(location.state?.templateId) // 템플릿 ID 비교
+          ? { ...template, questions: responses }
+          : template
+      );
+
+      localStorage.setItem(
+        "practiceTemplates",
+        JSON.stringify(updatedTemplates)
+      );
+      console.log("Updated practiceTemplates:", updatedTemplates);
+
       const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
-      console.log("First Topic:", firstTopic); // 전달될 토픽 확인
       console.log("Navigate로 전달되는 데이터:", {
         problems: responses,
         firstTopic,

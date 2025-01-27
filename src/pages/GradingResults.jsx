@@ -7,13 +7,13 @@ import Subjective from "../pages/PracticePage/Subjective";
 import SolveButton from "../components/SolveButton";
 import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
+import axiosInstance from "../axiosInstance";
 
 const GradingResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const problems = location.state?.problems || [];
-  const firstTopic = location.state?.firstTopic || ""; // 첫 번째 문제의 topic
 
   // 더블 클릭 활성화 상태를 관리하는 상태 변수
   const [doubleClicked, setDoubleClicked] = useState(
@@ -22,43 +22,29 @@ const GradingResults = () => {
       return acc;
     }, {})
   );
+  const [doubleClickedProblems] = useState(
+    location.state?.doubleClickedProblems || []
+  );
+  const [confusedAnswers, setConfusedAnswers] = useState(
+    location.state?.problems || []
+  );
+
+  const handleSolveButtonClick = () => {
+    // API 호출 후 새로운 노트 생성 로직 제거
+    navigate("/note", {
+      state: {
+        problems: updatedProblems,
+        doubleClickedProblems: location.state?.doubleClickedProblems,
+        confusedAnswers: confusedAnswers,
+      },
+    }); // 저장 후 오답 노트 페이지로 이동
+  };
 
   const handleDoubleClick = (questionId) => {
     setDoubleClicked((prev) => ({
       ...prev,
       [questionId]: !prev[questionId], // 더블 클릭 상태 토글
     }));
-  };
-
-  const saveNote = (topics, problems) => {
-    // topics 배열에서 첫 번째 값을 가져와 제목 생성
-    const noteTitle = `${firstTopic}_오답노트`;
-
-    const newNote = {
-      id: Date.now(),
-      title: noteTitle,
-      date: new Date().toISOString(),
-      topics,
-      problems,
-    };
-
-    console.log("새로 저장되는 노트 데이터:", newNote);
-
-    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
-    localStorage.setItem(
-      "wrongNotes",
-      JSON.stringify([...existingNotes, newNote])
-    );
-
-    console.log(
-      "현재 저장된 모든 노트:",
-      JSON.parse(localStorage.getItem("wrongNotes"))
-    );
-  };
-
-  const handleSolveButtonClick = () => {
-    saveNote([firstTopic], problems); // 오답노트 저장 호출
-    navigate("/note", { state: { problems } }); // 저장 후 오답 노트 페이지로 이동
   };
 
   // 문제와 채점 결과 매칭
@@ -112,11 +98,6 @@ const GradingResults = () => {
                 } else if (isDoubleClicked) {
                   problemColor = "SECONDARY";
                 }
-
-                // 사용자 답안을 선택지에서 찾아 selectedOption 설정
-                const selectedOption = problem.choices.findIndex((choice) => {
-                  return choice.trim() === (problem.userAnswer || "").trim();
-                });
 
                 return (
                   <ProblemItem

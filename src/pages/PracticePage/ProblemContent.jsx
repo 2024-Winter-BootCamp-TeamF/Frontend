@@ -27,14 +27,11 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     const receivedProblems = location.state?.problems;
 
     if (Array.isArray(receivedProblems)) {
-      console.log("Received Problems:", receivedProblems); // 문제 데이터 확인
-
       // 문제 번호 추가
       const formattedProblems = receivedProblems.map((problem, index) => ({
         ...problem,
         number: index + 1, // 문제 번호 설정
         userAnswer: "",
-        topic: problem.question_topic, // question_topic을 topic으로 매핑
       }));
       setProblems(formattedProblems);
       console.log("Practice 페이지에서 받은 데이터:", formattedProblems);
@@ -98,12 +95,6 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
     isDoubleClicked,
     selectedAnswer
   ) => {
-    // 디버깅용 로그
-    // console.log("문제 ID:", problemId);
-    // console.log("해결 여부 (isSolved):", isSolved);
-    // console.log("더블클릭 여부 (isDoubleClicked):", isDoubleClicked);
-    // console.log("선택된 답변 (selectedAnswer):", selectedAnswer);
-
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
         problem.id === problemId
@@ -160,7 +151,7 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           console.log("Payload:", payload); // 전송 데이터 로그
 
           const { data } = await axios.post(
-            "/api/question/submit-answer/",
+            "/api/question/submit-answer",
             payload,
             {
               headers: {
@@ -171,9 +162,11 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
           return {
             ...problem, // 문제 데이터 포함
             ...data, // API 응답 데이터 병합
+            isDoubleClicked: doubleClickedProblems.has(problem.id), // isDoubleClicked 정보 추가
           };
         })
       );
+
 
       const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
       console.log("First Topic:", firstTopic); // 전달될 토픽 확인
@@ -182,9 +175,16 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         firstTopic,
       });
 
+      const templateId = location.state?.templateId;
+
+      const storedResults =
+        JSON.parse(localStorage.getItem("gradingResults")) || {};
+      storedResults[templateId] = responses; // templateId로 데이터 저장
+      localStorage.setItem("gradingResults", JSON.stringify(storedResults));
+
       // 문제 데이터를 채점 결과 페이지로 전달
       navigate("/grading-results", {
-        state: { problems: responses, firstTopic },
+        state: { problems: responses, firstTopic, templateId, doubleClickedProblems: Array.from(doubleClickedProblems) },
       });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);
