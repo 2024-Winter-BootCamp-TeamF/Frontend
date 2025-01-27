@@ -187,7 +187,7 @@ function CreatePracPage() {
 
           <PreviewSection {...getProblemRootProps()}>
             <input {...getProblemInputProps()} />
-            <UploadTitle>문제 유형 업로드</UploadTitle>
+            <UploadTitle>기출 문제 업로드</UploadTitle>
             <UploadSubtitle>
               {isProblemDragActive
                 ? "파일을 여기에 놓으세요"
@@ -210,17 +210,6 @@ function CreatePracPage() {
                 ))}
               </FileList>
             )}
-            <InstructionSection>
-              <InstructionList>
-                <li>
-                  파일명에 "문제", "기말고사", "중간고사" 등의 키워드를
-                  포함시켜주세요.
-                </li>
-                <li>
-                  키워드를 포함시키면 더욱 실전같은 문제를 만들 수 있습니다.
-                </li>
-              </InstructionList>
-            </InstructionSection>
           </PreviewSection>
         </MainContent>
         <ButtonWrapper>
