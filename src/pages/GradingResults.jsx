@@ -14,7 +14,6 @@ const GradingResults = () => {
   const navigate = useNavigate();
 
   const problems = location.state?.problems || [];
-  const firstTopic = location.state?.firstTopic || ""; // 첫 번째 문제의 topic
 
   // 더블 클릭 활성화 상태를 관리하는 상태 변수
   const [doubleClicked, setDoubleClicked] = useState(
@@ -32,45 +31,13 @@ const GradingResults = () => {
 
   const handleSolveButtonClick = () => {
     // API 호출 후 새로운 노트 생성 로직 제거
-    fetchApiData().then((apiData) => {
-      navigate("/note", {
-        state: {
-          problems: updatedProblems,
-          doubleClickedProblems: location.state?.doubleClickedProblems,
-          confusedAnswers: confusedAnswers,
-        },
-      }); // 저장 후 오답 노트 페이지로 이동
-    });
-  };
-
-  const fetchApiData = async () => {
-    // 더블 클릭된 문제에 대한 해설 가져오기
-    const fetchConfusedAnswers = async () => {
-      if (doubleClickedProblems.length === 0) return; // 더블 클릭된 문제가 없으면 종료
-
-      try {
-        const answers = await Promise.all(
-          doubleClickedProblems.map(async (problemId) => {
-            const response = await axiosInstance.post(
-              "/question/confused-answers/",
-              {
-                question_id: problemId, // 요청 형식에 맞게 question_id 전달
-              }
-            );
-            console.log("API 응답:", response.data); // API 응답 메시지 출력
-            return response.data; // API 응답 데이터 반환
-          })
-        );
-        setConfusedAnswers(answers); // 해설 상태 업데이트
-      } catch (error) {
-        console.error(
-          "해설 가져오기 오류:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
-    await fetchConfusedAnswers(); // 함수 호출
+    navigate("/note", {
+      state: {
+        problems: updatedProblems,
+        doubleClickedProblems: location.state?.doubleClickedProblems,
+        confusedAnswers: confusedAnswers,
+      },
+    }); // 저장 후 오답 노트 페이지로 이동
   };
 
   const handleDoubleClick = (questionId) => {
@@ -78,33 +45,6 @@ const GradingResults = () => {
       ...prev,
       [questionId]: !prev[questionId], // 더블 클릭 상태 토글
     }));
-  };
-
-  const saveNote = (topics, problems, confusedAnswers) => {
-    // topics 배열에서 첫 번째 값을 가져와 제목 생성
-    const noteTitle = `${firstTopic}_오답노트`;
-
-    const newNote = {
-      id: Date.now(),
-      title: noteTitle,
-      date: new Date().toISOString(),
-      topics,
-      problems,
-      confusedAnswers, // 해설 정보 추가
-    };
-
-    console.log("새로 저장되는 노트 데이터:", newNote);
-
-    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
-    localStorage.setItem(
-      "wrongNotes",
-      JSON.stringify([...existingNotes, newNote])
-    );
-
-    console.log(
-      "현재 저장된 모든 노트:",
-      JSON.parse(localStorage.getItem("wrongNotes"))
-    );
   };
 
   // 문제와 채점 결과 매칭
@@ -158,11 +98,6 @@ const GradingResults = () => {
                 } else if (isDoubleClicked) {
                   problemColor = "SECONDARY";
                 }
-
-                // 사용자 답안을 선택지에서 찾아 selectedOption 설정
-                const selectedOption = problem.choices.findIndex((choice) => {
-                  return choice.trim() === (problem.userAnswer || "").trim();
-                });
 
                 return (
                   <ProblemItem

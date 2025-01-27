@@ -17,6 +17,7 @@ function WrongAnswer() {
     location.state?.problems || []
   );
   const [isNewNote, setIsNewNote] = useState(false); // 새로운 노트 상태 추가
+  const [isApiCalled, setIsApiCalled] = useState(false); // API 호출 여부 상태 추가
 
   // API 호출 (필요한 경우)
   // 오답 API 호출
@@ -97,43 +98,6 @@ function WrongAnswer() {
     fetchConfusedAnswers();
   }, [doubleClickedProblems]);
 
-  const saveNote = (topics, problems, confusedAnswers) => {
-    const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
-    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
-
-    // 중복 노트 확인
-    const isDuplicate = existingNotes.some(
-      (note) =>
-        note.title === noteTitle &&
-        JSON.stringify(note.problems) === JSON.stringify(problems) &&
-        JSON.stringify(note.confusedAnswers) === JSON.stringify(confusedAnswers)
-    );
-
-    if (isDuplicate) {
-      console.log("중복된 노트가 이미 존재합니다.");
-      return; // 중복된 노트가 있으면 저장하지 않음
-    }
-
-    const newNote = {
-      id: Date.now(),
-      title: noteTitle,
-      date: new Date().toISOString(),
-      topics,
-      problems,
-      confusedAnswers,
-    };
-
-    console.log("새로 저장되는 노트 데이터:", newNote);
-    localStorage.setItem(
-      "wrongNotes",
-      JSON.stringify([...existingNotes, newNote])
-    );
-    console.log(
-      "현재 저장된 모든 노트:",
-      JSON.parse(localStorage.getItem("wrongNotes"))
-    );
-  };
-
   const handleUserButtonClick = () => {
     const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
     const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
@@ -169,6 +133,46 @@ function WrongAnswer() {
     );
 
     setIsNewNote(!isExistingNote); // 기존 노트가 없으면 true, 있으면 false
+  }, []);
+
+  // 노트 저장 함수
+  const saveNote = (topics, problems, confusedAnswers) => {
+    const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
+
+    const newNote = {
+      id: Date.now(),
+      title: noteTitle,
+      date: new Date().toISOString(),
+      topics,
+      problems,
+      confusedAnswers,
+    };
+
+    const existingNotes = JSON.parse(localStorage.getItem("wrongNotes")) || [];
+    localStorage.setItem(
+      "wrongNotes",
+      JSON.stringify([...existingNotes, newNote])
+    );
+
+    console.log(
+      "현재 저장된 모든 노트:",
+      JSON.parse(localStorage.getItem("wrongNotes"))
+    );
+  };
+
+  // API 호출 함수
+  const fetchData = async () => {
+    try {
+      // API 호출 로직
+      // 예: const response = await axiosInstance.get("/your-api-endpoint");
+      setIsApiCalled(true); // API 호출이 완료되면 상태 업데이트
+    } catch (error) {
+      console.error("API 호출 오류:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // 컴포넌트가 마운트될 때 API 호출
   }, []);
 
   return (
@@ -249,9 +253,9 @@ function WrongAnswer() {
         />
         <SolveButton
           onClick={() => {
-            /* 추가 연습 문제 풀어보기 로직 */
+            navigate("/practice"); // /practice 경로로 이동
           }}
-          disabled={!isNewNote} // 새로운 노트가 생성된 경우에만 활성화
+          disabled={!isApiCalled} // API 호출이 완료된 경우에만 활성화
           children={"지금이라면 다 맞을 수 있어.\n추가 연습 문제 풀어보기"}
         />
       </ButtonWrapper>
@@ -305,6 +309,7 @@ const ExplanationCard = styled.div`
 const ExplanationText = styled.p`
   margin-top: 10px;
   font-size: 16px;
+  line-height: 1.6;
 `;
 
 const WrongAnswerWrapper = styled.div`
