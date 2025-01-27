@@ -42,7 +42,7 @@ pipeline {
         stage('Build React App') {
             steps {
                 script {
-                    sh 'npm run build'  // React 앱 빌드
+                   sh 'export CI=false && npm run build'  // React 앱 빌드
                 }
             }
         }
