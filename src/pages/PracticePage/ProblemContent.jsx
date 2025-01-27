@@ -176,9 +176,16 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         firstTopic,
       });
 
+      const templateId = location.state?.templateId;
+
+      const storedResults =
+        JSON.parse(localStorage.getItem("gradingResults")) || {};
+      storedResults[templateId] = responses; // templateId로 데이터 저장
+      localStorage.setItem("gradingResults", JSON.stringify(storedResults));
+
       // 문제 데이터를 채점 결과 페이지로 전달
       navigate("/grading-results", {
-        state: { problems: responses, firstTopic },
+        state: { problems: responses, firstTopic, templateId },
       });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);
