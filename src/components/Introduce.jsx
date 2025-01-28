@@ -244,6 +244,14 @@ const DotButton = styled.button`
     font-family: "HakgyoansimAllimjangTTF-R";
   }
 
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translate(-50%, 0) scale(1.05); /* 중심 기준으로 크기 확대 */
+    border-color: #5887f4;
+    background-color: #f8f9ff;
+  }
+
   img {
     width: 50px;
     height: auto;
