@@ -6,8 +6,10 @@ import homeIcon from "../images/mypage.png";
 import circlesIcon from "../images/circles.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SamplePageEx from "../images/SamplePageEx.png";
-import MyPageEx from "../images/MyPageEx.png";
+import SamplePageEx from "../images/SampleEx.png";
+import MyPageEx from "../images/마이페이지.png";
+import PracticeEx from "../images/문제 예시.png";
+import NoteEx from "../images/오답노트.png";
 
 const Introduce = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -22,7 +24,7 @@ const Introduce = () => {
 정리되어 었지 않아서,
 읽기 힘들었던 강의 자료를
 AI를 통해 요약해보세요!`,
-      image: SamplePageEx
+      image: SamplePageEx,
     },
     {
       title: "연습 문제 생성",
@@ -32,7 +34,7 @@ AI를 통해 요약해보세요!`,
 함께 업로드 해보세요!
 실전과 유사한 문제로
 학습을 진행할 수 있어요!`,
-      image: SamplePageEx
+      image: PracticeEx,
     },
     {
       title: "오답 노트 제공",
@@ -43,7 +45,7 @@ AI 오답노트를 생성해보세요!
 오답과 헷갈리는 문제의 
 해설과 추가 개념들을 
 쉽게 확인할 수 있어요!`,
-      image: SamplePageEx
+      image: NoteEx,
     },
     {
       title: "마이페이지",
@@ -53,7 +55,7 @@ AI 오답노트를 생성해보세요!
 마이페이지에 저장 가능!
 마이페이지에서 간편하게
 확인하고 복습해보세요!`,
-      image: MyPageEx
+      image: MyPageEx,
     },
   ];
 
@@ -83,8 +85,8 @@ AI 오답노트를 생성해보세요!
         <ContentSection>
           {selectedIndex !== null ? (
             <ImageWrapper>
-              <StyledImage 
-                src={menuItems[selectedIndex].image} 
+              <StyledImage
+                src={menuItems[selectedIndex].image}
                 alt={`${menuItems[selectedIndex].title} 이미지`}
               />
             </ImageWrapper>
