@@ -59,8 +59,8 @@ const rotate = keyframes`
 
 const Icon = styled.div`
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-image: url(${(props) => props.$src});
   background-size: contain;
   background-repeat: no-repeat;
