@@ -167,13 +167,8 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
         })
       );
 
-
-      const firstTopic = problems[0]?.topic || ""; // 첫 번째 문제의 topic
+      const firstTopic = problems[0]?.question_topic || ""; // 첫 번째 문제의 topic
       console.log("First Topic:", firstTopic); // 전달될 토픽 확인
-      console.log("Navigate로 전달되는 데이터:", {
-        problems: responses,
-        firstTopic,
-      });
 
       const templateId = location.state?.templateId;
 
@@ -184,7 +179,12 @@ const ProblemContent = ({ onButtonClick, readOnly, onProblemSolved }) => {
 
       // 문제 데이터를 채점 결과 페이지로 전달
       navigate("/grading-results", {
-        state: { problems: responses, firstTopic, templateId, doubleClickedProblems: Array.from(doubleClickedProblems) },
+        state: {
+          problems: responses,
+          firstTopic,
+          templateId,
+          doubleClickedProblems: Array.from(doubleClickedProblems),
+        },
       });
     } catch (error) {
       console.error("채점 중 오류 발생:", error);
