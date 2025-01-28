@@ -70,12 +70,7 @@ function MoreWrongAnswer() {
             <>
               <QuizCard key={`problem-${response.question_id}`}>
                 <Question>
-                  <Title>
-                    Q.
-                    {response.question_id % 10 === 0
-                      ? 10
-                      : response.question_id % 10}
-                  </Title>
+                  <Title>문제</Title>
                   <QuestionText>{response.question_text}</QuestionText>
                   <AnswerText>
                     {response.question_type === "객관식" ? (
