@@ -12,7 +12,7 @@ import PracticeEx from "../images/문제 예시.png";
 import NoteEx from "../images/오답노트.png";
 
 const Introduce = () => {
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
 
   const menuItems = [
@@ -68,9 +68,7 @@ AI 오답노트를 생성해보세요!
               key={index}
               bgColor={item.bgColor}
               isSelected={selectedIndex === index}
-              onClick={() =>
-                setSelectedIndex(index === selectedIndex ? null : index)
-              }
+              onClick={() => setSelectedIndex(index)}
             >
               <MenuTitle>{item.title}</MenuTitle>
               <IconWrapper>
