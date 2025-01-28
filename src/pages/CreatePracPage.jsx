@@ -61,7 +61,7 @@ function CreatePracPage() {
 
       const response = await axiosInstance.request({
         method: "POST",
-        url: "/pdf/upload",
+        url: "/pdf/genealogy-upload",
         data: formData,
       });
       console.log(response.data);
