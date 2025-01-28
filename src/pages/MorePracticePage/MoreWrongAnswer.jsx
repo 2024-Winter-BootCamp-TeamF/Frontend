@@ -17,7 +17,7 @@ function MoreWrongAnswer() {
   useEffect(() => {
     const fetchWrongAnswers = async () => {
       try {
-        const response = await axiosInstance.get("/question/submit-answer");
+        const response = await axiosInstance.get("/morequestion/submit-answer");
         setResponses(response.data); // API 응답 데이터 저장
       } catch (error) {
         console.error("오답 조회 데이터 가져오기 오류:", error);
@@ -71,7 +71,7 @@ function MoreWrongAnswer() {
               <QuizCard key={`problem-${response.question_id}`}>
                 <Question>
                   <Title>문제</Title>
-                  <QuestionText>{response.question_text}</QuestionText>
+                  <QuestionText>{response.question}</QuestionText>
                   <AnswerText>
                     {response.question_type === "객관식" ? (
                       <>
@@ -79,22 +79,25 @@ function MoreWrongAnswer() {
                         <div style={{ marginTop: "10px" }}>
                           {Array.isArray(response.choices)
                             ? response.choices.map((choice, index) => (
-                                <span key={index}>
+                                <div key={index} style={{ marginLeft: "20px" }}>
                                   {index + 1}. {choice}
                                   {index < response.choices.length - 1
                                     ? " "
                                     : ""}
-                                </span>
+                                </div>
                               ))
                             : response.choices
                                 .split("")
                                 .map((choice, index) => (
-                                  <span key={index}>
+                                  <div
+                                    key={index}
+                                    style={{ marginLeft: "20px" }}
+                                  >
                                     {index + 1}. {choice}
                                     {index < response.choices.length - 1
                                       ? ", "
                                       : ""}
-                                  </span>
+                                  </div>
                                 ))}
                         </div>
                       </>
@@ -106,6 +109,8 @@ function MoreWrongAnswer() {
               </QuizCard>
               <ExplanationCard key={`explanation-${response.question_id}`}>
                 <Title>해설</Title>
+                <div>정답: {response.correct_answer}</div>
+                <hr />
                 {response.explanation ? (
                   <ExplanationText>{response.explanation}</ExplanationText>
                 ) : (
@@ -175,6 +180,7 @@ const ExplanationCard = styled.div`
 const ExplanationText = styled.p`
   margin-top: 10px;
   font-size: 16px;
+  line-height: 1.6;
 `;
 
 const WrongAnswerWrapper = styled.div`
