@@ -188,21 +188,28 @@ const UploadPage = () => {
 
         {showFileCountModal && (
           <Modal>
-            <FileModalContent>
-              <CharacterSection>
-                <img src={characater} alt="character" />
-              </CharacterSection>
-              <p>{fileCount}개 파일 업로드 성공!</p>
-              <ExButton variant="filled" onClick={handleConfirmFileCount}>
-                확인
-              </ExButton>
-            </FileModalContent>
+            <ModalContentWrapper>
+              <FileModalContent>
+                <CharacterWrapper>
+                  <img src={characater} alt="character" />
+                </CharacterWrapper>
+                <TextWrapper>{fileCount}개 파일 업로드 성공!</TextWrapper>
+              </FileModalContent>
+              <ButtonContainer>
+                <StyledExButton
+                  variant="filled"
+                  onClick={handleConfirmFileCount}
+                >
+                  다음
+                </StyledExButton>
+              </ButtonContainer>
+            </ModalContentWrapper>
           </Modal>
         )}
 
         {showModal && (
           <Modal>
-            <ModalContent>
+            <ModalContentWrapper>
               <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
               <div
                 style={{
@@ -248,7 +255,7 @@ const UploadPage = () => {
                   요약본 생성하기
                 </StyledExButton>
               </ButtonContainer>
-            </ModalContent>
+            </ModalContentWrapper>
           </Modal>
         )}
       </MainContentWrapper>
@@ -402,34 +409,36 @@ const Modal = styled.div`
   z-index: 1000;
 `;
 
-const ModalContent = styled.div`
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
+const ModalContentWrapper = styled.div`
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
   position: relative;
-  min-width: 300px;
 `;
 
 const FileModalContent = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  background-color: #fff;
-  font-size: 28px;
-  gap: 30px;
-  padding: 30px;
-  border-radius: 10px;
-  width: 50%;
+  align-items: center;
+  gap: 20px;
 `;
 
-const CharacterSection = styled.div`
-  width: 100%;
+const CharacterWrapper = styled.div`
+  width: 90%;
   display: flex;
   justify-content: center;
   img {
     width: 40%;
   }
+`;
+
+const TextWrapper = styled.p`
+  color: #333;
+  font-size: 24px;
+  margin: 0;
 `;
 
 const CloseButton = styled.button`
@@ -496,10 +505,11 @@ const InputWrapper = styled.div`
     color: #333;
     margin-bottom: 5px;
     text-align: left;
+    width: 100%;
   }
 
   input {
-    width: 200px;
+    width: 100%;
     padding: 10px;
     border: 1px solid #5887f4;
     border-radius: 5px;
