@@ -118,9 +118,9 @@ const SamplePage = () => {
       );
 
       if (response.status === 202) {
-        alert("데이터가 성공적으로 삭제되었습니다.");
+        console.log("데이터가 성공적으로 삭제되었습니다.");
       } else {
-        alert("데이터 삭제에 실패했습니다.");
+        console.log("데이터 삭제에 실패했습니다.");
       }
     } catch (error) {
       console.error("API 호출 중 오류 발생:", error);
