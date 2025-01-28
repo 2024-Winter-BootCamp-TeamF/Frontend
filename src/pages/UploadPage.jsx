@@ -113,7 +113,7 @@ const UploadPage = () => {
       });
       console.log("API 호출 성공:", response.data);
       setShowFileCountModal(false); // 파일 개수 모달 숨기기
-      setShowModal(true); // 토픽 및 Top K 입력 모달 띄우기
+      setShowModal(true); // 토픽 입력 모달 띄우기
     } catch (error) {
       console.error("API 호출 실패:", error);
       alert("파일 처리 중 오류가 발생했습니다.");

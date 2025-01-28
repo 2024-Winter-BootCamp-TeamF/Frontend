@@ -16,7 +16,6 @@ const SamplePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pdfFile = location.state?.pdfFile;
-  const topK = location.state?.top_k;
   const topics = location.state?.topics;
   const [cards, setCards] = useState(() => {
     // localStorage에서 기존 카드 불러오기
@@ -35,7 +34,6 @@ const SamplePage = () => {
 
       try {
         const response = await axiosInstance.post("/langchain/summary", {
-          top_k: topK, // 숫자
           topics: topics, // 문자열 배열
         });
 
@@ -58,7 +56,7 @@ const SamplePage = () => {
     };
 
     fetchSummaryPDF();
-  }, [topK, topics]);
+  }, [topics]);
 
   const handleCreateCard = () => {
     // 현재 날짜와 시간을 형식에 맞게 생성
