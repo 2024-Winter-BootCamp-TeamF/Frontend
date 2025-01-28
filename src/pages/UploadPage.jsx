@@ -16,7 +16,6 @@ const UploadPage = () => {
   const [showFileCountModal, setShowFileCountModal] = useState(false);
   const [fileCount, setFileCount] = useState(0);
 
-  const [topK, setTopK] = useState(5);
   const [topics, setTopics] = useState([""]);
   const navigate = useNavigate();
 
@@ -205,20 +204,15 @@ const UploadPage = () => {
           <Modal>
             <ModalContent>
               <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
-              <InputWrapper>
-                <label htmlFor="top_k">Top K</label>
-                <StyledSelect
-                  id="top_k"
-                  value={topK}
-                  onChange={(e) => setTopK(e.target.value)}
-                >
-                  {[...Array(8)].map((_, index) => (
-                    <option key={index + 3} value={index + 3}>
-                      {index + 3}
-                    </option>
-                  ))}
-                </StyledSelect>
-              </InputWrapper>
+              <div
+                style={{
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <p>원하는 주제로 연습문제를 만들어 보세요!</p>
+              </div>
               {topics.map((topic, index) => (
                 <InputWrapper key={index}>
                   <label htmlFor={`topic_${index}`}>Topic {index + 1}</label>
@@ -246,7 +240,6 @@ const UploadPage = () => {
                     navigate("/sample", {
                       state: {
                         pdfFile: lectureFiles[0],
-                        top_k: parseInt(topK, 10),
                         topics: topics.filter((topic) => topic.trim() !== ""),
                       },
                     });
