@@ -1,11 +1,34 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import character from "../images/character.png";
 import logo from "../images/logo.svg";
 import background from "../images/main_background.png";
+import PenIcon from "../images/pen.png";
+import DocsIcon from "../images/docs.png";
 
 const Banner = () => {
+  const icons = [
+    { top: 26, left: 8, duration: 8, src: PenIcon }, // 1
+    { top: 7, left: 40, duration: 10, src: PenIcon }, // 2
+    { top: 22, left: 92, duration: 8, src: PenIcon }, // 3
+    { top: 32, left: 52, duration: 10, src: PenIcon }, // 3
+
+    { top: 10, left: 14, duration: 8, src: DocsIcon }, // 1
+    { top: 34, left: 28, duration: 10, src: DocsIcon }, // 2
+    { top: 10, left: 80, duration: 10, src: DocsIcon },
+    { top: 36, left: 85, duration: 8, src: DocsIcon },
+  ];
+
   return (
     <BannerWrapper>
+      {icons.map((icon, index) => (
+        <Icon
+          key={index}
+          $top={icon.top}
+          $left={icon.left}
+          $duration={icon.duration}
+          $src={icon.src} // 동적으로 소스 전달
+        />
+      ))}
       <BannerContent>
         <TitleSection>
           <LogoWrapper>
@@ -25,10 +48,32 @@ const Banner = () => {
   );
 };
 
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const Icon = styled.div`
+  position: absolute;
+  width: 55px;
+  height: 55px;
+  background-image: url(${(props) => props.$src});
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 1;
+  animation: ${rotate} ${(props) => props.$duration}s linear infinite;
+  top: ${(props) => props.$top}%;
+  left: ${(props) => props.$left}%;
+  z-index: -1;
+`;
+
 const BannerWrapper = styled.div`
   width: 100%;
   height: 90vh;
-  background-image: url(${background});
   background-position: center;
   background-size: cover;
   display: flex;
@@ -115,7 +160,7 @@ const CharacterSection = styled.div`
   padding-top: 100px;
   padding-left: 50px;
   padding-bottom: 15px;
-  
+
   img {
     width: auto;
     max-height: 450px;
@@ -139,7 +184,7 @@ const AnimatedText = styled.span`
   display: inline-block;
   opacity: 0;
   animation: fadeIn 1s ease forwards;
-  animation-delay: ${props => props.delay || '0s'};
+  animation-delay: ${(props) => props.delay || "0s"};
 
   @keyframes fadeIn {
     from {

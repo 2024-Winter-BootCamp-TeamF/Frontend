@@ -30,12 +30,15 @@ const GradingResults = () => {
   );
 
   const handleSolveButtonClick = () => {
+    const firstTopic = location.state?.firstTopic || "기본 토픽"; // firstTopic 가져오기
+
     // API 호출 후 새로운 노트 생성 로직 제거
     navigate("/note", {
       state: {
         problems: updatedProblems,
         doubleClickedProblems: location.state?.doubleClickedProblems,
         confusedAnswers: confusedAnswers,
+        firstTopic, // firstTopic 추가
       },
     }); // 저장 후 오답 노트 페이지로 이동
   };

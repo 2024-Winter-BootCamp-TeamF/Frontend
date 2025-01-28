@@ -15,8 +15,8 @@ const UploadPage = () => {
 
   const [showFileCountModal, setShowFileCountModal] = useState(false);
   const [fileCount, setFileCount] = useState(0);
+  const [topics, setTopics] = useState([{ value: "", showAddButton: true }]);
 
-  const [topics, setTopics] = useState([""]);
   const navigate = useNavigate();
 
   const onLectureDrop = useCallback((acceptedFiles) => {
@@ -28,12 +28,29 @@ const UploadPage = () => {
   };
 
   const handleTopicsNext = () => {
-    localStorage.setItem(
-      "topics",
-      JSON.stringify(topics.filter((topic) => topic.trim() !== ""))
-    );
+    try {
+      // topics 배열에서 value 값을 추출하고 빈 문자열 제거
+      const topicValues = topics
+        .map((topic) => topic.value?.trim()) // 각 객체의 value만 추출하고 trim
+        .filter((value) => value && value !== ""); // 빈 문자열 제거
 
-    navigate(`/sample`, { state: { topics } });
+      console.log("현재 topics 상태:", topics);
+      console.log("추출된 topicValues:", topicValues);
+
+      // localStorage에 배열 저장
+      localStorage.setItem("topics", JSON.stringify(topicValues));
+
+      // 다음 페이지로 이동하며 topicValues 전달
+      navigate(`/sample`, {
+        state: {
+          pdfFile: lectureFiles[0],
+          topics: topicValues, // 문자열 배열 전달
+        },
+      });
+    } catch (error) {
+      console.error("Topic 처리 중 오류 발생:", error.message);
+      alert("Topic 데이터를 처리하는 중 오류가 발생했습니다.");
+    }
   };
 
   const {
@@ -42,16 +59,37 @@ const UploadPage = () => {
     isDragActive: isLectureDragActive,
   } = useDropzone({ onDrop: onLectureDrop });
 
-  const handleAddTopic = () => {
-    if (topics.length < 3) {
-      setTopics((prev) => [...prev, ""]);
-    }
+  const handleAddTopic = (index) => {
+    if (topics.length >= 3) return; // 최대 3개 제한
+
+    setTopics((prev) =>
+      prev.map((topic, i) =>
+        i === index ? { ...topic, showAddButton: false } : topic
+      )
+    );
+
+    setTopics((prev) => [...prev, { value: "", showAddButton: true }]);
+  };
+
+  const handleRemoveTopic = (index) => {
+    setTopics((prev) => {
+      const updatedTopics = prev.filter((_, i) => i !== index);
+
+      // 마지막 Topic에 showAddButton 활성화
+      if (updatedTopics.length === 1) {
+        updatedTopics[0].showAddButton = true; // 삭제 버튼 제거
+      } else if (updatedTopics.length > 0) {
+        updatedTopics[updatedTopics.length - 1].showAddButton = true;
+      }
+
+      return updatedTopics;
+    });
   };
 
   const handleTopicChange = (index, value) => {
-    const newTopics = [...topics];
-    newTopics[index] = value;
-    setTopics(newTopics);
+    setTopics((prev) =>
+      prev.map((topic, i) => (i === index ? { ...topic, value } : topic))
+    );
   };
 
   const handleUpload = async () => {
@@ -218,22 +256,34 @@ const UploadPage = () => {
                   textAlign: "center",
                 }}
               >
-                <p>원하는 주제로 연습문제를 만들어 보세요!</p>
+                <p>강의 자료의 핵심 주제를 Topic에 적어주세요!</p>
               </div>
               {topics.map((topic, index) => (
                 <InputWrapper key={index}>
                   <label htmlFor={`topic_${index}`}>Topic {index + 1}</label>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                    }}
+                  >
                     <StyledInput
                       type="text"
                       id={`topic_${index}`}
-                      value={topic}
+                      value={topic.value}
                       onChange={(e) => handleTopicChange(index, e.target.value)}
-                      style={{ width: index === 0 ? "auto" : "100%" }}
+                      style={{ width: "100%" }}
                     />
-                    {index === 0 && (
-                      <StyledButton onClick={handleAddTopic}>
-                        추가하기
+                    {index === topics.length - 1 &&
+                      topics.length < 3 &&
+                      topic.showAddButton && (
+                        <StyledButton onClick={() => handleAddTopic(index)}>
+                          추가하기
+                        </StyledButton>
+                      )}
+                    {topics.length > 1 && (
+                      <StyledButton onClick={() => handleRemoveTopic(index)}>
+                        삭제하기
                       </StyledButton>
                     )}
                   </div>
@@ -242,14 +292,8 @@ const UploadPage = () => {
               <ButtonContainer>
                 <StyledExButton
                   onClick={() => {
-                    handleTopicsNext();
+                    handleTopicsNext(); // 수정된 handleTopicsNext 함수 호출
                     setShowModal(false);
-                    navigate("/sample", {
-                      state: {
-                        pdfFile: lectureFiles[0],
-                        topics: topics.filter((topic) => topic.trim() !== ""),
-                      },
-                    });
                   }}
                 >
                   요약본 생성하기
@@ -497,7 +541,6 @@ const LoadingText = styled.p`
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 
   padding: 10px;
   label {
@@ -523,23 +566,15 @@ const StyledInput = styled.input`
   width: 100%;
 `;
 
-const StyledSelect = styled.select`
-  padding: 10px;
-  border: 1px solid #5887f4;
-  border-radius: 5px;
-  width: 100%;
-`;
-
 const StyledButton = styled.button`
+  width: 50%;
   background-color: #5887f4;
   color: white;
   border-radius: 5px;
   border: 2px solid #5887f4;
 
-  padding: 8px 13px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-left: 30px;
   font-family: "HakgyoansimAllimjangTTF-R";
 
   &:hover {

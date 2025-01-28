@@ -97,7 +97,7 @@ function WrongAnswer() {
       }
     };
     fetchConfusedAnswers();
-  }, [doubleClickedProblems]);
+  }, [doubleClickedProblems, responses]);
 
   const handleUserButtonClick = () => {
     const noteTitle = `${location.state?.firstTopic || "오답"}_오답노트`;
@@ -190,7 +190,7 @@ function WrongAnswer() {
     );
 
     setIsNewNote(!isExistingNote); // 기존 노트가 없으면 true, 있으면 false
-  }, []);
+  }, [location.state?.firstTopic]);
 
   // 노트 저장 함수
   const saveNote = (topics, problems, confusedAnswers) => {

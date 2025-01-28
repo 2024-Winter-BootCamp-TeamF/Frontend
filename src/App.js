@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
+import ScrollToTop from "./components/ScrolToTop";
 
 import "./App.css";
 
@@ -33,6 +34,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
+        <ScrollToTop />
         <Routes>
           {/* 기존 라우트 */}
           <Route path="/grading-results" element={<GradingResults />} />
