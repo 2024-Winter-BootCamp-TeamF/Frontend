@@ -64,7 +64,7 @@ function WrongAnswer() {
         const answers = await Promise.all(
           doubleClickedProblems.map(async (problemId) => {
             const response = await axiosInstance.post(
-              "/question/confused-answers/",
+              "/question/confused-answers",
               { question_id: problemId }
             );
             console.log("API 응답:", response.data);
