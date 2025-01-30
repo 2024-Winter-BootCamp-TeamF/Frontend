@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useState } from "react";
 
 const LoginInputForm = ({
   currentType,
@@ -10,6 +11,7 @@ const LoginInputForm = ({
 }) => {
   const navigate = useNavigate();
   const API_BASE_URL = "http://localhost:8000/api/user";
+  const [showModal, setShowModal] = useState(false);
 
   // 회원가입 API 호출
   const signUp = async (userData) => {
@@ -21,13 +23,7 @@ const LoginInputForm = ({
 
       const response = await axios.post(`${API_BASE_URL}/signup`, signUpData);
       if (response.status === 201) {
-        alert("회원가입이 완료되었습니다!");
-        setCurrentType("SignIn");
-        setInputValues({
-          id: "",
-          password: "",
-          confirmPassword: "",
-        });
+        setShowModal(true);
         return true;
       }
     } catch (error) {
@@ -35,9 +31,9 @@ const LoginInputForm = ({
         if (error.response.data.username) {
           alert("이미 존재하는 아이디입니다.");
         } else if (error.response.data.password) {
-          alert(error.response.data.password[0]); // 비밀번호 유효성 검사 실패 메시지
+          alert(error.response.data.password[0]);
         } else if (error.response.data.error) {
-          alert(error.response.data.error); // 기타 에러 메시지
+          alert(error.response.data.error);
         } else {
           alert("회원가입 중 오류가 발생했습니다.");
         }
@@ -65,24 +61,17 @@ const LoginInputForm = ({
         localStorage.setItem("username", username);
         localStorage.setItem("isLoggedIn", "true");
 
-        // setTimeout(() => {
-        //   localStorage.clear();
-        //   alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-        //   navigate("/login");
-        // }, 600 * 1000);
-
         navigate(`/mypage/summary`);
         return true;
       }
     } catch (error) {
       if (error.response) {
-        // 서버가 응답한 구체적인 에러 처리
         if (error.response.data.error) {
           alert("아이디 또는 비밀번호가 일치하지 않습니다.");
         } else if (error.response.data.username) {
-          alert(error.response.data.username[0]); // username 관련 에러
+          alert(error.response.data.username[0]);
         } else if (error.response.data.password) {
-          alert(error.response.data.password[0]); // password 관련 에러
+          alert(error.response.data.password[0]);
         } else {
           alert("로그인 중 오류가 발생했습니다.");
         }
@@ -103,21 +92,13 @@ const LoginInputForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const userData = {
       id: inputValues.id,
       password: inputValues.password,
     };
 
     if (currentType === "SignUp") {
-      const success = await signUp(userData);
-      if (success) {
-        setInputValues({
-          id: "",
-          password: "",
-          confirmPassword: "",
-        });
-      }
+      await signUp(userData);
     } else {
       await signIn(userData);
     }
@@ -166,6 +147,24 @@ const LoginInputForm = ({
           </SubmitButton>
         </SubmitButtonWrapper>
       </form>
+      {showModal && (
+        <Modal>
+          <ModalContentWrapper>
+            <ModalContent>
+              <p>회원가입이 완료되었습니다!</p>
+              <ModalButton
+                onClick={() => {
+                  setShowModal(false);
+                  setCurrentType("SignIn");
+                  setInputValues({ id: "", password: "", confirmPassword: "" });
+                }}
+              >
+                로그인하러 가기
+              </ModalButton>
+            </ModalContent>
+          </ModalContentWrapper>
+        </Modal>
+      )}
     </InputFormWrapper>
   );
 };
@@ -255,6 +254,70 @@ const SubmitButton = styled.button`
   &:active {
     background-color: #004dff;
     color: #fff;
+  }
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContentWrapper = styled.div`
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  text-align: center;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+`;
+
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  p {
+    font-size: 24px;
+  }
+`;
+
+const ModalButton = styled.button`
+  padding: 10px 20px;
+  background: #5887f4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border 0.3s;
+  border: 1px solid #5887f4;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "HakgyoansimAllimjangTTF-R";
+
+  &:hover {
+    background-color: #fff;
+    color: #5887f4;
+    border: 1px solid #5887f4;
   }
 `;
 
